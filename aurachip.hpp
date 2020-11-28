@@ -17,6 +17,7 @@ public:
 	enum code {
 		TEST,
 		VERSION,
+		ADDRESS,
 		LAST_CMD
 	};
 
@@ -29,6 +30,11 @@ public:
 
 private:
 	static std::map<const int, const std::string> command_map;
+};
+
+class parser {
+public:
+	static std::string parse(std::string input_str, std::string token);
 };
 
 class version {
@@ -62,17 +68,52 @@ private:
 	std::string manufacture_code;
 };
 
+class address {
+public:
+	explicit address(std::string address_str);
+
+	int get() const
+	{
+		return device_address;
+	}
+
+private:
+	int device_address;
+};
+
 class chip :
 	public auraton {
 public:
 
-	explicit chip(const std::string& device) : auraton(device) { }
+	explicit chip(const std::string& device) :
+		auraton(device),
+		initialize_flag(false),
+		device_address(""),
+		device_version("")
+		{ }
 
 	bool test();
-	std::string get_version();
+	void initialize();
+
+	bool is_initialize() const {
+		return initialize_flag;
+	}
+
+	const version get_version() const {
+		return device_version;
+	}
+
+	const address get_address() const {
+		return device_address;
+	}
 
 private:
+	bool initialize_flag;
+	address device_address;
+	version device_version;
 	const std::string compose_command(cmd::code command) const;
+	void initialize_version();
+	void initialize_address();
 };
 }
 
