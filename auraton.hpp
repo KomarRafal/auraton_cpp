@@ -12,7 +12,7 @@ namespace aura
 {
 class auraton {
 public:
-	explicit auraton(const std::string& device) : device_port(device) { };
+	explicit auraton(const std::string& device) : device_port{device} { };
 	bool open();
 	void close();
 	const std::string send_command(const std::string& command, int max_buffer_length = MAX_BUFFER_LENGTH);

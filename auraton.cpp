@@ -18,8 +18,6 @@ void auraton::close() {
 }
 
 const std::string auraton::send_command(const std::string &command, int max_buffer_length) {
-	if (max_buffer_length > MAX_BUFFER_LENGTH)
-		max_buffer_length = MAX_BUFFER_LENGTH;
 	char input_buffer[max_buffer_length + 1] = { };
 	serial_dev.flushReceiver();
 	serial_dev.writeBytes(command.c_str(), command.length());
