@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
 	aura::chip my_aura_chip("COM8");
 	const bool ret = my_aura_chip.open();
 	std::cout << "status: " << std::boolalpha << ret << std::endl;
+	std::cout << "reset: " << my_aura_chip.reset() << std::endl;
 	std::cout << "test_uart: " << my_aura_chip.test_uart() << std::endl;
 	std::cout << "test: " << my_aura_chip.test() << std::endl;
 	my_aura_chip.initialize();

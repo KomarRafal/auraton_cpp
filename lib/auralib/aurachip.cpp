@@ -8,16 +8,16 @@ namespace aura
 {
 
 std::map<const int, const std::string> cmd::command_map = {
-		{ cmd::TEST, "TEST" },
-		{ cmd::VERSION, "VER" },
-		{ cmd::ADDRESS, "ADDR" },
-		{ cmd::DEV_LIST, "LIST" },
+		{ cmd::TEST, "TEST?" },
+		{ cmd::VERSION, "VER?" },
+		{ cmd::ADDRESS, "ADDR?" },
+		{ cmd::DEV_LIST, "LIST?" },
+		{ cmd::RESET, "RST" },
 		{ cmd::LAST_CMD, "" }
 };
 
 bool chip::test() {
-	const auto result = send_command(cmd::compose(cmd::TEST));
-	return (result.compare("OK\r\n") == 0);
+	return simple_command(cmd::compose(cmd::TEST));
 }
 
 void chip::initialize() {
@@ -28,8 +28,12 @@ void chip::initialize() {
 	initialize_flag = true;
 }
 
+bool chip::reset() {
+	return simple_command(cmd::compose(cmd::RESET));
+}
+
 int chip::update_device_list() {
-#define EARLY_TEST
+//#define EARLY_TEST
 #ifdef EARLY_TEST
 	const std::string dev_list_str = "ID: 1\r\n"
 					"ADDRESS: 90FC4F9B\r\n"

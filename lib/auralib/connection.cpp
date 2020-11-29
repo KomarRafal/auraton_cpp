@@ -3,6 +3,7 @@
  */
 
 #include "connection.hpp"
+#include "parser.hpp"
 
 namespace aura
 
@@ -25,9 +26,13 @@ const std::string connection::send_command(const std::string &command, int max_b
 	return std::string(input_buffer);
 }
 
+bool connection::simple_command(const std::string& command) {
+	const std::string result = send_command(command);
+	return parser::check_result(result);
+}
+
 bool connection::test_uart() {
-	const std::string result = send_command("AT\n", 5);
-	return (result.compare("OK\r\n") == 0);
+	return simple_command("AT\n\r");
 }
 
 }

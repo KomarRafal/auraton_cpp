@@ -22,6 +22,7 @@ public:
 		VERSION,
 		ADDRESS,
 		DEV_LIST,
+		RESET,
 		LAST_CMD
 	};
 
@@ -35,7 +36,7 @@ public:
 	static const std::string compose(cmd::code command) {
 		std::string composed_command("AT+");
 		composed_command.append(cmd::Get(command));
-		composed_command.append("?\n");
+		composed_command.append("\n");
 		return composed_command;
 	}
 
@@ -57,6 +58,7 @@ public:
 
 	bool test();
 	void initialize();
+	bool reset();
 
 	bool is_initialize() const {
 		return initialize_flag;

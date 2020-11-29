@@ -7,14 +7,16 @@
 namespace aura
 {
 
+const std::string parser::OK_TOKEN = "OK";
 const std::string parser::DEVICE_TOKEN = "ID: ";
 const std::string parser::EOL = "\r\n";
 
-std::string parser::parse(std::string input_str, std::string token) {
+std::string parser::parse(std::string input_str, std::string token, bool omit_token) {
 	auto begin = input_str.find(token);
 	if (begin == std::string::npos)
 		return "";
-	begin += token.length();
+	if (omit_token)
+		begin += token.length();
 	const auto end = input_str.find(EOL, begin);
 	return input_str.substr(begin, end - begin);
 }
@@ -44,5 +46,10 @@ parser::device_list_t parser::parse_device_list(std::string input_str) {
 		begin = end;
 	}
 
+}
+
+bool parser::check_result(std::string input_str) {
+	const std::string status = parse(input_str, OK_TOKEN, false);
+	return (status.length() == OK_TOKEN.length());
 }
 }
