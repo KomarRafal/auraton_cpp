@@ -7,14 +7,23 @@
 namespace aura
 {
 
-std::map<const int, const std::string> cmd::command_map = {
+std::map<const uint32_t, const std::string> cmd::command_map = {
 		{ cmd::TEST, "TEST?" },
 		{ cmd::VERSION, "VER?" },
+		{ cmd::LINK, "LINK" },
+		{ cmd::EVENT_LINK, "EVENT_LINK" },
 		{ cmd::ADDRESS, "ADDR?" },
 		{ cmd::DEV_LIST, "LIST?" },
 		{ cmd::RESET, "RST" },
 		{ cmd::LAST_CMD, "" }
 };
+
+const std::string cmd::compose(cmd::code command) {
+	std::string composed_command("AT+");
+	composed_command.append(cmd::Get(command));
+	composed_command.append("\n");
+	return composed_command;
+}
 
 bool chip::test() {
 	return simple_command(cmd::compose(cmd::TEST));
@@ -26,6 +35,17 @@ void chip::initialize() {
 	device dev(device_str);
 	static_cast<device*>(this)->operator=(dev);
 	initialize_flag = true;
+}
+
+bool chip::link() {
+	const bool is_cmd_ok = simple_command(cmd::compose(cmd::LINK));
+	if (!is_cmd_ok)
+		return false;
+	const bool is_event = wait_for_read(LINK_WAIT_MS);
+	if (!is_event)
+		return false;
+	const bool is_event_ok = check_event(cmd::Get(cmd::EVENT_LINK));
+	return is_event_ok;
 }
 
 bool chip::reset() {

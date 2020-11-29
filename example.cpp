@@ -3,6 +3,8 @@
  */
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "aurachip.hpp"
 #include "connection.hpp"
@@ -20,6 +22,9 @@ int main(int argc, char **argv) {
 	std::cout << "hw_version: " << my_aura_chip.get_hw_version() << std::endl;
 	std::cout << "manufacture_code: " << my_aura_chip.get_manufacture_code() << std::endl;
 	std::cout << "address: 0x" << std::hex << my_aura_chip.get_address() << std::endl;
+	std::cout << "Start linking..." << std::endl;
+	std::cout << my_aura_chip.link() << std::endl;
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	auto dev_cnt = my_aura_chip.update_device_list();
 	std::cout << "Found: " << dev_cnt << " devices" << std::endl;
 	for (auto dev : my_aura_chip.device_list) {

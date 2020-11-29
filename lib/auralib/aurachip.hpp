@@ -5,6 +5,7 @@
 #ifndef AURACHIP_HPP
 #define AURACHIP_HPP
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
@@ -20,6 +21,8 @@ public:
 	enum code {
 		TEST,
 		VERSION,
+		LINK,
+		EVENT_LINK,
 		ADDRESS,
 		DEV_LIST,
 		RESET,
@@ -33,15 +36,10 @@ public:
 		return command_map[command];
 	}
 
-	static const std::string compose(cmd::code command) {
-		std::string composed_command("AT+");
-		composed_command.append(cmd::Get(command));
-		composed_command.append("\n");
-		return composed_command;
-	}
+	static const std::string compose(cmd::code command);
 
 private:
-	static std::map<const int, const std::string> command_map;
+	static std::map<const uint32_t, const std::string> command_map;
 };
 
 class chip :
@@ -58,6 +56,8 @@ public:
 
 	bool test();
 	void initialize();
+	bool link();
+	static const uint32_t LINK_WAIT_MS = 32000;
 	bool reset();
 
 	bool is_initialize() const {
@@ -65,7 +65,7 @@ public:
 	}
 
 	int update_device_list();
-	device get_device(int dev_id) {
+	device get_device(uint32_t dev_id) {
 		return device_list[dev_id];
 	}
 
