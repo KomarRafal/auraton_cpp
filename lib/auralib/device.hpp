@@ -56,22 +56,22 @@ public:
 		return address;
 	}
 
-	void set_product_code(std::string value)
+	void set_product_code(const std::string& value)
 	{
 		product_code = value;
 	}
 
-	void set_fw_version(std::string value)
+	void set_fw_version(const std::string& value)
 	{
 		fw_version = value;
 	}
 
-	void set_hw_version(std::string value)
+	void set_hw_version(const std::string& value)
 	{
 		hw_version = value;
 	}
 
-	void set_manufacture_code(std::string value)
+	void set_manufacture_code(const std::string& value)
 	{
 		manufacture_code = value;
 	}

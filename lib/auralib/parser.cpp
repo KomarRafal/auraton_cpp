@@ -23,10 +23,11 @@ std::string parser::parse(std::string input_str, std::string token, bool omit_to
 
 parser::device_list_t parser::parse_device_list(std::string input_str) {
 	device_list_t device_list;
-	size_t begin = 0, end;
+	size_t begin = 0;
 
 	while (true)
 	{
+		size_t end;
 		begin = input_str.find(DEVICE_TOKEN, begin);
 		if (begin == std::string::npos)
 			return device_list;
@@ -48,7 +49,7 @@ parser::device_list_t parser::parse_device_list(std::string input_str) {
 
 }
 
-bool parser::check_result(std::string input_str) {
+bool parser::check_result(const std::string& input_str) {
 	const std::string status = parse(input_str, OK_TOKEN, false);
 	return (status.length() == OK_TOKEN.length());
 }
