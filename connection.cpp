@@ -1,23 +1,23 @@
 /*
- * auraton.cpp
+ * connection.cpp
  */
 
-#include "auraton.hpp"
+#include "connection.hpp"
 
 namespace aura
 
 {
 
-bool auraton::open() {
+bool connection::open() {
 	const char status = serial_dev.openDevice(device_port.c_str(), baud_rate);
 	return (status == 1);
 }
 
-void auraton::close() {
+void connection::close() {
 	serial_dev.closeDevice();
 }
 
-const std::string auraton::send_command(const std::string &command, int max_buffer_length) {
+const std::string connection::send_command(const std::string &command, int max_buffer_length) {
 	char input_buffer[max_buffer_length + 1] = { };
 	serial_dev.flushReceiver();
 	serial_dev.writeBytes(command.c_str(), command.length());
@@ -25,7 +25,7 @@ const std::string auraton::send_command(const std::string &command, int max_buff
 	return std::string(input_buffer);
 }
 
-bool auraton::test_uart() {
+bool connection::test_uart() {
 	const std::string result = send_command("AT\n", 5);
 	return (result.compare("OK\r\n") == 0);
 }
