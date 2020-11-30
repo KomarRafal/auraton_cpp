@@ -53,23 +53,7 @@ bool chip::reset() {
 }
 
 int chip::update_device_list() {
-//#define EARLY_TEST
-#ifdef EARLY_TEST
-	const std::string dev_list_str = "ID: 1\r\n"
-					"ADDRESS: 90FC4F9B\r\n"
-					"PCODE: 300d\r\n"
-					"FVER: 1.1\r\n"
-					"HVER: 7\r\n"
-					"MANCODE: 30\r\n"
-					"ID: 2\r\n"
-					"ADDRESS: 456223DA\r\n"
-					"PCODE: 3005\r\n"
-					"FVER: 1.5\r\n"
-					"HVER: 1\r\n"
-					"MANCODE: 30\r\n";
-#else
 	const auto dev_list_str = send_command(cmd::compose(cmd::DEV_LIST));
-#endif
 	const auto dev_list_parsed = parser::parse_device_list(dev_list_str);
 	device_list.clear();
 	for (auto dev_pair : dev_list_parsed) {
