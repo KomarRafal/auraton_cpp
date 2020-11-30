@@ -71,6 +71,7 @@ int chip::update_device_list() {
 	const auto dev_list_str = send_command(cmd::compose(cmd::DEV_LIST));
 #endif
 	const auto dev_list_parsed = parser::parse_device_list(dev_list_str);
+	device_list.clear();
 	for (auto dev_pair : dev_list_parsed) {
 		const device dev(dev_pair.second);
 		device_list[dev_pair.first] = dev;

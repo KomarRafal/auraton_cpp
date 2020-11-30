@@ -5,6 +5,7 @@
 #ifndef PARSER_HPP_
 #define PARSER_HPP_
 
+#include <cstdint>
 #include <string>
 #include <map>
 
@@ -13,7 +14,7 @@ namespace aura
 
 class parser {
 public:
-	typedef std::map<int, std::string> device_list_t;
+	typedef std::map<int32_t, std::string> device_list_t;
 	static const std::string OK_TOKEN;
 	static const std::string DEVICE_TOKEN;
 	static const std::string EOL;
