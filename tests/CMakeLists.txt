@@ -43,11 +43,6 @@ target_include_directories(devicelib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-set_target_properties(devicelib PROPERTIES
-            CXX_STANDARD 17
-            CXX_EXTENSIONS OFF
-            )
-
 enable_testing()
 
 add_executable(parser_ut parser_ut.cpp)					  
@@ -58,6 +53,12 @@ add_test(
 )
 
 add_executable(device_ut device_ut.cpp)
+set_target_properties(device_ut PROPERTIES
+            CXX_STANDARD 17
+            CXX_EXTENSIONS OFF
+            CXX_STANDARD_REQUIRED ON
+            )
+            
 target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
 add_test(
     NAME device_ut
