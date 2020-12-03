@@ -5,6 +5,7 @@
 #ifndef DEVICE_HPP_
 #define DEVICE_HPP_
 
+#include <cstdint>
 #include <string>
 
 namespace aura
@@ -52,7 +53,7 @@ public:
 		return manufacture_code;
 	}
 
-	int get_address() {
+	int32_t get_address() {
 		return address;
 	}
 
@@ -96,7 +97,7 @@ private:
 	std::string fw_version;
 	std::string hw_version;
 	std::string manufacture_code;
-	int address;
+	int32_t address;
 };
 
 }

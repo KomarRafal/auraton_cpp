@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.18)
 project(auraton_test)
 include(FetchContent)
 
@@ -30,14 +30,36 @@ target_include_directories(parserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-enable_testing()
+add_library(devicelib)
 
-add_executable(auraton_ut parser_ut.cpp)
-					  
-target_link_libraries(auraton_ut gtest gtest_main parserlib)
-
-add_test(
-    NAME auraton_ut
-    COMMAND auraton_ut
+target_sources(devicelib
+	PRIVATE
+		${AURATON_SRC}/device.cpp
+		${AURATON_SRC}/parser.cpp
 )
 
+target_include_directories(devicelib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+
+set_target_properties(devicelib PROPERTIES
+            CXX_STANDARD 17
+            CXX_EXTENSIONS OFF
+            )
+
+enable_testing()
+
+add_executable(parser_ut parser_ut.cpp)					  
+target_link_libraries(parser_ut gtest gtest_main parserlib)
+add_test(
+    NAME parser_ut
+    COMMAND parser_ut
+)
+
+add_executable(device_ut device_ut.cpp)
+target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
+add_test(
+    NAME device_ut
+    COMMAND device_ut
+)
