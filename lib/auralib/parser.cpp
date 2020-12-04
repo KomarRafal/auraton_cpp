@@ -11,7 +11,7 @@ const std::string parser::OK_TOKEN = "OK";
 const std::string parser::DEVICE_TOKEN = "ID: ";
 const std::string parser::EOL = "\r\n";
 
-std::string parser::parse(std::string input_str, std::string token, bool omit_token) {
+std::string parser::parse(const std::string& input_str, const std::string& token, bool omit_token) {
 	auto begin = input_str.find(token);
 	if (begin == std::string::npos)
 		return "";
@@ -21,7 +21,7 @@ std::string parser::parse(std::string input_str, std::string token, bool omit_to
 	return input_str.substr(begin, end - begin);
 }
 
-parser::device_list_t parser::parse_device_list(std::string input_str) {
+parser::device_list_t parser::parse_device_list(const std::string& input_str) {
 	device_list_t device_list;
 	size_t begin = 0;
 

@@ -27,7 +27,7 @@ public:
 		 address(0)
 	{ }
 
-	explicit device(std::string address_str);
+	explicit device(const std::string& address_str);
 
 	void clear() {
 		product_code.clear();
@@ -81,7 +81,7 @@ public:
 		address = addr;
 	}
 
-	void set_address(std::string addr) {
+	void set_address(const std::string& addr) {
 		if (!addr.empty())
 		{
 			address = std::stoul(addr, 0, 16);

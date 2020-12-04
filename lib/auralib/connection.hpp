@@ -18,7 +18,7 @@ public:
 	bool wait_for_read(uint32_t max_time_ms = WAIT_SLEEP_MS);
 	const std::string send_command(const std::string& command, uint32_t max_buffer_length = MAX_BUFFER_LENGTH);
 	bool simple_command(const std::string& command);
-	bool check_event(const std::string &event);
+	bool check_event(const std::string& event);
 	bool test_uart();
 
 private:

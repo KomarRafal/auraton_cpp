@@ -36,7 +36,7 @@ public:
 		return command_map[command];
 	}
 
-	static const std::string compose(cmd::code command);
+	static const std::string compose(const cmd::code& command);
 
 private:
 	static std::map<const uint32_t, const std::string> command_map;
@@ -50,8 +50,8 @@ public:
 	explicit chip(const std::string& device_port) :
 		connection{device_port},
 		device{},
-		initialize_flag{false},
-		device_list{}
+		device_list{},
+		initialize_flag{false}
 		{ }
 
 	bool test();
@@ -73,7 +73,7 @@ public:
 
 private:
 	bool initialize_flag;
-	const std::string compose_command(cmd::code command) const;
+	const std::string compose_command(const cmd::code& command) const;
 	void initialize_version();
 	void initialize_address();
 

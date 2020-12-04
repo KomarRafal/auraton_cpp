@@ -3,6 +3,7 @@ project(auraton_test)
 include(FetchContent)
 
 set(GTEST_VERSION 1.10.0 CACHE STRING "Google test version")
+add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 FetchContent_Declare(googletest
 	GIT_REPOSITORY https://github.com/google/googletest.git

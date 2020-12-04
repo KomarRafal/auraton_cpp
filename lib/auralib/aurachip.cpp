@@ -18,7 +18,7 @@ std::map<const uint32_t, const std::string> cmd::command_map = {
 		{ cmd::LAST_CMD, "" }
 };
 
-const std::string cmd::compose(cmd::code command) {
+const std::string cmd::compose(const cmd::code& command) {
 	std::string composed_command("AT+");
 	composed_command.append(cmd::Get(command));
 	composed_command.append("\n");

@@ -1,6 +1,7 @@
 /*
  * connection.cpp
  */
+#include <memory>
 #include <chrono>
 #include <thread>
 
@@ -23,7 +24,7 @@ void connection::close() {
 bool connection::wait_for_read(uint32_t max_time_ms) {
 	const uint32_t iterations =  max_time_ms / WAIT_SLEEP_MS;
 	const uint32_t last_wait = max_time_ms % WAIT_SLEEP_MS;
-	for (auto iter = 0; iter < iterations; iter++) {
+	for (auto iter = 0U; iter < iterations; iter++) {
 		if (serial_dev.available() > 0)
 			return true;
 		std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(WAIT_SLEEP_MS)));
@@ -37,12 +38,12 @@ bool connection::wait_for_read(uint32_t max_time_ms) {
 	return (serial_dev.available() > 0);
 }
 
-const std::string connection::send_command(const std::string &command, uint32_t max_buffer_length) {
-	char input_buffer[max_buffer_length + 1] = { };
+const std::string connection::send_command(const std::string& command, uint32_t max_buffer_length) {
+	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(max_buffer_length + 1);
 	serial_dev.flushReceiver();
 	serial_dev.writeBytes(command.c_str(), command.length());
-	serial_dev.readBytes(input_buffer, sizeof(input_buffer), 100, 0);
-	return std::string(input_buffer);
+	serial_dev.readBytes(input_buffer.get(), max_buffer_length, 100, 0);
+	return std::string(input_buffer.get());
 }
 
 bool connection::simple_command(const std::string& command) {
@@ -50,13 +51,14 @@ bool connection::simple_command(const std::string& command) {
 	return parser::check_result(result);
 }
 
-bool connection::check_event(const std::string &event) {
-	char input_buffer[event.length() + 10] = { };
-	serial_dev.readBytes(input_buffer, sizeof(input_buffer), 100, 0);
-	const auto read_event = parser::parse(input_buffer, event, false);
+bool connection::check_event(const std::string& event) {
+	const uint32_t buffer_length = event.length() + 10;
+	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(buffer_length);
+	serial_dev.readBytes(input_buffer.get(), buffer_length, 100, 0);
+	const auto read_event = parser::parse(input_buffer.get(), event, false);
 	if (read_event.length() != event.length())
 		return false;
-	return parser::check_result(std::string(input_buffer + event.length() + parser::EOL.length()));
+	return parser::check_result(std::string(input_buffer.get() + event.length() + parser::EOL.length()));
 }
 
 bool connection::test_uart() {

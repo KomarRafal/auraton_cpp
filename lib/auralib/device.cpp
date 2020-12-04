@@ -17,9 +17,9 @@ const std::string device::MANUFACTURE_CODE_TOKEN = "MANCODE: ";
 const std::string device::ADDRESS_TOKEN = "ADDRESS: ";
 
 
-device::device(std::string version_str) :
+device::device(const std::string& device_str) :
 		product_code(), fw_version(), hw_version(), manufacture_code(), address(0) {
-	std::map<std::string, std::function<void(std::string)>> version_info = {
+	std::map<std::string, std::function<void(std::string)>> device_info = {
 			{ device::PRODUCT_CODE_TOKEN, [this](auto value) { set_product_code(value); } },
 			{ device::FW_VERSION_TOKEN, [this](auto value) { set_fw_version(value); }  },
 			{ device::HW_VERSION_TOKEN, [this](auto value) { set_hw_version(value); }  },
@@ -27,8 +27,8 @@ device::device(std::string version_str) :
 			{ device::ADDRESS_TOKEN, [this](auto value) { set_address(value); } },
 	};
 
-	for (const auto info : version_info) {
-		info.second(parser::parse(version_str, info.first));
+	for (const auto info : device_info) {
+		info.second(parser::parse(device_str, info.first));
 	}
 }
 

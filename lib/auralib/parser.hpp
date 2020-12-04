@@ -18,8 +18,8 @@ public:
 	static const std::string OK_TOKEN;
 	static const std::string DEVICE_TOKEN;
 	static const std::string EOL;
-	static std::string parse(std::string input_str, std::string token, bool omit_token = true);
-	static device_list_t parse_device_list(std::string input_str);
+	static std::string parse(const std::string& input_str, const std::string& token, bool omit_token = true);
+	static device_list_t parse_device_list(const std::string& input_str);
 	static bool check_result(const std::string& input_str);
 };
 
