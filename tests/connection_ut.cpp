@@ -1,6 +1,7 @@
 /*
  * connection_ut.cpp
  */
+#include <cstring>
 #include <memory>
 
 #include "connection.hpp"
@@ -49,7 +50,7 @@ TEST(connection_ut, wait_for_read_true)
 	const std::string device_port = "COM6";
 	aura::connection connection_uut{device_port};
 	auto& serial_dev = connection_uut.get_serial_dev();
-	auto* timeout_instance = Timeout::get_instance();
+	auto& timeout_instance = Timeout::get_instance();
 
 	EXPECT_CALL(serial_dev, available())
 		.WillOnce(testing::Return(0))
@@ -57,7 +58,7 @@ TEST(connection_ut, wait_for_read_true)
 		.WillOnce(testing::Return(0))
 		.WillOnce(testing::Return(10));
 
-	EXPECT_CALL(*timeout_instance, sleep_for_ms(100))
+	EXPECT_CALL(timeout_instance, sleep_for_ms(100))
 		.Times(3);
 
 	EXPECT_TRUE(connection_uut.wait_for_read(max_time_ms));
@@ -69,16 +70,67 @@ TEST(connection_ut, wait_for_read_false)
 	const std::string device_port = "COM6";
 	aura::connection connection_uut{device_port};
 	auto& serial_dev = connection_uut.get_serial_dev();
-	auto* timeout_instance = Timeout::get_instance();
+	auto& timeout_instance = Timeout::get_instance();
 
 	EXPECT_CALL(serial_dev, available())
 		.WillRepeatedly(testing::Return(0));
 
-	EXPECT_CALL(*timeout_instance, sleep_for_ms(100))
+	EXPECT_CALL(timeout_instance, sleep_for_ms(100))
 		.Times(5);
 
-	EXPECT_CALL(*timeout_instance, sleep_for_ms(50))
+	EXPECT_CALL(timeout_instance, sleep_for_ms(50))
 		.Times(1);
 
 	EXPECT_FALSE(connection_uut.wait_for_read(max_time_ms));
+}
+
+ACTION_TEMPLATE(SetArgNPointeeTo, HAS_1_TEMPLATE_PARAMS(unsigned, uIndex), AND_2_VALUE_PARAMS(pData, uiDataSize))
+{
+    std::memcpy(std::get<uIndex>(args), pData, uiDataSize);
+}
+
+TEST(connection_ut, send_command_ok)
+{
+	const std::string device_port = "COM6";
+	aura::connection connection_uut{device_port};
+	auto& serial_dev = connection_uut.get_serial_dev();
+	const std::string& command{"COMMAND_UUT"};
+	const char receive_buffer[] = "Lorem ipsum";
+	const size_t buffer_size = sizeof(receive_buffer);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(command.c_str(), command.length()))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, buffer_size, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(std::begin(receive_buffer), buffer_size),
+				testing::Return(buffer_size))
+				);
+
+	auto response = connection_uut.send_command(command, buffer_size);
+	EXPECT_EQ(response, std::string(receive_buffer));
+}
+
+TEST(connection_ut, send_command_fail)
+{
+	const std::string device_port = "COM6";
+	aura::connection connection_uut{device_port};
+	auto& serial_dev = connection_uut.get_serial_dev();
+	const std::string& command{"COMMAND_UUT"};
+	const uint8_t max_buffer_length = 14;
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(command.c_str(), command.length()))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, max_buffer_length, testing::_, testing::_))
+		.WillOnce(testing::Return(0));
+
+	auto response = connection_uut.send_command(command, max_buffer_length);
+	EXPECT_TRUE(response.empty());
 }

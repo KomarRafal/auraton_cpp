@@ -15,10 +15,9 @@ public:
     MOCK_METHOD(char, openDevice, (const char *Device, const unsigned int Bauds));
     MOCK_METHOD(void, closeDevice, ());
     MOCK_METHOD(int, available, ());
-
-    char    writeBytes  (const void *Buffer, const unsigned int NbBytes);
-    int     readBytes   (void *buffer,unsigned int maxNbBytes,const unsigned int timeOut_ms=0, unsigned int sleepDuration_us=100);
-    char    flushReceiver();
+    MOCK_METHOD(void, flushReceiver, ());
+    MOCK_METHOD(char, writeBytes, (const void *Buffer, const unsigned int NbBytes));
+    MOCK_METHOD(int, readBytes,   (void *buffer, unsigned int maxNbBytes, const unsigned int timeOut_ms, unsigned int sleepDuration_us));
 };
 
 #endif

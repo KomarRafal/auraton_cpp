@@ -11,7 +11,7 @@ class TimeoutInstance {
 public:
 	TimeoutInstance() = default;
 	~TimeoutInstance() = default;
-	MOCK_METHOD(int, sleep_for_ms, (uint32_t duration));
+	MOCK_METHOD(void, sleep_for_ms, (uint32_t duration));
 //	int sleep_for_ms([[maybe_unused]]uint32_t duration) {
 //		return 0;
 //	}
@@ -19,12 +19,12 @@ public:
 
 class Timeout {
 public:
-    static auto sleep_for_ms(uint32_t duration) {
+    static void sleep_for_ms(uint32_t duration) {
     	instance.sleep_for_ms(duration);
     }
 
-    static auto* get_instance() {
-    	return &instance;
+    static auto& get_instance() {
+    	return instance;
     }
 
 private:

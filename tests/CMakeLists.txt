@@ -51,7 +51,6 @@ add_library(connectionlib)
 target_sources(connectionlib
 	PRIVATE
 		${AURATON_SRC}/connection.cpp
-		${STUBS}/serialib_stub.cpp
 )
 
 target_include_directories(connectionlib
