@@ -43,14 +43,13 @@ private:
 };
 
 class chip :
-	public connection,
 	public device {
 public:
 
 	explicit chip(const std::string& device_port) :
-		connection{device_port},
 		device{},
 		device_list{},
+		serial_connection{device_port},
 		initialize_flag{false}
 		{ }
 
@@ -65,13 +64,18 @@ public:
 	}
 
 	int update_device_list();
-	device get_device(uint32_t dev_id) {
+	const device& get_device(uint32_t dev_id) {
 		return device_list[dev_id];
+	}
+
+	connection& get_connection() {
+		return serial_connection;
 	}
 
 	std::map<int, device> device_list;
 
 private:
+	connection serial_connection;
 	bool initialize_flag;
 	const std::string compose_command(const cmd::code& command) const;
 	void initialize_version();

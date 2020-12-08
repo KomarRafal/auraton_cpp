@@ -3,6 +3,7 @@ project(auraton_test)
 include(FetchContent)
 
 set(GTEST_VERSION 1.10.0 CACHE STRING "Google test version")
+set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 FetchContent_Declare(googletest
@@ -18,6 +19,7 @@ endif()
 FetchContent_MakeAvailable(googletest)
 
 set(AURATON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../lib/auralib)
+set(STUBS ${CMAKE_CURRENT_SOURCE_DIR}/stubs)
 
 add_library(parserlib)
 
@@ -44,6 +46,21 @@ target_include_directories(devicelib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
+add_library(connectionlib)
+
+target_sources(connectionlib
+	PRIVATE
+		${AURATON_SRC}/connection.cpp
+		${STUBS}/serialib_stub.cpp
+)
+
+target_include_directories(connectionlib
+	PUBLIC
+		${STUBS}/
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+target_link_libraries(connectionlib gmock parserlib)
+
 enable_testing()
 
 add_executable(parser_ut parser_ut.cpp)					  
@@ -54,14 +71,22 @@ add_test(
 )
 
 add_executable(device_ut device_ut.cpp)
-set_target_properties(device_ut PROPERTIES
-            CXX_STANDARD 17
-            CXX_EXTENSIONS OFF
-            CXX_STANDARD_REQUIRED ON
-            )
-            
 target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
+           
 add_test(
     NAME device_ut
     COMMAND device_ut
 )
+
+add_executable(connection_ut connection_ut.cpp)
+target_link_libraries(connection_ut gtest gtest_main connectionlib)
+add_test(
+    NAME connection_ut
+    COMMAND connection_ut
+)
+
+#set_target_properties(device_ut connectionlib PROPERTIES
+#            CXX_STANDARD 17
+#            CXX_EXTENSIONS OFF
+#            CXX_STANDARD_REQUIRED ON
+#            )

@@ -65,9 +65,11 @@ TEST_F(device_ut, clear)
 
 TEST_F(device_ut, simple_set_get_test)
 {
+	using setter_t = std::function<void(const std::string&)>;
+	using getter_t = std::function<std::string(void)>;
 	aura::device dev_uut{device_1};
 
-	std::vector<std::tuple<const std::string, std::function<void(const std::string&)>, std::function<std::string(void)>>> set_get {
+	std::vector<std::tuple<const std::string, setter_t, getter_t>> set_get {
 		{ "Lorem ipsum dolor",
 			[&](const std::string& value){ dev_uut.set_product_code(value); },
 			[&]()->std::string{ return dev_uut.get_product_code(); }

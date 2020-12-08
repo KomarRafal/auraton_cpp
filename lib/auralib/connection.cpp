@@ -1,10 +1,7 @@
 /*
  * connection.cpp
  */
-#include <memory>
-#include <chrono>
-#include <thread>
-
+#include <timeout.hpp>
 #include "connection.hpp"
 #include "parser.hpp"
 
@@ -27,14 +24,15 @@ bool connection::wait_for_read(uint32_t max_time_ms) {
 	for (auto iter = 0U; iter < iterations; iter++) {
 		if (serial_dev.available() > 0)
 			return true;
-		std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(WAIT_SLEEP_MS)));
+		Timeout::sleep_for_ms(WAIT_SLEEP_MS);
 	}
 	if (serial_dev.available() > 0)
 		return true;
 	else if (last_wait == 0)
 		return false;
 	else
-		std::this_thread::sleep_for(std::chrono::milliseconds(last_wait));
+		Timeout::sleep_for_ms(last_wait);
+
 	return (serial_dev.available() > 0);
 }
 
@@ -42,7 +40,11 @@ const std::string connection::send_command(const std::string& command, uint32_t 
 	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(max_buffer_length + 1);
 	serial_dev.flushReceiver();
 	serial_dev.writeBytes(command.c_str(), command.length());
-	serial_dev.readBytes(input_buffer.get(), max_buffer_length, 100, 0);
+	const auto bytes_count = serial_dev.readBytes(input_buffer.get(), max_buffer_length, 100, 0);
+	if (bytes_count <= 0)
+	{
+		return std::string("");
+	}
 	return std::string(input_buffer.get());
 }
 
@@ -54,7 +56,11 @@ bool connection::simple_command(const std::string& command) {
 bool connection::check_event(const std::string& event) {
 	const uint32_t buffer_length = event.length() + 10;
 	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(buffer_length);
-	serial_dev.readBytes(input_buffer.get(), buffer_length, 100, 0);
+	const auto bytes_count = serial_dev.readBytes(input_buffer.get(), buffer_length, 100, 0);
+	if (bytes_count <= 0)
+	{
+		return false;
+	}
 	const auto read_event = parser::parse(input_buffer.get(), event, false);
 	if (read_event.length() != event.length())
 		return false;

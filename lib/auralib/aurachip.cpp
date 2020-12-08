@@ -26,34 +26,34 @@ const std::string cmd::compose(const cmd::code& command) {
 }
 
 bool chip::test() {
-	return simple_command(cmd::compose(cmd::TEST));
+	return serial_connection.simple_command(cmd::compose(cmd::TEST));
 }
 
 void chip::initialize() {
-	auto device_str = send_command(cmd::compose(cmd::VERSION));
-	device_str.append(send_command(cmd::compose(cmd::ADDRESS)));
+	auto device_str = serial_connection.send_command(cmd::compose(cmd::VERSION));
+	device_str.append(serial_connection.send_command(cmd::compose(cmd::ADDRESS)));
 	device dev(device_str);
 	static_cast<device*>(this)->operator=(dev);
 	initialize_flag = true;
 }
 
 bool chip::link() {
-	const bool is_cmd_ok = simple_command(cmd::compose(cmd::LINK));
+	const bool is_cmd_ok = serial_connection.simple_command(cmd::compose(cmd::LINK));
 	if (!is_cmd_ok)
 		return false;
-	const bool is_event = wait_for_read(LINK_WAIT_MS);
+	const bool is_event = serial_connection.wait_for_read(LINK_WAIT_MS);
 	if (!is_event)
 		return false;
-	const bool is_event_ok = check_event(cmd::Get(cmd::EVENT_LINK));
+	const bool is_event_ok = serial_connection.check_event(cmd::Get(cmd::EVENT_LINK));
 	return is_event_ok;
 }
 
 bool chip::reset() {
-	return simple_command(cmd::compose(cmd::RESET));
+	return serial_connection.simple_command(cmd::compose(cmd::RESET));
 }
 
 int chip::update_device_list() {
-	const auto dev_list_str = send_command(cmd::compose(cmd::DEV_LIST));
+	const auto dev_list_str = serial_connection.send_command(cmd::compose(cmd::DEV_LIST));
 	const auto dev_list_parsed = parser::parse_device_list(dev_list_str);
 	device_list.clear();
 	for (auto dev_pair : dev_list_parsed) {

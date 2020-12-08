@@ -20,11 +20,14 @@ public:
 	bool simple_command(const std::string& command);
 	bool check_event(const std::string& event);
 	bool test_uart();
+	serialib& get_serial_dev() {
+		return serial_dev;
+	}
 
 private:
+	serialib serial_dev;
 	static const uint32_t MAX_BUFFER_LENGTH = 200;
 	static const uint32_t WAIT_SLEEP_MS = 100;
-	serialib serial_dev;
 	const std::string device_port;
 	const uint32_t baud_rate = 115200;
 };
