@@ -11,36 +11,11 @@
 #include <map>
 
 #include "connection.hpp"
+#include "command.hpp"
 #include "device.hpp"
 
 namespace aura
 {
-
-class cmd {
-public:
-	enum code {
-		TEST,
-		VERSION,
-		LINK,
-		EVENT_LINK,
-		ADDRESS,
-		DEV_LIST,
-		RESET,
-		LAST_CMD
-	};
-
-	static const std::string& Get(cmd::code command)
-	{
-		if (command > LAST_CMD)
-			command = LAST_CMD;
-		return command_map[command];
-	}
-
-	static const std::string compose(const cmd::code& command);
-
-private:
-	static std::map<const uint32_t, const std::string> command_map;
-};
 
 class chip :
 	public device {
@@ -58,6 +33,9 @@ public:
 	bool link();
 	static const uint32_t LINK_WAIT_MS = 32000;
 	bool reset();
+	static const uint16_t FACTORY_RESET_BUFFER_SIZE = 1500;
+	static const uint32_t FACTORY_RESET_WAIT_MS = 22000;
+	bool factory_reset();
 
 	bool is_initialize() const {
 		return initialize_flag;
@@ -77,7 +55,6 @@ public:
 private:
 	connection serial_connection;
 	bool initialize_flag;
-	const std::string compose_command(const cmd::code& command) const;
 	void initialize_version();
 	void initialize_address();
 

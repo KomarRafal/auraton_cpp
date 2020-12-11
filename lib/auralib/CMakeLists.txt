@@ -8,6 +8,7 @@ add_library(auralib)
 target_sources(auralib
 	PRIVATE
 		${CMAKE_CURRENT_LIST_DIR}/aurachip.cpp
+		${CMAKE_CURRENT_LIST_DIR}/command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/connection.cpp
 		${CMAKE_CURRENT_LIST_DIR}/device.cpp
 		${CMAKE_CURRENT_LIST_DIR}/parser.cpp

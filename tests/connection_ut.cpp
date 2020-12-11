@@ -153,7 +153,7 @@ TEST(connection_ut, check_event_ok)
 	EXPECT_TRUE(connection_uut.check_event(test_event));
 }
 
-TEST(connection_ut, check_event_fail_1)
+TEST(connection_ut, check_event_fail_wrong_token)
 {
 	const std::string device_port{"COM6"};
 	aura::connection connection_uut{device_port};
@@ -171,7 +171,7 @@ TEST(connection_ut, check_event_fail_1)
 	EXPECT_FALSE(connection_uut.check_event(test_event));
 }
 
-TEST(connection_ut, check_event_fail_2)
+TEST(connection_ut, check_event_fail_wrong_status)
 {
 	const std::string device_port{"COM6"};
 	aura::connection connection_uut{device_port};
@@ -189,3 +189,15 @@ TEST(connection_ut, check_event_fail_2)
 	EXPECT_FALSE(connection_uut.check_event(test_event));
 }
 
+TEST(connection_ut, check_event_fail_empty_buffer)
+{
+	const std::string device_port{"COM6"};
+	aura::connection connection_uut{device_port};
+	auto& serial_dev = connection_uut.get_serial_dev();
+	const std::string test_event{"EVENT_UT"};
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::Return(0));
+
+	EXPECT_FALSE(connection_uut.check_event(test_event));
+}

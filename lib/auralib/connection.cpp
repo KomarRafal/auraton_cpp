@@ -36,10 +36,13 @@ bool connection::wait_for_read(uint32_t max_time_ms) {
 	return (serial_dev.available() > 0);
 }
 
-const std::string connection::send_command(const std::string& command, uint8_t max_buffer_length) {
+const std::string connection::send_command(const std::string& command, uint16_t max_buffer_length, uint32_t wait_time_ms) {
 	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(max_buffer_length + 1);
 	serial_dev.flushReceiver();
 	serial_dev.writeBytes(command.c_str(), command.length());
+	if (wait_time_ms > 0) {
+		Timeout::sleep_for_ms(wait_time_ms);
+	}
 	const auto bytes_count = serial_dev.readBytes(input_buffer.get(), max_buffer_length, 100, 0);
 	if (bytes_count <= 0)
 	{

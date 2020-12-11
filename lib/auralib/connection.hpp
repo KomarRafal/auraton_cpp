@@ -16,7 +16,7 @@ public:
 	bool open();
 	void close();
 	bool wait_for_read(uint32_t max_time_ms = WAIT_SLEEP_MS);
-	const std::string send_command(const std::string& command, uint8_t max_buffer_length = MAX_BUFFER_LENGTH);
+	const std::string send_command(const std::string& command, uint16_t max_buffer_length = MAX_BUFFER_LENGTH, uint32_t wait_time_ms = 0);
 	bool simple_command(const std::string& command);
 	bool check_event(const std::string& event);
 	bool test_uart();
@@ -26,7 +26,7 @@ public:
 
 private:
 	serialib serial_dev;
-	static const uint8_t MAX_BUFFER_LENGTH = 200;
+	static const uint16_t MAX_BUFFER_LENGTH = 200;
 	static const uint32_t WAIT_SLEEP_MS = 100;
 	const std::string device_port;
 	const uint32_t baud_rate = 115200;
