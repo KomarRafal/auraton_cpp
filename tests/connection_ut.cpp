@@ -97,6 +97,10 @@ TEST(connection_ut, send_command_ok)
 	const std::string command{"COMMAND_UUT"};
 	const char receive_buffer[] = "Lorem ipsum";
 	const size_t buffer_size = sizeof(receive_buffer);
+	auto& timeout_instance = Timeout::get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(0);
 
 	EXPECT_CALL(serial_dev, flushReceiver())
 		.Times(1);
@@ -110,7 +114,37 @@ TEST(connection_ut, send_command_ok)
 				testing::Return(buffer_size))
 				);
 
-	auto response = connection_uut.send_command(command, buffer_size);
+	auto response = connection_uut.send_command(command, buffer_size, 0);
+	EXPECT_EQ(response, std::string(receive_buffer));
+}
+
+TEST(connection_ut, send_command_ok_timeout)
+{
+	const std::string device_port{"COM6"};
+	aura::connection connection_uut{device_port};
+	auto& serial_dev = connection_uut.get_serial_dev();
+	const std::string command{"COMMAND_UUT"};
+	const char receive_buffer[] = "Lorem ipsum";
+	const size_t buffer_size = sizeof(receive_buffer);
+	const uint32_t timeout = 125;
+	auto& timeout_instance = Timeout::get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(timeout))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(command.c_str(), command.length()))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, buffer_size, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(std::begin(receive_buffer), buffer_size),
+				testing::Return(buffer_size))
+				);
+
+	auto response = connection_uut.send_command(command, buffer_size, timeout);
 	EXPECT_EQ(response, std::string(receive_buffer));
 }
 
@@ -121,6 +155,10 @@ TEST(connection_ut, send_command_fail)
 	auto& serial_dev = connection_uut.get_serial_dev();
 	const std::string command{"COMMAND_UT"};
 	const uint8_t max_buffer_length{14};
+	auto& timeout_instance = Timeout::get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(0);
 
 	EXPECT_CALL(serial_dev, flushReceiver())
 		.Times(1);
@@ -131,7 +169,7 @@ TEST(connection_ut, send_command_fail)
 	EXPECT_CALL(serial_dev, readBytes(testing::_, max_buffer_length, testing::_, testing::_))
 		.WillOnce(testing::Return(0));
 
-	auto response = connection_uut.send_command(command, max_buffer_length);
+	auto response = connection_uut.send_command(command, max_buffer_length, 0);
 	EXPECT_TRUE(response.empty());
 }
 

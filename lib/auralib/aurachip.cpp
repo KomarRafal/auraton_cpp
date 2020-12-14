@@ -34,9 +34,18 @@ bool chip::link() {
 }
 
 int32_t chip::get_xtal_correction() {
-	const auto xtal_response = serial_connection.send_command(command::compose(command::XTAL_CORRECTION));
+	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
 	const auto xtal_value = parser::parse(xtal_response, parser::VALUE_TOKEN);
 	return std::stoi(xtal_value);
+}
+
+bool chip::set_xtal_correction(int32_t value) {
+	// TODO: there is a bug in aurachip:
+	//       missing a newline character after "OK".
+	//       There is : 0x4F 'O' 0x4B 'K' 0x0D '\r' 0xFF 'ÿ'
+	//       Should be: 0x4F 'O' 0x4B 'K' 0x0D '\r' 0x0A '\n'
+	//       Because of that function returns false even when it succeeds.
+	return serial_connection.simple_command(command::compose(command::SET_XTAL_CORRECTION, std::to_string(value)), 100);
 }
 
 bool chip::reset() {

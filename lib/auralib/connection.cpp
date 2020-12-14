@@ -51,8 +51,8 @@ const std::string connection::send_command(const std::string& command, uint16_t 
 	return std::string(input_buffer.get());
 }
 
-bool connection::simple_command(const std::string& command) {
-	const std::string result = send_command(command);
+bool connection::simple_command(const std::string& command, uint32_t wait_time_ms) {
+	const std::string result = send_command(command, MAX_BUFFER_LENGTH, wait_time_ms);
 	return parser::check_result(result);
 }
 

@@ -39,13 +39,34 @@ bool show_parred_devices(aura::chip& aurachip) {
 	return true;
 }
 
-bool show_xtal_correction(aura::chip& aurachip) {
+bool handle_xtal_correction(aura::chip& aurachip) {
 	if (!aurachip.get_connection().test_uart()) {
 		return false;
 	}
-	const auto xtal_value = aurachip.get_xtal_correction();
-	std::cout << "Cristal correction value: " << xtal_value << std::endl;
-	return true;
+	bool status = false;
+	const uint16_t max_buffer_size = 100;
+	char read_buffer[max_buffer_size];
+	std::cout << "New crystal correction value (leave empty for reading):" << std::endl;
+	std::cin.get(read_buffer, max_buffer_size);
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	const std::string string_buffer{read_buffer};
+	if (string_buffer.empty()) {
+		const auto xtal_value = aurachip.get_xtal_correction();
+		std::cout << "Crystal correction value: " << xtal_value << std::endl;
+	}
+	else {
+		try {
+			const auto xtal_correction = std::stoi(string_buffer);
+			std::cout << "setting value: " << xtal_correction << std::endl;
+			status = aurachip.set_xtal_correction(xtal_correction);
+		}
+		catch (const std::invalid_argument&) {
+			std::cout << "Can't convert: " << string_buffer.c_str() << " to number." << std::endl;
+
+		}
+	}
+	return status;
 }
 
 using menu_t = std::tuple<const std::string, std::function<bool(aura::chip&)>>;
@@ -54,11 +75,12 @@ std::map<char, menu_t> menu = {
 		{'c', { "close serial", [](aura::chip& aurachip)->bool { aurachip.get_connection().close(); return true; } } },
 		{'u', { "test serial connection", [](aura::chip& aurachip)->bool { return aurachip.get_connection().test_uart(); } } },
 		{'t', { "test radio connection", [](aura::chip& aurachip)->bool { return aurachip.test(); } } },
+		{'i', { "show aurachip info", [](aura::chip& aurachip)->bool { return show_device_info(aurachip); } } },
 		{'r', { "reset", [](aura::chip& aurachip)->bool { return aurachip.reset(); } } },
 		{'f', { "factory reset", [](aura::chip& aurachip)->bool { return aurachip.factory_reset(); } } },
 		{'l', { "start linking", [](aura::chip& aurachip)->bool { return aurachip.link(); } } },
 		{'d', { "show parred devices", [](aura::chip& aurachip)->bool { return show_parred_devices(aurachip); } } },
-		{'x', { "read crystal correction", [](aura::chip& aurachip)->bool { return show_xtal_correction(aurachip); } } },
+		{'x', { "read/set crystal correction", [](aura::chip& aurachip)->bool { return handle_xtal_correction(aurachip); } } },
 		{'q', { "quit", [](aura::chip&)->bool { exit(0); return true; } } },
 };
 
@@ -77,7 +99,6 @@ int main(int argc, char **argv) {
 		const char option = std::cin.get();
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << option << std::endl;
 		if (menu.find(option) != menu.end()) {
 			const auto description = std::get<0>(menu[option]);
 			const auto action = std::get<1>(menu[option]);
