@@ -23,6 +23,7 @@ public:
 		FACTORY_RESET,
 		RESET,
 		EVENT_LINK,
+		XTAL_CORRECTION,
 		LAST_CMD
 	};
 

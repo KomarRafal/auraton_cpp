@@ -19,6 +19,7 @@ TEST(cmd_ut, compose)
 			{ command::ADDRESS, "AT+ADDR?" },
 			{ command::DEV_LIST, "AT+LIST?" },
 			{ command::FACTORY_RESET, "AT+MSTRST" },
+			{ command::XTAL_CORRECTION, "AT+CRYSTALCORRECTION?" },
 			{ command::RESET, "AT+RST" },
 	};
 

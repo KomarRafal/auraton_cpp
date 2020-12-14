@@ -39,6 +39,15 @@ bool show_parred_devices(aura::chip& aurachip) {
 	return true;
 }
 
+bool show_xtal_correction(aura::chip& aurachip) {
+	if (!aurachip.get_connection().test_uart()) {
+		return false;
+	}
+	const auto xtal_value = aurachip.get_xtal_correction();
+	std::cout << "Cristal correction value: " << xtal_value << std::endl;
+	return true;
+}
+
 using menu_t = std::tuple<const std::string, std::function<bool(aura::chip&)>>;
 std::map<char, menu_t> menu = {
 		{'o', { "open serial", [](aura::chip& aurachip) { return aurachip.get_connection().open(); } } },
@@ -49,6 +58,7 @@ std::map<char, menu_t> menu = {
 		{'f', { "factory reset", [](aura::chip& aurachip)->bool { return aurachip.factory_reset(); } } },
 		{'l', { "start linking", [](aura::chip& aurachip)->bool { return aurachip.link(); } } },
 		{'d', { "show parred devices", [](aura::chip& aurachip)->bool { return show_parred_devices(aurachip); } } },
+		{'x', { "read crystal correction", [](aura::chip& aurachip)->bool { return show_xtal_correction(aurachip); } } },
 		{'q', { "quit", [](aura::chip&)->bool { exit(0); return true; } } },
 };
 

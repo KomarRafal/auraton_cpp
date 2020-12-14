@@ -10,6 +10,7 @@ namespace aura
 const std::string parser::OK_TOKEN = "OK";
 const std::string parser::DEVICE_TOKEN = "ID: ";
 const std::string parser::EOL = "\r\n";
+const std::string parser::VALUE_TOKEN = "VALUE: ";
 
 std::string parser::parse(const std::string& input_str, const std::string& token, bool omit_token) {
 	auto begin = input_str.find(token);

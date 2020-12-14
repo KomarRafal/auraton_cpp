@@ -31,6 +31,7 @@ public:
 	bool test();
 	void initialize();
 	bool link();
+	int32_t get_xtal_correction();
 	static const uint32_t LINK_WAIT_MS = 32000;
 	bool reset();
 	static const uint16_t FACTORY_RESET_BUFFER_SIZE = 1500;

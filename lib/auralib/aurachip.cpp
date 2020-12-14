@@ -33,6 +33,12 @@ bool chip::link() {
 	return is_event_ok;
 }
 
+int32_t chip::get_xtal_correction() {
+	const auto xtal_response = serial_connection.send_command(command::compose(command::XTAL_CORRECTION));
+	const auto xtal_value = parser::parse(xtal_response, parser::VALUE_TOKEN);
+	return std::stoi(xtal_value);
+}
+
 bool chip::reset() {
 	return serial_connection.simple_command(command::compose(command::RESET));
 }
