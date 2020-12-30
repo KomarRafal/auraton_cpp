@@ -7,6 +7,9 @@
 
 #include <cstdint>
 #include <string>
+#include <map>
+
+#include "parameter.hpp"
 
 namespace aura
 {
@@ -24,7 +27,8 @@ public:
 		 fw_version(),
 		 hw_version(),
 		 manufacture_code(),
-		 address(0)
+		 address(0),
+		 parameter_map()
 	{ }
 
 	explicit device(const std::string& address_str);
@@ -92,12 +96,27 @@ public:
 		}
 	}
 
+	using parameters_t = std::map<uint32_t, parameter>;
+	const parameter& get_paramater(uint32_t code) {
+		return parameter_map.find(code)->second;
+	}
+
+	const parameters_t& get_parameters() {
+		return parameter_map;
+	}
+
+	void add_parameter(const parameter& param) {
+		parameter_map.insert(parameters_t::value_type(param.get_code(), param));
+	}
+
+	static const uint16_t MAX_PARAMETERS = 40;
 private:
 	std::string product_code;
 	std::string fw_version;
 	std::string hw_version;
 	std::string manufacture_code;
 	int32_t address;
+	parameters_t parameter_map;
 };
 
 }

@@ -16,6 +16,7 @@ std::map<const command::code, const std::string> command::command_map = {
 		{ command::FACTORY_RESET, "MSTRST" },
 		{ command::RESET, "RST" },
 		{ command::EVENT_LINK, "EVENT_LINK" },
+		{ command::GET_DEV_OPTION, "GETDEVOPTION" },
 		{ command::GET_XTAL_CORRECTION, "CRYSTALCORRECTION?" },
 		{ command::SET_XTAL_CORRECTION, "CRYSTALCORRECTION" },
 		{ command::LAST_CMD, "" }

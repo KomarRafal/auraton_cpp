@@ -31,6 +31,7 @@ public:
 	bool test();
 	void initialize();
 	bool link();
+	bool get_dev_option(int32_t dev_id);
 	int32_t get_xtal_correction();
 	bool set_xtal_correction(int32_t value);
 	static const uint32_t LINK_WAIT_MS = 32000;

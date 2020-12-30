@@ -33,6 +33,22 @@ bool chip::link() {
 	return is_event_ok;
 }
 
+bool chip::get_dev_option(int32_t dev_id) {
+	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, std::to_string(dev_id));
+	const auto get_dev_response = serial_connection.send_command(get_dev_option_cmd, device::MAX_PARAMETERS * parameter::MAX_BYTES);
+	const auto is_response_ok = parser::check_result(get_dev_response.substr(0, parser::OK_TOKEN.length() + parser::EOL.length()));
+	if (!is_response_ok) {
+		return false;
+	}
+	const auto dev_list = parser::parse_device_list(get_dev_response);
+	const auto is_dev_id = (dev_list.count(dev_id) == 1);
+	if (!is_dev_id) {
+		return false;
+	}
+
+	return true;
+}
+
 int32_t chip::get_xtal_correction() {
 	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
 	const auto xtal_value = parser::parse(xtal_response, parser::VALUE_TOKEN);
