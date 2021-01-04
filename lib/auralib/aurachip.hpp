@@ -45,8 +45,8 @@ public:
 	}
 
 	int update_device_list();
-	const device& get_device(uint32_t dev_id) {
-		return device_list[dev_id];
+	const device& get_device(uint32_t dev_id) const {
+		return device_list.find(dev_id)->second;
 	}
 
 	connection& get_connection() {

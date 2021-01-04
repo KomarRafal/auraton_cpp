@@ -57,7 +57,7 @@ bool show_dev_parameters(aura::chip& aurachip) {
 			std::cout << "Getting device options for dev: " << dev_id << std::endl;
 			status = aurachip.get_dev_parameters(dev_id);
 			if (status) {
-				// For C++17 structured bindings can be use:
+				// For C++17 structured bindings can be used:
 				// for (const auto& [code, parameter] : aurachip.get_device(dev_id).get_parameters())
 				for (const auto& parameter : aurachip.get_device(dev_id).get_parameters()) {
 					std::cout << "------------------\n" ;

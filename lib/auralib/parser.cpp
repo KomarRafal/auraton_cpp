@@ -20,10 +20,12 @@ const std::string parser::VALUE_TOKEN = "VALUE: ";
 
 std::string parser::parse(const std::string& input_str, const std::string& token, bool omit_token) {
 	auto begin = input_str.find(token);
-	if (begin == std::string::npos)
-		return "";
-	if (omit_token)
+	if (begin == std::string::npos) {
+		return {};
+	}
+	if (omit_token) {
 		begin += token.length();
+	}
 	const auto end = input_str.find(EOL, begin);
 	return input_str.substr(begin, end - begin);
 }
@@ -67,12 +69,12 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 			{ parser::VALUE_TOKEN, [](auto& param, auto value) { param.set_value(value); }  },
 	};
 
-	while (1) {
+	while (true) {
 		auto begin = input_str.find(CODE_TOKEN);
 		if (begin == std::string::npos) {
 			return false;
 		}
-		auto is_code_token_corrupted = (begin > 0) && (input_str[begin - 1] != '\n');
+		auto is_code_token_corrupted = ( (begin > 0) && (input_str[begin - 1] != '\n') );
 		const auto code_end = input_str.find(EOL, begin);
 		begin += CODE_TOKEN.length();
 		const auto dev_code_str = input_str.substr(begin, code_end - begin);
@@ -103,4 +105,5 @@ bool parser::check_result(const std::string& input_str) {
 	const std::string status = parse(input_str, OK_TOKEN, false);
 	return (status.length() == OK_TOKEN.length());
 }
+
 }

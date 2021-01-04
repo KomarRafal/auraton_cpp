@@ -24,11 +24,13 @@ void chip::initialize() {
 
 bool chip::link() {
 	const bool is_cmd_ok = serial_connection.simple_command(command::compose(command::LINK));
-	if (!is_cmd_ok)
+	if (!is_cmd_ok) {
 		return false;
+	}
 	const bool is_event = serial_connection.wait_for_read(LINK_WAIT_MS);
-	if (!is_event)
+	if (!is_event) {
 		return false;
+	}
 	const bool is_event_ok = serial_connection.check_event(command::Get(command::EVENT_LINK));
 	return is_event_ok;
 }
@@ -49,7 +51,6 @@ bool chip::get_dev_parameters(int32_t dev_id) {
 	if (!is_device_on_list) {
 		return false;
 	}
-
 	parameter read_parameter{0};
 	while (parser::get_next_parameter(get_dev_response, read_parameter)) {
 		my_dev.add_parameter(read_parameter);

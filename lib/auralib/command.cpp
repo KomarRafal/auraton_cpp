@@ -26,7 +26,7 @@ const std::string command::compose(const command::code& command_code, const std:
 	if (command_code >= command::code::LAST_CMD) {
 		return std::string();
 	}
-	std::string composed_command("AT+");
+	std::string composed_command{"AT+"};
 	composed_command.append(Get(command_code));
 	if (!attributes.empty()) {
 		composed_command.append("=");
