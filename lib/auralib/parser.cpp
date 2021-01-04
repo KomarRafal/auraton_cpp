@@ -67,31 +67,36 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 			{ parser::VALUE_TOKEN, [](auto& param, auto value) { param.set_value(value); }  },
 	};
 
-	auto begin = input_str.find(CODE_TOKEN);
-	if (begin == std::string::npos) {
-		return false;
-	}
-	const auto code_end = input_str.find(EOL, begin);
-	begin += CODE_TOKEN.length();
-	const auto dev_code_str = input_str.substr(begin, code_end - begin);
-	if (dev_code_str.empty()) {
-		return false;
-	}
-	auto code = std::stoul(dev_code_str);
-	parameter local_param{code};
-	const auto next_parameter = input_str.find(CODE_TOKEN, code_end);
-	const auto parameter_str = input_str.substr(code_end, next_parameter);
-	for (const auto& info : parameter_info) {
-		const auto value_str = parser::parse(parameter_str, info.first);
-		if (value_str.empty()) {
+	while (1) {
+		auto begin = input_str.find(CODE_TOKEN);
+		if (begin == std::string::npos) {
+			return false;
+		}
+		auto is_code_token_corrupted = (begin > 0) && (input_str[begin - 1] != '\n');
+		const auto code_end = input_str.find(EOL, begin);
+		begin += CODE_TOKEN.length();
+		const auto dev_code_str = input_str.substr(begin, code_end - begin);
+		is_code_token_corrupted |= dev_code_str.empty();
+		if (is_code_token_corrupted) {
+			input_str.erase(0, code_end);
 			continue;
 		}
-		const auto value = std::stoul(value_str);
-		info.second(local_param, value);
+		auto code = std::stoul(dev_code_str);
+		parameter local_param{code};
+		const auto next_parameter = input_str.find(CODE_TOKEN, code_end);
+		const auto parameter_str = input_str.substr(code_end, next_parameter);
+		for (const auto& info : parameter_info) {
+			const auto value_str = parser::parse(parameter_str, info.first);
+			if (value_str.empty()) {
+				continue;
+			}
+			const auto value = std::stoul(value_str);
+			info.second(local_param, value);
+		}
+		input_str.erase(0, next_parameter);
+		read_parameter = local_param;
+		return true;
 	}
-	input_str.erase(0, next_parameter);
-	read_parameter = local_param;
-	return true;
 }
 
 bool parser::check_result(const std::string& input_str) {

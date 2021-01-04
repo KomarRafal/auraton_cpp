@@ -190,9 +190,11 @@ TEST(parser_ut, parse_get_next_parameter_test_ok)
 TEST(parser_ut, parse_get_next_parameter_test_not_all_ok)
 {
 	std::string test_string{
+		"PCODE: 34\r\n"
 		"CODE: 32\r\n"
 		"CHANNEL: 0\r\n"
 		"VALUE: 178\r\n"
+		"CODE: \r\n"
 		"CODE: 33\r\n"
 		"FLAG OWN: 0\r\n"
 		"FLAG WRITEABLE: 1\r\n"
@@ -215,6 +217,11 @@ TEST(parser_ut, parse_get_next_parameter_test_not_all_ok)
 TEST(parser_ut, parse_get_next_parameter_test_code_fail)
 {
 	std::string test_string{
+		"PCODE: 34\r\n"
+		"CHANNEL: 0\r\n"
+		"FLAG OWN: 0\r\n"
+		"FLAG WRITEABLE: 1\r\n"
+		"VALUE: 178\r\n"
 		"COD: 32\r\n"
 		"CHANNEL: 0\r\n"
 		"FLAG OWN: 0\r\n"

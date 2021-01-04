@@ -33,19 +33,27 @@ bool chip::link() {
 	return is_event_ok;
 }
 
-bool chip::get_dev_option(int32_t dev_id) {
+// TODO:
+// add UT
+bool chip::get_dev_parameters(int32_t dev_id) {
 	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, std::to_string(dev_id));
-	const auto get_dev_response = serial_connection.send_command(get_dev_option_cmd, device::MAX_PARAMETERS * parameter::MAX_BYTES);
-	const auto is_response_ok = parser::check_result(get_dev_response.substr(0, parser::OK_TOKEN.length() + parser::EOL.length()));
-	if (!is_response_ok) {
-		return false;
-	}
+	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd, device::MAX_PARAMETERS * parameter::MAX_BYTES);
 	const auto dev_list = parser::parse_device_list(get_dev_response);
 	const auto is_dev_id = (dev_list.count(dev_id) == 1);
 	if (!is_dev_id) {
 		return false;
 	}
+	const device get_dev{dev_list.find(dev_id)->second};
+	auto &my_dev = device_list.find(dev_id)->second;
+	const bool is_device_on_list = (my_dev == get_dev);
+	if (!is_device_on_list) {
+		return false;
+	}
 
+	parameter read_parameter{0};
+	while (parser::get_next_parameter(get_dev_response, read_parameter)) {
+		my_dev.add_parameter(read_parameter);
+	}
 	return true;
 }
 

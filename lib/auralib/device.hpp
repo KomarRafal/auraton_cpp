@@ -5,11 +5,11 @@
 #ifndef DEVICE_HPP_
 #define DEVICE_HPP_
 
+#include <parameter.hpp>
 #include <cstdint>
 #include <string>
 #include <map>
 
-#include "parameter.hpp"
 
 namespace aura
 {
@@ -33,6 +33,16 @@ public:
 
 	explicit device(const std::string& address_str);
 
+	bool operator==(device const& dev) const {
+		return (
+				(dev.product_code == product_code) &&
+				(dev.fw_version == fw_version) &&
+				(dev.hw_version == hw_version) &&
+				(dev.manufacture_code == manufacture_code) &&
+				(dev.address == address)
+				);
+	}
+
 	void clear() {
 		product_code.clear();
 		fw_version.clear();
@@ -41,23 +51,23 @@ public:
 		address = 0;
 	}
 
-	std::string get_product_code() {
+	const std::string& get_product_code() const {
 		return product_code;
 	}
 
-	std::string get_fw_version() {
+	const std::string& get_fw_version() const {
 		return fw_version;
 	}
 
-	std::string get_hw_version() {
+	const std::string& get_hw_version() const {
 		return hw_version;
 	}
 
-	std::string get_manufacture_code() {
+	const std::string& get_manufacture_code() const {
 		return manufacture_code;
 	}
 
-	int32_t get_address() {
+	int32_t get_address() const {
 		return address;
 	}
 
@@ -97,11 +107,11 @@ public:
 	}
 
 	using parameters_t = std::map<uint32_t, parameter>;
-	const parameter& get_paramater(uint32_t code) {
+	const parameter& get_paramater(uint32_t code) const {
 		return parameter_map.find(code)->second;
 	}
 
-	const parameters_t& get_parameters() {
+	const parameters_t& get_parameters() const {
 		return parameter_map;
 	}
 

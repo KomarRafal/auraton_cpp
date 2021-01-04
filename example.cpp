@@ -18,7 +18,7 @@ bool show_device_info(aura::chip& aurachip) {
 	std::cout << "fw_version: " << aurachip.get_fw_version() << std::endl;
 	std::cout << "hw_version: " << aurachip.get_hw_version() << std::endl;
 	std::cout << "manufacture_code: " << aurachip.get_manufacture_code() << std::endl;
-	std::cout << "address: 0x" << std::hex << aurachip.get_address() << std::endl;
+	std::cout << "address: 0x" << std::hex << aurachip.get_address() << std::dec << std::endl;
 	return true;
 }
 
@@ -34,9 +34,49 @@ bool show_parred_devices(aura::chip& aurachip) {
 		std::cout << "fw_version: " << dev.second.get_fw_version() << std::endl;
 		std::cout << "hw_version: " << dev.second.get_hw_version() << std::endl;
 		std::cout << "manufacture_code: " << dev.second.get_manufacture_code() << std::endl;
-		std::cout << "address: 0x" << std::hex << dev.second.get_address() << std::endl;
+		std::cout << "address: 0x" << std::hex << dev.second.get_address() << std::dec << std::endl;
 	}
 	return true;
+}
+
+bool show_dev_parameters(aura::chip& aurachip) {
+	if (!aurachip.get_connection().test_uart()) {
+		return false;
+	}
+	bool status = false;
+	const uint16_t max_buffer_size = 10;
+	char read_buffer[max_buffer_size];
+	std::cout << "Device id:" << std::endl;
+	std::cin.get(read_buffer, max_buffer_size);
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	const std::string string_buffer{read_buffer};
+	if (!string_buffer.empty()) {
+		try {
+			const auto dev_id = std::stoi(string_buffer);
+			std::cout << "Getting device options for dev: " << dev_id << std::endl;
+			status = aurachip.get_dev_parameters(dev_id);
+			if (status) {
+				// For C++17 structured bindings can be use:
+				// for (const auto& [code, parameter] : aurachip.get_device(dev_id).get_parameters())
+				for (const auto& parameter : aurachip.get_device(dev_id).get_parameters()) {
+					std::cout << "------------------\n" ;
+					std::cout << "CODE: " << parameter.first << std::endl;
+					std::cout << "  CHANNEL: " << parameter.second.get_channel() << std::endl;
+					std::cout << "  FLAG OWN: " << parameter.second.get_flag_own() << std::endl;
+					std::cout << "  FLAG WRITEABLE: " << parameter.second.get_flag_writable() << std::endl;
+					std::cout << "  VALUE: " << parameter.second.get_value() << std::endl;
+				}
+				std::cout << "------------------\n" ;
+				std::cout << "Found " << aurachip.get_device(dev_id).get_parameters().size() << " parameters." << std::endl;
+
+			}
+		}
+		catch (const std::invalid_argument&) {
+			std::cout << "Can't convert: " << string_buffer.c_str() << " to number." << std::endl;
+		}
+	}
+	return status;
 }
 
 bool handle_xtal_correction(aura::chip& aurachip) {
@@ -80,6 +120,7 @@ std::map<char, menu_t> menu = {
 		{'f', { "factory reset", [](aura::chip& aurachip)->bool { return aurachip.factory_reset(); } } },
 		{'l', { "start linking", [](aura::chip& aurachip)->bool { return aurachip.link(); } } },
 		{'d', { "show parred devices", [](aura::chip& aurachip)->bool { return show_parred_devices(aurachip); } } },
+		{'p', { "show device options", [](aura::chip& aurachip)->bool { return show_dev_parameters(aurachip); } } },
 		{'x', { "read/set crystal correction", [](aura::chip& aurachip)->bool { return handle_xtal_correction(aurachip); } } },
 		{'q', { "quit", [](aura::chip&)->bool { exit(0); return true; } } },
 };
