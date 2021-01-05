@@ -550,3 +550,68 @@ TEST(aurachip_ut, get_dev_parameters_wrong_device)
 				);
 	EXPECT_FALSE(aura_chip_uut.get_dev_parameters(dev_id));
 }
+
+TEST(aurachip_ut, update_device_list_ok)
+{
+	const std::string correct_answer = {
+			"ID: 1\r\n"
+			"ADDRESS: 90FC4F9B\r\n"
+			"PCODE: 300d\r\n"
+			"FVER: 1.1\r\n"
+			"HVER: 7\r\n"
+			"MANCODE: 40\r\n"
+			"ID: 20\r\n"
+			"ADDRESS: 456223DA\r\n"
+			"PCODE: 3005\r\n"
+			"FVER: 1.5\r\n"
+			"HVER: 1\r\n"
+			"MANCODE: 30\r\n"
+	};
+
+	const std::string device_1 = {
+			"ID: 1\r\n"
+			"ADDRESS: 90FC4F9B\r\n"
+			"PCODE: 300d\r\n"
+			"FVER: 1.1\r\n"
+			"HVER: 7\r\n"
+			"MANCODE: 40\r\n"
+	};
+	const std::string device_2 = {
+			"ID: 20\r\n"
+			"ADDRESS: 456223DA\r\n"
+			"PCODE: 3005\r\n"
+			"FVER: 1.5\r\n"
+			"HVER: 1\r\n"
+			"MANCODE: 30\r\n"
+	};
+
+	const std::map<uint32_t, aura::device> test_devices = {
+			{ 1, aura::device{ device_1 } },
+			{ 20, aura::device{ device_2 } }
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	auto& timeout_instance = Timeout::get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				);
+
+	EXPECT_EQ(aura_chip_uut.update_device_list(), test_devices.size());
+	for (const auto& device : test_devices) {
+		EXPECT_EQ(aura_chip_uut.get_device(device.first), device.second);
+	}
+}

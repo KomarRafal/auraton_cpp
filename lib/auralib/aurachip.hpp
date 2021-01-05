@@ -45,6 +45,7 @@ public:
 	}
 
 	int update_device_list();
+
 	const device& get_device(uint32_t dev_id) const {
 		return device_list.find(dev_id)->second;
 	}
@@ -57,7 +58,7 @@ public:
 		return serial_connection;
 	}
 
-	std::map<int, device> device_list;
+	std::map<uint32_t, device> device_list;
 
 private:
 	connection serial_connection;
