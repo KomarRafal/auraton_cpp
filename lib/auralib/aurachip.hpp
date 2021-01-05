@@ -49,6 +49,10 @@ public:
 		return device_list.find(dev_id)->second;
 	}
 
+	device& get_device(uint32_t dev_id) {
+		return device_list.find(dev_id)->second;
+	}
+
 	connection& get_connection() {
 		return serial_connection;
 	}

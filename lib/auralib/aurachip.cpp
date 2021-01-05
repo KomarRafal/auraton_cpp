@@ -35,8 +35,6 @@ bool chip::link() {
 	return is_event_ok;
 }
 
-// TODO:
-// add UT
 bool chip::get_dev_parameters(int32_t dev_id) {
 	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, std::to_string(dev_id));
 	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd, device::MAX_PARAMETERS * parameter::MAX_BYTES);
@@ -46,7 +44,11 @@ bool chip::get_dev_parameters(int32_t dev_id) {
 		return false;
 	}
 	const device get_dev{dev_list.find(dev_id)->second};
-	auto &my_dev = device_list.find(dev_id)->second;
+	const auto device_element = device_list.find(dev_id);
+	if (device_element == device_list.end()) {
+		return false;
+	}
+	auto& my_dev = device_element->second;
 	const bool is_device_on_list = (my_dev == get_dev);
 	if (!is_device_on_list) {
 		return false;

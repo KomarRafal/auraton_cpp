@@ -107,7 +107,7 @@ public:
 	}
 
 	using parameters_t = std::map<uint32_t, parameter>;
-	const parameter& get_paramater(uint32_t code) const {
+	const parameter& get_parameter(uint32_t code) const {
 		return parameter_map.find(code)->second;
 	}
 
