@@ -24,13 +24,40 @@ void chip::initialize() {
 
 bool chip::link() {
 	const bool is_cmd_ok = serial_connection.simple_command(command::compose(command::LINK));
-	if (!is_cmd_ok)
+	if (!is_cmd_ok) {
 		return false;
+	}
 	const bool is_event = serial_connection.wait_for_read(LINK_WAIT_MS);
-	if (!is_event)
+	if (!is_event) {
 		return false;
+	}
 	const bool is_event_ok = serial_connection.check_event(command::Get(command::EVENT_LINK));
 	return is_event_ok;
+}
+
+bool chip::get_dev_parameters(int32_t dev_id) {
+	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, std::to_string(dev_id));
+	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd, device::MAX_PARAMETERS * parameter::MAX_BYTES);
+	const auto dev_list = parser::parse_device_list(get_dev_response);
+	const auto is_dev_id = (dev_list.count(dev_id) == 1);
+	if (!is_dev_id) {
+		return false;
+	}
+	const device get_dev{dev_list.find(dev_id)->second};
+	const auto device_element = device_list.find(dev_id);
+	if (device_element == device_list.end()) {
+		return false;
+	}
+	auto& my_dev = device_element->second;
+	const bool is_device_on_list = (my_dev == get_dev);
+	if (!is_device_on_list) {
+		return false;
+	}
+	parameter read_parameter{0};
+	while (parser::get_next_parameter(get_dev_response, read_parameter)) {
+		my_dev.add_parameter(read_parameter);
+	}
+	return true;
 }
 
 int32_t chip::get_xtal_correction() {
