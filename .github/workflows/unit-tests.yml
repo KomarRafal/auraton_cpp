@@ -35,9 +35,8 @@ jobs:
     - name: Generate
       working-directory: ${{github.workspace}}/$BUILD_FOLDER
       shell: bash
-      run: |
-        pwd
-        cmake -G Ninja --config $BUILD_TYPE ${{github.workspace}}
+      run: pwd
+#         cmake -G Ninja --config $BUILD_TYPE ${{github.workspace}}
 
     - name: Build
       working-directory: ${{github.workspace}}/$BUILD_FOLDER
