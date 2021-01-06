@@ -41,8 +41,14 @@ jobs:
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
         ninja
-      
+        
+    - name: Dupa
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja -t deps
+        ninja help
+        
     - name: Test
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ninja help
+        ninja test
