@@ -23,7 +23,7 @@ jobs:
       uses: textbook/git-checkout-submodule-action@master
       with:
         remote: true
-    - name: Checkout Ninja
+    - name: Checkout ninja
       uses: seanmiddleditch/gha-setup-ninja@master
 
     - name: Create Build Environment
@@ -44,7 +44,7 @@ jobs:
     - name: Generate
       working-directory: ${{github.workspace}}/build
       shell: bash
-      run: cmake -G Ninja --config $BUILD_TYPE ..
+      run: cmake -G ninja --config $BUILD_TYPE ..
 
     - name: Build
       working-directory: ${{github.workspace}}/build
