@@ -62,6 +62,7 @@ TEST(connection_ut, wait_for_read_true)
 		.Times(3);
 
 	EXPECT_TRUE(connection_uut.wait_for_read(max_time_ms));
+	EXPECT_TRUE(testing::Mock::VerifyAndClearExpectations(&timeout_instance));
 }
 
 TEST(connection_ut, wait_for_read_false)
