@@ -7,6 +7,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  TESTS_SOURCE_FOLDER: ${{github.workspace}}/tests
   BUILD_FOLDER: build_ninja  
   
 jobs:
@@ -38,7 +39,7 @@ jobs:
     - name: Generate
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        cmake -G Ninja --config $BUILD_TYPE ${{github.workspace}}
+        cmake -G Ninja --config $BUILD_TYPE $TESTS_SOURCE_FOLDER
 
     - name: Build
       run: |
@@ -53,4 +54,4 @@ jobs:
     - name: Test
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ctest
+        ninja test
