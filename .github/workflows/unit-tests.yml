@@ -51,10 +51,10 @@ jobs:
 #         cd ${{github.workspace}}/$BUILD_FOLDER
 #         ninja test
 
-    - name: Test_auraton
+    - name: aurachip_ut
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ./auraton_ut
+        ./aurachip_ut
     - name: Test_connection
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
