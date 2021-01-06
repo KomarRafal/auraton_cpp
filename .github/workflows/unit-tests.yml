@@ -46,15 +46,10 @@ jobs:
         cd ${{github.workspace}}/$BUILD_FOLDER
         ninja
         
-    - name: Dupa
-      run: |
-        cd ${{github.workspace}}/$BUILD_FOLDER
-        ls -la
-        
-    - name: Test
-      run: |
-        cd ${{github.workspace}}/$BUILD_FOLDER
-        ninja test
+#     - name: Test
+#       run: |
+#         cd ${{github.workspace}}/$BUILD_FOLDER
+#         ninja test
         
     - name: Test_connection
       run: |
