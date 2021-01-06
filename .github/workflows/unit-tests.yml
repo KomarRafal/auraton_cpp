@@ -46,10 +46,10 @@ jobs:
         cd ${{github.workspace}}/$BUILD_FOLDER
         ninja
         
-#     - name: Test
-#       run: |
-#         cd ${{github.workspace}}/$BUILD_FOLDER
-#         ninja test
+    - name: Test
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja test
         
     - name: Test_connection
       run: |
