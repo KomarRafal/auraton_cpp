@@ -33,17 +33,16 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/$BUILD_FOLDER
       
     - name: Generate
-#       working-directory: ${{github.workspace}}/$BUILD_FOLDER
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
         cmake -G Ninja --config $BUILD_TYPE ${{github.workspace}}
 
     - name: Build
-      working-directory: ${{github.workspace}}/$BUILD_FOLDER
-      shell: bash
-      run: ninja
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja
       
     - name: Test
-      working-directory: ${{github.workspace}}/$BUILD_FOLDER
-      shell: bash
-      run: ninja test
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja test
