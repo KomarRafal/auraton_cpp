@@ -55,3 +55,8 @@ jobs:
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
         ninja test
+        
+    - name: Test_connection
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        connection_ut
