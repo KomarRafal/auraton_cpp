@@ -67,11 +67,6 @@ int32_t chip::get_xtal_correction() {
 }
 
 bool chip::set_xtal_correction(int32_t value) {
-	// TODO: there is a bug in aurachip:
-	//       missing a newline character after "OK".
-	//       There is : 0x4F 'O' 0x4B 'K' 0x0D '\r' 0xFF 'ÿ'
-	//       Should be: 0x4F 'O' 0x4B 'K' 0x0D '\r' 0x0A '\n'
-	//       Because of that function returns false even when it succeeds.
 	return serial_connection.simple_command(command::compose(command::SET_XTAL_CORRECTION, std::to_string(value)), 100);
 }
 
@@ -91,10 +86,7 @@ bool chip::factory_reset() {
 	// OK
 	//
 	// So let's check clearing progress first.
-	// TODO: there is a bug in aurachip:
-	//       missing a newline character after "100%".
-	//       After fix regex should be: "\\Clear:\\d+%(?=\r?\n|$)"
-	const std::regex clear_regex{"\\Clear:\\d+%(?=\r?\n|\r|$)"};
+	const std::regex clear_regex{"\\Clear:\\d+%(?=\r?\n|$)"};
 	const auto regex_begin = std::sregex_iterator(response.begin(), response.end(), clear_regex);
 	const auto regex_end = std::sregex_iterator();
 	const auto clear_log_count = std::distance(regex_begin, regex_end);
