@@ -54,4 +54,4 @@ jobs:
     - name: Test_connection
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        connection_ut
+        ./connection_ut
