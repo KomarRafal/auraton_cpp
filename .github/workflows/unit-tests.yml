@@ -45,10 +45,9 @@ jobs:
     - name: Dupa
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ninja -t deps
-        ninja help
+        ls -la
         
     - name: Test
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ninja test
+        ctest
