@@ -8,14 +8,11 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
   TESTS_SOURCE_FOLDER: ${{github.workspace}}/tests
+  SOURCE_FOLDER: ${{github.workspace}}
   BUILD_FOLDER: build_ninja  
   
 jobs:
   Auraton-Unit-Tests:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
 
     steps:
@@ -25,37 +22,51 @@ jobs:
       uses: textbook/git-checkout-submodule-action@master
       with:
         remote: true
-#     - name: Checkout Ninja
-#       uses: seanmiddleditch/gha-setup-ninja@master
-#     - name: Install gtest manually
-#       run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
     - name: Get latest CMake and ninja
       uses: lukka/get-cmake@latest
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
       # We'll use this as our working directory for all subsequent commands
-      run: cmake -E make_directory ${{github.workspace}}/$BUILD_FOLDER
-      
+      run: cmake -E make_directory ${{github.workspace}}/$BUILD_FOLDER  
     - name: Generate
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
         cmake -G Ninja --config $BUILD_TYPE $TESTS_SOURCE_FOLDER
-
     - name: Build
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
         ninja
-        
-#     - name: Test
-#       run: |
-#         cd ${{github.workspace}}/$BUILD_FOLDER
-#         ninja test
+    - name: Test
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja test
 
-    - name: aurachip_ut
+jobs:
+  Auraton-Test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout reposistory
+      uses: actions/checkout@v2
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+      with:
+        remote: true
+    - name: Get latest CMake and ninja
+      uses: lukka/get-cmake@latest
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/$BUILD_FOLDER  
+    - name: Generate
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ./aurachip_ut
-    - name: Test_connection
+        cmake -G Ninja --config $BUILD_TYPE $SOURCE_FOLDER
+    - name: Build
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        ./connection_ut
+        ninja
+    - name: Run
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        echo q | ./auraton

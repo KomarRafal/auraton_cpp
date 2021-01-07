@@ -50,7 +50,8 @@ TEST(connection_ut, wait_for_read_true)
 	const std::string device_port{"COM6"};
 	aura::connection connection_uut{device_port};
 	auto& serial_dev = connection_uut.get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(serial_dev, available())
 		.WillOnce(testing::Return(0))
@@ -62,7 +63,6 @@ TEST(connection_ut, wait_for_read_true)
 		.Times(3);
 
 	EXPECT_TRUE(connection_uut.wait_for_read(max_time_ms));
-	EXPECT_TRUE(testing::Mock::VerifyAndClearExpectations(&timeout_instance));
 }
 
 TEST(connection_ut, wait_for_read_false)
@@ -71,7 +71,8 @@ TEST(connection_ut, wait_for_read_false)
 	const std::string device_port{"COM6"};
 	aura::connection connection_uut{device_port};
 	auto& serial_dev = connection_uut.get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(serial_dev, available())
 		.WillRepeatedly(testing::Return(0));
@@ -128,7 +129,8 @@ TEST(connection_ut, send_command_ok_timeout)
 	const char receive_buffer[] = "Lorem ipsum";
 	const size_t buffer_size = sizeof(receive_buffer);
 	const uint32_t timeout = 125;
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(timeout))
 		.Times(1);
@@ -156,7 +158,8 @@ TEST(connection_ut, send_command_fail)
 	auto& serial_dev = connection_uut.get_serial_dev();
 	const std::string command{"COMMAND_UT"};
 	const uint8_t max_buffer_length{14};
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(0);

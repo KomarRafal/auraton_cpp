@@ -123,7 +123,8 @@ TEST(aurachip_ut, factory_reset_ok)
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(aura::chip::FACTORY_RESET_WAIT_MS))
 		.Times(1);
@@ -157,7 +158,8 @@ TEST(aurachip_ut, factory_reset_clear_failed)
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(aura::chip::FACTORY_RESET_WAIT_MS))
 		.Times(1);
@@ -342,7 +344,8 @@ TEST(aurachip_ut, get_dev_parameters_ok)
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -410,7 +413,8 @@ TEST(aurachip_ut, get_dev_parameters_failed_id)
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -515,7 +519,8 @@ TEST(aurachip_ut, get_dev_parameters_wrong_device)
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -593,7 +598,8 @@ TEST(aurachip_ut, update_device_list_ok)
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
-	auto& timeout_instance = Timeout::get_instance();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
