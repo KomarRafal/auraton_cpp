@@ -1,0 +1,67 @@
+name: Auraton-Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  TESTS_SOURCE_FOLDER: ${{github.workspace}}/tests
+  SOURCE_FOLDER: ${{github.workspace}}
+  BUILD_FOLDER: build_ninja  
+  
+jobs:
+  Auraton-Unit-Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout reposistory
+      uses: actions/checkout@v2
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+      with:
+        remote: true
+    - name: Get latest CMake and ninja
+      uses: lukka/get-cmake@latest
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{github.workspace}}/$BUILD_FOLDER  
+    - name: Generate
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        cmake -G Ninja --config $BUILD_TYPE $TESTS_SOURCE_FOLDER
+    - name: Build
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja
+    - name: Test
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja test
+        
+  Auraton-Test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout reposistory
+      uses: actions/checkout@v2
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+      with:
+        remote: true
+    - name: Get latest CMake and ninja
+      uses: lukka/get-cmake@latest
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{github.workspace}}/$BUILD_FOLDER  
+    - name: Generate
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        cmake -G Ninja --config $BUILD_TYPE $SOURCE_FOLDER
+    - name: Build
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        ninja
+    - name: Run
+      run: |
+        cd ${{github.workspace}}/$BUILD_FOLDER
+        echo q | ./auraton

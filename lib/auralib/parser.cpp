@@ -2,6 +2,7 @@
  * parser.cpp
  */
 #include <functional>
+#include <limits>
 
 #include "parser.hpp"
 
@@ -83,7 +84,12 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 			input_str.erase(0, code_end);
 			continue;
 		}
-		auto code = std::stoul(dev_code_str);
+		const auto code_long = std::stoul(dev_code_str);
+		if (code_long > std::numeric_limits<std::uint32_t>::max()) {
+			input_str.erase(0, code_end);
+			continue;
+		}
+		const auto code = static_cast<uint32_t>(code_long);
 		parameter local_param{code};
 		const auto next_parameter = input_str.find(CODE_TOKEN, code_end);
 		const auto parameter_str = input_str.substr(code_end, next_parameter);
