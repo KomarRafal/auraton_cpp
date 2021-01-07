@@ -105,6 +105,7 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 		read_parameter = local_param;
 		return true;
 	}
+#error GITHUB test
 }
 
 bool parser::check_result(const std::string& input_str) {
