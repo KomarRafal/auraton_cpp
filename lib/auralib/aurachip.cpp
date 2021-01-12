@@ -60,10 +60,17 @@ bool chip::get_dev_parameters(int32_t dev_id) {
 	return true;
 }
 
-int32_t chip::get_xtal_correction() {
+// std::optional could be better here for c++17
+bool chip::get_xtal_correction(int32_t& read_value) {
+	const std::regex value_regex{"(\\+|-)?\\d+(\r?\n|$)"};
 	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
 	const auto xtal_value = parser::parse(xtal_response, parser::VALUE_TOKEN);
-	return std::stoi(xtal_value);
+	if (xtal_value.empty() ||
+			!std::regex_match(xtal_value, std::regex(value_regex))) {
+		return false;
+	}
+	read_value = std::stoi(xtal_value);
+	return true;
 }
 
 bool chip::set_xtal_correction(int32_t value) {

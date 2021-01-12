@@ -92,8 +92,14 @@ bool handle_xtal_correction(aura::chip& aurachip) {
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	const std::string string_buffer{read_buffer};
 	if (string_buffer.empty()) {
-		const auto xtal_value = aurachip.get_xtal_correction();
-		std::cout << "Crystal correction value: " << xtal_value << std::endl;
+		int32_t xtal_value;
+		const auto is_read_ok = aurachip.get_xtal_correction(xtal_value);
+		if (is_read_ok) {
+			std::cout << "Crystal correction value: " << xtal_value << std::endl;
+		}
+		else {
+			std::cout << "Can't read crystal value." << std::endl;
+		}
 	}
 	else {
 		try {
