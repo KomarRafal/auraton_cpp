@@ -66,6 +66,139 @@ TEST(aurachip_ut, initialize)
 	EXPECT_TRUE(aura_chip_uut.is_initialize());
 }
 
+TEST(aurachip_ut, link_ok)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+	const std::string correct_answer{"OK\r\n"};
+	const std::string correct_event{
+		"EVENT_LINK\r\n"
+		"OK\r\n"
+		};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+LINK\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				)
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_event),
+				testing::Return(correct_event.length()))
+				);
+
+	EXPECT_CALL(serial_dev, available())
+		.WillOnce(testing::Return(10));
+
+	EXPECT_TRUE(aura_chip_uut.link());
+}
+
+TEST(aurachip_ut, link_cmd_fail)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+	const std::string wrong_answer{"ERR\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+LINK\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	EXPECT_FALSE(aura_chip_uut.link());
+}
+
+TEST(aurachip_ut, link_event_missing)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+	const std::string correct_answer{"OK\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.WillRepeatedly(testing::Return());
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+LINK\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				);
+
+	EXPECT_CALL(serial_dev, available())
+		.WillRepeatedly(testing::Return(0));
+
+	EXPECT_FALSE(aura_chip_uut.link());
+}
+
+TEST(aurachip_ut, link_event_fail)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+	const std::string correct_answer{"OK\r\n"};
+	const std::string correct_event{
+		"EVENT_LINK\r\n"
+		"ERR\r\n"
+		};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+LINK\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				)
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_event),
+				testing::Return(correct_event.length()))
+				);
+
+	EXPECT_CALL(serial_dev, available())
+		.WillOnce(testing::Return(10));
+
+	EXPECT_FALSE(aura_chip_uut.link());
+}
+
 TEST(aurachip_ut, factory_reset_ok)
 {
 	const std::string correct_answer {
