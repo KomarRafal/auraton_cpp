@@ -17,6 +17,55 @@ MATCHER_P(StrEqVoidPointer, expected, "") {
 	return std::string {static_cast<const char* const>(arg)} == expected;
 }
 
+TEST(aurachip_ut, initialize)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string version_cmd {"AT+VER?\n"};
+	const std::string address_cmd {"AT+ADDR?\n"};
+
+	const std::string device_version {
+		"HVER: 28\r\n"
+		"MANCODE: 2020\r\n"
+		"FVER: 1.5.0\r\n"
+		"PCODE: 23651.23\r\n" };
+
+	const std::string device_address {"ADDRESS: 3054412\r\n"};
+
+	const aura::device model_device {device_version + device_address};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(2);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(2);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer(version_cmd), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer(address_cmd), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(device_version),
+				testing::Return(device_version.length()))
+				)
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(device_address),
+				testing::Return(device_address.length()))
+				);
+
+	EXPECT_FALSE(aura_chip_uut.is_initialize());
+	aura_chip_uut.initialize();
+	EXPECT_EQ(static_cast<aura::device>(aura_chip_uut), model_device);
+	EXPECT_TRUE(aura_chip_uut.is_initialize());
+}
+
 TEST(aurachip_ut, factory_reset_ok)
 {
 	const std::string correct_answer {
