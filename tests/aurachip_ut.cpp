@@ -13,9 +13,13 @@ ACTION_TEMPLATE(SetArgNPointeeTo, HAS_1_TEMPLATE_PARAMS(unsigned, uIndex), AND_1
     std::strcpy(static_cast<char*>(std::get<uIndex>(args)), response_string.c_str());
 }
 
+MATCHER_P(StrEqVoidPointer, expected, "") {
+	return std::string {static_cast<const char* const>(arg)} == expected;
+}
+
 TEST(aurachip_ut, factory_reset_ok)
 {
-	const std::string correct_answer = {
+	const std::string correct_answer {
 			"Clear:1%\r\n"
 			"Clear:2%\r\n"
 			"Clear:3%\r\n"
@@ -132,7 +136,7 @@ TEST(aurachip_ut, factory_reset_ok)
 	EXPECT_CALL(serial_dev, flushReceiver())
 		.Times(1);
 
-	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+MSTRST\n"), testing::_))
 		.Times(1);
 
 	EXPECT_CALL(serial_dev, readBytes(testing::_, aura::chip::FACTORY_RESET_BUFFER_SIZE, testing::_, testing::_))
@@ -146,7 +150,7 @@ TEST(aurachip_ut, factory_reset_ok)
 
 TEST(aurachip_ut, factory_reset_clear_failed)
 {
-	const std::string incorrect_answer_clear_failed = {
+	const std::string incorrect_answer_clear_failed {
 			"Clear:1%\r\n"
 			"Clear:2%\r\n"
 			"Clear:3%\r\n"
@@ -181,7 +185,7 @@ TEST(aurachip_ut, factory_reset_clear_failed)
 
 TEST(aurachip_ut, factory_reset_not_ok)
 {
-	const std::string incorrect_answer_not_ok = {
+	const std::string incorrect_answer_not_ok {
 			"Clear:1%\r\n"
 			"Clear:2%\r\n"
 			"Clear:3%\r\n"
@@ -308,7 +312,7 @@ TEST(aurachip_ut, factory_reset_not_ok)
 
 TEST(aurachip_ut, get_dev_parameters_ok)
 {
-	const std::string correct_answer = {
+	const std::string correct_answer {
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -327,7 +331,7 @@ TEST(aurachip_ut, get_dev_parameters_ok)
 			"VALUE: 1927\r\n"
 	};
 
-	const std::string device_str = {
+	const std::string device_str {
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -336,7 +340,7 @@ TEST(aurachip_ut, get_dev_parameters_ok)
 			"MANCODE: 37\r\n"
 	};
 
-	const std::vector<aura::parameter> test_parameters = {
+	const std::vector<aura::parameter> test_parameters {
 			aura::parameter{ 32, 0, 0, 1 , 178 },
 			aura::parameter{ 101, 0, 0, 0, 1927 }
 	};
@@ -346,14 +350,18 @@ TEST(aurachip_ut, get_dev_parameters_ok)
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
+	const std::string get_dev_parameters_cmd {"AT+GETDEVOPTION=" + std::to_string(dev_id) + "\n"};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
-		.Times(1);
+		.Times(2);
 
 	EXPECT_CALL(serial_dev, flushReceiver())
-		.Times(1);
+		.Times(2);
 
 	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer(get_dev_parameters_cmd), testing::_))
 		.Times(1);
 
 	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
@@ -362,22 +370,13 @@ TEST(aurachip_ut, get_dev_parameters_ok)
 				testing::Return(device_str.length()))
 				);
 
-	aura_chip_uut.update_device_list();
-
-	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
-		.Times(1);
-
-	EXPECT_CALL(serial_dev, flushReceiver())
-		.Times(1);
-
-	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
-		.Times(1);
-
 	EXPECT_CALL(serial_dev, readBytes(testing::_, aura::device::MAX_PARAMETERS * aura::parameter::MAX_BYTES, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(correct_answer),
 				testing::Return(correct_answer.length()))
 				);
+
+	aura_chip_uut.update_device_list();
 	EXPECT_TRUE(aura_chip_uut.get_dev_parameters(dev_id));
 
 	EXPECT_EQ(aura_chip_uut.get_device(dev_id).get_parameters().size(), test_parameters.size());
@@ -390,7 +389,7 @@ TEST(aurachip_ut, get_dev_parameters_ok)
 
 TEST(aurachip_ut, get_dev_parameters_failed_id)
 {
-	const std::string correct_answer = {
+	const std::string correct_answer {
 			"ID: 31\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -435,7 +434,7 @@ TEST(aurachip_ut, get_dev_parameters_failed_id)
 
 TEST(aurachip_ut, get_dev_parameters_device_list_failed)
 {
-	const std::string correct_answer = {
+	const std::string correct_answer {
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -454,7 +453,7 @@ TEST(aurachip_ut, get_dev_parameters_device_list_failed)
 			"VALUE: 1927\r\n"
 	};
 
-	const std::vector<aura::parameter> test_parameters = {
+	const std::vector<aura::parameter> test_parameters {
 			aura::parameter{ 32, 0, 0, 1 , 178 },
 			aura::parameter{ 101, 0, 0, 0, 1927 }
 	};
@@ -483,7 +482,7 @@ TEST(aurachip_ut, get_dev_parameters_device_list_failed)
 
 TEST(aurachip_ut, get_dev_parameters_wrong_device)
 {
-	const std::string correct_answer = {
+	const std::string correct_answer {
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -502,7 +501,7 @@ TEST(aurachip_ut, get_dev_parameters_wrong_device)
 			"VALUE: 1927\r\n"
 	};
 
-	const std::string device_str = {
+	const std::string device_str {
 			"ID: 3\r\n"
 			"ADDRESS: 222222\r\n"
 			"PCODE: 3009\r\n"
@@ -511,7 +510,7 @@ TEST(aurachip_ut, get_dev_parameters_wrong_device)
 			"MANCODE: 37\r\n"
 	};
 
-	const std::vector<aura::parameter> test_parameters = {
+	const std::vector<aura::parameter> test_parameters {
 			aura::parameter{ 32, 0, 0, 1 , 178 },
 			aura::parameter{ 101, 0, 0, 0, 1927 }
 	};
@@ -558,7 +557,7 @@ TEST(aurachip_ut, get_dev_parameters_wrong_device)
 
 TEST(aurachip_ut, update_device_list_ok)
 {
-	const std::string correct_answer = {
+	const std::string correct_answer {
 			"ID: 1\r\n"
 			"ADDRESS: 90FC4F9B\r\n"
 			"PCODE: 300d\r\n"
@@ -573,7 +572,7 @@ TEST(aurachip_ut, update_device_list_ok)
 			"MANCODE: 30\r\n"
 	};
 
-	const std::string device_1 = {
+	const std::string device_1 {
 			"ID: 1\r\n"
 			"ADDRESS: 90FC4F9B\r\n"
 			"PCODE: 300d\r\n"
@@ -581,7 +580,7 @@ TEST(aurachip_ut, update_device_list_ok)
 			"HVER: 7\r\n"
 			"MANCODE: 40\r\n"
 	};
-	const std::string device_2 = {
+	const std::string device_2 {
 			"ID: 20\r\n"
 			"ADDRESS: 456223DA\r\n"
 			"PCODE: 3005\r\n"
@@ -590,7 +589,7 @@ TEST(aurachip_ut, update_device_list_ok)
 			"MANCODE: 30\r\n"
 	};
 
-	const std::map<uint32_t, aura::device> test_devices = {
+	const std::map<uint32_t, aura::device> test_devices {
 			{ 1, aura::device{ device_1 } },
 			{ 20, aura::device{ device_2 } }
 	};
@@ -607,7 +606,7 @@ TEST(aurachip_ut, update_device_list_ok)
 	EXPECT_CALL(serial_dev, flushReceiver())
 		.Times(1);
 
-	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+LIST?\n"), testing::_))
 		.Times(1);
 
 	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
@@ -620,4 +619,265 @@ TEST(aurachip_ut, update_device_list_ok)
 	for (const auto& device : test_devices) {
 		EXPECT_EQ(aura_chip_uut.get_device(device.first), device.second);
 	}
+}
+
+TEST(aurachip_ut, test_ok)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string correct_answer{"OK\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+TEST?\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				);
+
+	EXPECT_TRUE(aura_chip_uut.test());
+}
+
+TEST(aurachip_ut, test_fail)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string wrong_answer{"NULL\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	EXPECT_FALSE(aura_chip_uut.test());
+}
+
+TEST(aurachip_ut, reset_ok)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string correct_answer{"OK\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+RST\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				);
+
+	EXPECT_TRUE(aura_chip_uut.reset());
+}
+
+TEST(aurachip_ut, reset_fail)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string wrong_answer{"NULL\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	EXPECT_FALSE(aura_chip_uut.reset());
+}
+
+TEST(aurachip_ut, set_xtal_correction_ok)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string correct_answer{"OK\r\n"};
+	const int32_t xtal_value = -6548;
+	const std::string xtal_cmd{"AT+CRYSTALCORRECTION=" + std::to_string(xtal_value) + "\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer(xtal_cmd), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				);
+
+	EXPECT_TRUE(aura_chip_uut.set_xtal_correction(xtal_value));
+}
+
+TEST(aurachip_ut, set_xtal_correction_fail)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string wrong_answer{"NULL\r\n"};
+	const int32_t xtal_value = -6548;
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	EXPECT_FALSE(aura_chip_uut.set_xtal_correction(xtal_value));
+}
+
+TEST(aurachip_ut, get_xtal_correction_ok)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const int32_t xtal_value = -6548;
+	const std::string correct_answer{"VALUE: " + std::to_string(xtal_value) + "\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(StrEqVoidPointer("AT+CRYSTALCORRECTION?\n"), testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(correct_answer),
+				testing::Return(correct_answer.length()))
+				);
+
+	int32_t read_value = 123;
+	EXPECT_TRUE(aura_chip_uut.get_xtal_correction(read_value));
+	EXPECT_EQ(read_value, xtal_value);
+}
+
+TEST(aurachip_ut, get_xtal_correction_failed_token)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const int32_t xtal_value = -6548;
+	const std::string wrong_answer{"VAL: " + std::to_string(xtal_value) + "\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	int32_t read_value = 123;
+	EXPECT_FALSE(aura_chip_uut.get_xtal_correction(read_value));
+}
+
+TEST(aurachip_ut, get_xtal_correction_failed_value)
+{
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const std::string wrong_answer{"VALUE: 123AA\r\n"};
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	int32_t read_value = 123;
+	EXPECT_FALSE(aura_chip_uut.get_xtal_correction(read_value));
 }

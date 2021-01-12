@@ -32,7 +32,7 @@ public:
 	void initialize();
 	bool link();
 	bool get_dev_parameters(int32_t dev_id);
-	int32_t get_xtal_correction();
+	bool get_xtal_correction(int32_t& read_value);
 	bool set_xtal_correction(int32_t value);
 	static const uint32_t LINK_WAIT_MS = 32000;
 	bool reset();
