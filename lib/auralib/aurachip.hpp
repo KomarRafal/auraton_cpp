@@ -31,7 +31,8 @@ public:
 	bool test();
 	void initialize();
 	bool link();
-	bool get_dev_parameters(int32_t dev_id);
+	bool update_device_parameters(int32_t dev_id);
+	bool update_device_parameter(int32_t dev_id, int32_t code);
 	int32_t get_xtal_correction();
 	bool set_xtal_correction(int32_t value);
 	static const uint32_t LINK_WAIT_MS = 32000;
@@ -65,6 +66,7 @@ private:
 	bool initialize_flag;
 	void initialize_version();
 	void initialize_address();
+	device* get_local_device(int32_t dev_id, std::string get_dev_response);
 
 };
 }
