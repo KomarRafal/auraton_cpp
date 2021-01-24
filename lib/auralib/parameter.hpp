@@ -23,7 +23,7 @@ public:
 				);
 	}
 
-	explicit parameter(uint32_t code,
+	explicit parameter(int32_t code,
 			  int32_t channel = 0,
 			  int32_t flag_own = 0,
 			  int32_t flag_writable = 0,
@@ -78,9 +78,9 @@ public:
 		value = 0;
 	}
 
-	static const uint16_t MAX_BYTES = 80;
+	static const uint16_t MAX_PARAM_LENGTH = 80;
 private:
-	uint32_t code;
+	int32_t code;
 	int32_t channel;
 	int32_t flag_own;
 	int32_t writable;

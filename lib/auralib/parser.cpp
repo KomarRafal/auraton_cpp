@@ -89,7 +89,7 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 			input_str.erase(0, code_end);
 			continue;
 		}
-		const auto code = static_cast<uint32_t>(code_long);
+		const auto code = static_cast<int32_t>(code_long);
 		parameter local_param{code};
 		const auto next_parameter = input_str.find(CODE_TOKEN, code_end);
 		const auto parameter_str = input_str.substr(code_end, next_parameter);

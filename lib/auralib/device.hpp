@@ -116,10 +116,13 @@ public:
 	}
 
 	void add_parameter(const parameter& param) {
-		parameter_map.insert(parameters_t::value_type(param.get_code(), param));
+		const auto code = param.get_code();
+		parameter_map.insert(parameters_t::value_type(code, parameter{code}));
+		parameter_map.find(code)->second = param;
 	}
 
 	static const uint16_t MAX_PARAMETERS = 40;
+	static const uint16_t MAX_DEVICE_LENGTH = 80;
 private:
 	std::string product_code;
 	std::string fw_version;
