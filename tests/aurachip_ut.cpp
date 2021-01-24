@@ -552,6 +552,7 @@ TEST(aurachip_ut, update_device_parameters_ok)
 				testing::Return(device_str.length()))
 				);
 
+	aura_chip_uut.update_device_list();
 	EXPECT_CALL(serial_dev, readBytes(testing::_,
 			aura::device::MAX_DEVICE_LENGTH + aura::device::MAX_PARAMETERS * aura::parameter::MAX_PARAM_LENGTH,
 			testing::_, testing::_))
@@ -560,7 +561,6 @@ TEST(aurachip_ut, update_device_parameters_ok)
 				testing::Return(correct_answer.length()))
 				);
 	EXPECT_TRUE(aura_chip_uut.update_device_parameters(dev_id));
-	aura_chip_uut.update_device_list();
 
 	EXPECT_EQ(aura_chip_uut.get_device(dev_id).get_parameters().size(), test_parameters.size());
 
