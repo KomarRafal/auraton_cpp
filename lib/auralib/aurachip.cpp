@@ -35,28 +35,63 @@ bool chip::link() {
 	return is_event_ok;
 }
 
-bool chip::get_dev_parameters(int32_t dev_id) {
-	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, std::to_string(dev_id));
-	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd, device::MAX_PARAMETERS * parameter::MAX_BYTES);
+device* chip::get_local_device(int32_t dev_id, std::string get_dev_response) {
 	const auto dev_list = parser::parse_device_list(get_dev_response);
 	const auto is_dev_id = (dev_list.count(dev_id) == 1);
 	if (!is_dev_id) {
-		return false;
+		return nullptr;
 	}
 	const device get_dev{dev_list.find(dev_id)->second};
 	const auto device_element = device_list.find(dev_id);
 	if (device_element == device_list.end()) {
-		return false;
+		return nullptr;
 	}
-	auto& my_dev = device_element->second;
-	const bool is_device_on_list = (my_dev == get_dev);
+	auto* my_dev = &device_element->second;
+	const bool is_device_on_list = (*my_dev == get_dev);
 	if (!is_device_on_list) {
+		return nullptr;
+	}
+	return my_dev;
+}
+
+bool chip::update_device_parameters(int32_t dev_id) {
+	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTIONS, std::to_string(dev_id));
+	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd,
+			device::MAX_DEVICE_LENGTH + device::MAX_PARAMETERS * parameter::MAX_PARAM_LENGTH);
+	device* my_device = get_local_device(dev_id, get_dev_response);
+	if (my_device == nullptr) {
 		return false;
 	}
 	parameter read_parameter{0};
 	while (parser::get_next_parameter(get_dev_response, read_parameter)) {
-		my_dev.add_parameter(read_parameter);
+		my_device->add_parameter(read_parameter);
 	}
+	return true;
+}
+
+bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
+	const auto attributes = std::to_string(dev_id) + "," + std::to_string(code);
+	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, attributes);
+	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd,
+			device::MAX_DEVICE_LENGTH + parameter::MAX_PARAM_LENGTH);
+	device* my_device = get_local_device(dev_id, get_dev_response);
+	if (my_device == nullptr) {
+		return false;
+	}
+	parameter read_parameter{0};
+	const bool is_first_paramter = parser::get_next_parameter(get_dev_response, read_parameter);
+	if (!is_first_paramter) {
+		return false;
+	}
+	const bool is_parameter = (code == read_parameter.get_code());
+	if (!is_parameter) {
+		return false;
+	}
+	const bool is_other_paramter = parser::get_next_parameter(get_dev_response, read_parameter);
+	if (is_other_paramter) {
+		return false;
+	}
+	my_device->add_parameter(read_parameter);
 	return true;
 }
 
