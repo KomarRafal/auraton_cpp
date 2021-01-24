@@ -9,6 +9,11 @@
 #include "aurachip.hpp"
 #include "connection.hpp"
 
+void clean_cin() {
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 bool show_device_info(aura::chip& aurachip) {
 	if (!aurachip.get_connection().test_uart()) {
 		return false;
@@ -48,8 +53,7 @@ bool show_dev_parameters(aura::chip& aurachip) {
 	char read_buffer[max_buffer_size];
 	std::cout << "Device id:" << std::endl;
 	std::cin.get(read_buffer, max_buffer_size);
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	clean_cin();
 	const std::string string_buffer{read_buffer};
 	if (!string_buffer.empty()) {
 		try {
@@ -79,6 +83,47 @@ bool show_dev_parameters(aura::chip& aurachip) {
 	return status;
 }
 
+bool show_dev_parameter(aura::chip& aurachip) {
+	if (!aurachip.get_connection().test_uart()) {
+		return false;
+	}
+	bool status = false;
+	const uint16_t max_buffer_size = 10;
+	char dev_id_buffer[max_buffer_size];
+	char code_buffer[max_buffer_size];
+	std::cout << "Device id:" << std::endl;
+	std::cin.get(dev_id_buffer, max_buffer_size);
+	clean_cin();
+	const std::string dev_id_string{dev_id_buffer};
+	std::cout << "Parameter code:" << std::endl;
+	std::cin.get(code_buffer, max_buffer_size);
+	clean_cin();
+	const std::string code_string{code_buffer};
+	if (!dev_id_string.empty() && !code_string.empty()) {
+		try {
+			const auto dev_id = std::stoi(dev_id_string);
+			const auto code = std::stoi(code_string);
+			std::cout << "Getting device option: " << code << " for dev: " << dev_id << std::endl;
+			status = aurachip.update_device_parameter(dev_id, code);
+			if (status) {
+				const auto& parameter = aurachip.get_device(dev_id).get_parameter(code);
+				std::cout << "------------------\n" ;
+				std::cout << "CODE: " << parameter.get_code() << std::endl;
+				std::cout << "  CHANNEL: " << parameter.get_channel() << std::endl;
+				std::cout << "  FLAG OWN: " << parameter.get_flag_own() << std::endl;
+				std::cout << "  FLAG WRITEABLE: " << parameter.get_flag_writable() << std::endl;
+				std::cout << "  VALUE: " << parameter.get_value() << std::endl;
+				std::cout << "------------------\n" ;
+			}
+		}
+		catch (const std::invalid_argument&) {
+			std::cout << "Can't convert: " << dev_id_string.c_str() << " or/and " << \
+					code_string.c_str() << " to number." << std::endl;
+		}
+	}
+	return status;
+}
+
 bool handle_xtal_correction(aura::chip& aurachip) {
 	if (!aurachip.get_connection().test_uart()) {
 		return false;
@@ -88,8 +133,7 @@ bool handle_xtal_correction(aura::chip& aurachip) {
 	char read_buffer[max_buffer_size];
 	std::cout << "New crystal correction value (leave empty for reading):" << std::endl;
 	std::cin.get(read_buffer, max_buffer_size);
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	clean_cin();
 	const std::string string_buffer{read_buffer};
 	if (string_buffer.empty()) {
 		const auto xtal_value = aurachip.get_xtal_correction();
@@ -119,8 +163,9 @@ std::map<char, menu_t> menu = {
 		{'r', { "reset", [](aura::chip& aurachip)->bool { return aurachip.reset(); } } },
 		{'f', { "factory reset", [](aura::chip& aurachip)->bool { return aurachip.factory_reset(); } } },
 		{'l', { "start linking", [](aura::chip& aurachip)->bool { return aurachip.link(); } } },
-		{'d', { "show parred devices", [](aura::chip& aurachip)->bool { return show_parred_devices(aurachip); } } },
+		{'d', { "show parried devices", [](aura::chip& aurachip)->bool { return show_parred_devices(aurachip); } } },
 		{'p', { "show device options", [](aura::chip& aurachip)->bool { return show_dev_parameters(aurachip); } } },
+		{'n', { "show device option", [](aura::chip& aurachip)->bool { return show_dev_parameter(aurachip); } } },
 		{'x', { "read/set crystal correction", [](aura::chip& aurachip)->bool { return handle_xtal_correction(aurachip); } } },
 		{'q', { "quit", [](aura::chip&)->bool { exit(0); return true; } } },
 };
@@ -138,8 +183,7 @@ int main(int argc, char **argv) {
 	while (true) {
 		show_menu();
 		const char option = std::cin.get();
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		clean_cin();
 		if (menu.find(option) != menu.end()) {
 			const auto description = std::get<0>(menu[option]);
 			const auto action = std::get<1>(menu[option]);
