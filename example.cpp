@@ -185,7 +185,12 @@ void show_menu() {
 }
 
 int main(int argc, char **argv) {
-	aura::chip my_aura_chip{"COM8"};
+#if defined (_WIN32) || defined( _WIN64)
+	const std::string uart_port = "COM8";
+#else
+	const std::string uart_port = "/dev/ttyUSB0";
+#endif
+	aura::chip my_aura_chip{uart_port};
 	while (true) {
 		show_menu();
 		const char option = std::cin.get();
