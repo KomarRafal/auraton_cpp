@@ -56,6 +56,19 @@ target_include_directories(sourceparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
+add_library(statusparserlib)
+
+target_sources(statusparserlib
+	PRIVATE
+		${AURATON_SRC}/parser/status.cpp
+)
+
+target_include_directories(statusparserlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+
+
 add_library(devicelib)
 
 target_sources(devicelib
@@ -133,6 +146,13 @@ add_test(
     COMMAND source_parser_ut
 )
 
+add_executable(status_parser_ut status_parser_ut.cpp)					  
+target_link_libraries(status_parser_ut gtest gtest_main statusparserlib)
+add_test(
+    NAME status_parser_ut
+    COMMAND status_parser_ut
+)
+
 add_executable(device_ut device_ut.cpp)
 target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
            
@@ -162,7 +182,17 @@ add_test(
     COMMAND aurachip_ut
 )
 
-set_target_properties(device_ut connectionlib connection_ut aurachip_ut atparserlib at_parser_ut sourceparserlib source_parser_ut PROPERTIES
+set_target_properties(device_ut 
+                      connectionlib 
+                      connection_ut 
+                      aurachip_ut 
+                      atparserlib 
+                      at_parser_ut 
+                      sourceparserlib 
+                      source_parser_ut 
+                      statusparserlib
+                      status_parser_ut
+                      PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF
             CXX_STANDARD_REQUIRED ON
