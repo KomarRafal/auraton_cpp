@@ -32,6 +32,30 @@ target_include_directories(parserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
+add_library(atparserlib)
+
+target_sources(atparserlib
+	PRIVATE
+		${AURATON_SRC}/parser/at.cpp
+)
+
+target_include_directories(atparserlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+
+add_library(sourceparserlib)
+
+target_sources(sourceparserlib
+	PRIVATE
+		${AURATON_SRC}/parser/source.cpp
+)
+
+target_include_directories(sourceparserlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+
 add_library(devicelib)
 
 target_sources(devicelib
@@ -95,6 +119,20 @@ add_test(
     COMMAND parser_ut
 )
 
+add_executable(at_parser_ut at_parser_ut.cpp)					  
+target_link_libraries(at_parser_ut gtest gtest_main atparserlib)
+add_test(
+    NAME at_parser_ut
+    COMMAND at_parser_ut
+)
+
+add_executable(source_parser_ut source_parser_ut.cpp)					  
+target_link_libraries(source_parser_ut gtest gtest_main sourceparserlib)
+add_test(
+    NAME source_parser_ut
+    COMMAND source_parser_ut
+)
+
 add_executable(device_ut device_ut.cpp)
 target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
            
@@ -124,7 +162,7 @@ add_test(
     COMMAND aurachip_ut
 )
 
-set_target_properties(device_ut connectionlib connection_ut aurachip_ut PROPERTIES
+set_target_properties(device_ut connectionlib connection_ut aurachip_ut atparserlib at_parser_ut sourceparserlib source_parser_ut PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF
             CXX_STANDARD_REQUIRED ON
