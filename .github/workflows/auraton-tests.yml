@@ -1,9 +1,9 @@
 name: Auraton-Tests
 
 on:
-  pull_request:
+  push:
     branches:
-      - master
+      - new_parsers
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
