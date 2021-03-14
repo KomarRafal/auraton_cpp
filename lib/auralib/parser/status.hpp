@@ -24,8 +24,8 @@ enum status_type {
 
 class status : public simple_token<status_type> {
 public:
-	virtual const std::string& get_token();
-	virtual const token_map& get_token_map();
+	virtual const std::string& get_token() const;
+	virtual const token_map& get_token_map() const;
 
 private:
 	const std::string STATUS_TOKEN = "STATUS:";

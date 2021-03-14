@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.18)
 project(auraton_test)
 include(FetchContent)
 
+add_subdirectory(parsers)
+
 set(GTEST_VERSION 1.10.0 CACHE STRING "Google test version")
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
@@ -31,43 +33,6 @@ target_include_directories(parserlib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
-
-add_library(atparserlib)
-
-target_sources(atparserlib
-	PRIVATE
-		${AURATON_SRC}/parser/at.cpp
-)
-
-target_include_directories(atparserlib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
-)
-
-add_library(sourceparserlib)
-
-target_sources(sourceparserlib
-	PRIVATE
-		${AURATON_SRC}/parser/source.cpp
-)
-
-target_include_directories(sourceparserlib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
-)
-
-add_library(statusparserlib)
-
-target_sources(statusparserlib
-	PRIVATE
-		${AURATON_SRC}/parser/status.cpp
-)
-
-target_include_directories(statusparserlib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
-)
-
 
 add_library(devicelib)
 
@@ -132,27 +97,6 @@ add_test(
     COMMAND parser_ut
 )
 
-add_executable(at_parser_ut at_parser_ut.cpp)					  
-target_link_libraries(at_parser_ut gtest gtest_main atparserlib)
-add_test(
-    NAME at_parser_ut
-    COMMAND at_parser_ut
-)
-
-add_executable(source_parser_ut source_parser_ut.cpp)					  
-target_link_libraries(source_parser_ut gtest gtest_main sourceparserlib)
-add_test(
-    NAME source_parser_ut
-    COMMAND source_parser_ut
-)
-
-add_executable(status_parser_ut status_parser_ut.cpp)					  
-target_link_libraries(status_parser_ut gtest gtest_main statusparserlib)
-add_test(
-    NAME status_parser_ut
-    COMMAND status_parser_ut
-)
-
 add_executable(device_ut device_ut.cpp)
 target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
            
@@ -186,12 +130,6 @@ set_target_properties(device_ut
                       connectionlib 
                       connection_ut 
                       aurachip_ut 
-                      atparserlib 
-                      at_parser_ut 
-                      sourceparserlib 
-                      source_parser_ut 
-                      statusparserlib
-                      status_parser_ut
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF
