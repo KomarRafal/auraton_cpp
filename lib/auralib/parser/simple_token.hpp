@@ -20,8 +20,8 @@ class simple_token : public parser_if<TOKEN_TYPE> {
 public:
 	using token_map = std::map<std::string, TOKEN_TYPE>;
 	virtual std::optional<TOKEN_TYPE> parse(std::string_view& message);
-	virtual const std::string& get_token() = 0;
-	virtual const token_map& get_token_map() = 0;
+	virtual const std::string& get_token() const = 0;
+	virtual const token_map& get_token_map() const = 0;
 };
 
 template <class TOKEN_TYPE>

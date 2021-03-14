@@ -20,8 +20,8 @@ enum source_type {
 
 class source : public simple_token<source_type> {
 public:
-	virtual const std::string& get_token();
-	virtual const token_map& get_token_map();
+	virtual const std::string& get_token() const;
+	virtual const token_map& get_token_map() const;
 
 private:
 	const std::string SOURCE_TOKEN = "SOURCE:";
