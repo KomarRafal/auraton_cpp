@@ -29,12 +29,23 @@ TEST(aurachip_ut, initialize)
 	const std::string address_cmd {"AT+ADDR?\n"};
 
 	const std::string device_version {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"STATUS:OK\r\n"
 		"HVER: 28\r\n"
 		"MANCODE: 2020\r\n"
 		"FVER: 1.5.0\r\n"
-		"PCODE: 23651.23\r\n" };
+		"PCODE: 23651.23\r\n"
+		"AT:STOP\r\n"
+		};
 
-	const std::string device_address {"ADDRESS: 3054412\r\n"};
+	const std::string device_address {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"STATUS:OK\r\n"
+		"ADDRESS: 3054412\r\n"
+		"AT:STOP\r\n"
+		};
 
 	const aura::device model_device {device_version + device_address};
 

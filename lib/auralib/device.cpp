@@ -28,7 +28,7 @@ device::device(const std::string& device_str) :
 	};
 
 	for (const auto& info : device_info) {
-		info.second(parser::parse(device_str, info.first));
+		info.second(parser_legacy::parse(device_str, info.first));
 	}
 }
 

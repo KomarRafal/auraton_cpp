@@ -46,13 +46,13 @@ TEST_F(device_ut, ctor)
 	aura::device dev_uut{device_1};
 	EXPECT_FALSE(is_empty(dev_uut));
 	EXPECT_EQ(dev_uut.get_product_code(),
-			aura::parser::parse(device_1, aura::device::PRODUCT_CODE_TOKEN));
+			aura::parser_legacy::parse(device_1, aura::device::PRODUCT_CODE_TOKEN));
 	EXPECT_EQ(dev_uut.get_fw_version(),
-			aura::parser::parse(device_1, aura::device::FW_VERSION_TOKEN));
+			aura::parser_legacy::parse(device_1, aura::device::FW_VERSION_TOKEN));
 	EXPECT_EQ(dev_uut.get_hw_version(),
-			aura::parser::parse(device_1, aura::device::HW_VERSION_TOKEN));
+			aura::parser_legacy::parse(device_1, aura::device::HW_VERSION_TOKEN));
 	EXPECT_EQ(dev_uut.get_manufacture_code(),
-			aura::parser::parse(device_1, aura::device::MANUFACTURE_CODE_TOKEN));
+			aura::parser_legacy::parse(device_1, aura::device::MANUFACTURE_CODE_TOKEN));
 	EXPECT_EQ(dev_uut.get_address(), address);
 }
 

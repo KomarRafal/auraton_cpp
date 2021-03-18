@@ -22,14 +22,14 @@ FetchContent_MakeAvailable(googletest)
 set(AURATON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../lib/auralib)
 set(STUBS ${CMAKE_CURRENT_SOURCE_DIR}/stubs)
 
-add_library(parserlib)
+add_library(parserlegacylib)
 
-target_sources(parserlib
+target_sources(parserlegacylib
 	PRIVATE
 		${AURATON_SRC}/parser.cpp
 )
 
-target_include_directories(parserlib
+target_include_directories(parserlegacylib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
@@ -59,7 +59,7 @@ target_include_directories(connectionlib
 		${STUBS}/
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
-target_link_libraries(connectionlib gmock parserlib)
+target_link_libraries(connectionlib gmock parserlegacylib)
 
 add_library(commandlib)
 
@@ -74,6 +74,21 @@ target_include_directories(commandlib
 )
 target_link_libraries(commandlib gmock)
 
+add_library(parserslib)
+
+target_sources(parserslib
+	PRIVATE
+		${AURATON_SRC}/parser/at.cpp
+		${AURATON_SRC}/parser/source.cpp
+		${AURATON_SRC}/parser/status.cpp
+		${AURATON_SRC}/parser/command_parser.cpp
+)
+
+target_include_directories(parserslib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parser>
+)
+
 add_library(aurachiplib)
 
 target_sources(aurachiplib
@@ -86,19 +101,19 @@ target_include_directories(aurachiplib
 		${STUBS}/
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
-target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib)
+target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib parserslib)
 
 enable_testing()
 
 add_executable(parser_ut parser_ut.cpp)					  
-target_link_libraries(parser_ut gtest gtest_main parserlib)
+target_link_libraries(parser_ut gtest gtest_main parserlegacylib)
 add_test(
     NAME parser_ut
     COMMAND parser_ut
 )
 
 add_executable(device_ut device_ut.cpp)
-target_link_libraries(device_ut gtest gtest_main parserlib devicelib)
+target_link_libraries(device_ut gtest gtest_main parserlegacylib devicelib)
            
 add_test(
     NAME device_ut
@@ -130,6 +145,8 @@ set_target_properties(device_ut
                       connectionlib 
                       connection_ut 
                       aurachip_ut 
+                      parserslib
+                      aurachiplib
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF

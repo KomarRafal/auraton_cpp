@@ -1,25 +1,25 @@
 /*
  * parser.cpp
  */
+#include "parser.hpp"
 #include <functional>
 #include <limits>
 
-#include "parser.hpp"
 
 namespace aura
 {
 
-const std::string parser::OK_TOKEN = "OK";
-const std::string parser::DEVICE_TOKEN = "ID: ";
-const std::string parser::EOL = "\r\n";
-const std::string parser::CODE_TOKEN = "CODE: ";
-const std::string parser::CHANNEL_TOKEN = "CHANNEL: ";
-const std::string parser::FLAG_OWN_TOKEN = "FLAG OWN: ";
-const std::string parser::FLAG_WRITEABLE_TOKEN = "FLAG WRITEABLE: ";
-const std::string parser::VALUE_TOKEN = "VALUE: ";
+const std::string parser_legacy::OK_TOKEN = "OK";
+const std::string parser_legacy::DEVICE_TOKEN = "ID: ";
+const std::string parser_legacy::EOL = "\r\n";
+const std::string parser_legacy::CODE_TOKEN = "CODE: ";
+const std::string parser_legacy::CHANNEL_TOKEN = "CHANNEL: ";
+const std::string parser_legacy::FLAG_OWN_TOKEN = "FLAG OWN: ";
+const std::string parser_legacy::FLAG_WRITEABLE_TOKEN = "FLAG WRITEABLE: ";
+const std::string parser_legacy::VALUE_TOKEN = "VALUE: ";
 
 
-std::string parser::parse(const std::string& input_str, const std::string& token, bool omit_token) {
+std::string parser_legacy::parse(const std::string& input_str, const std::string& token, bool omit_token) {
 	auto begin = input_str.find(token);
 	if (begin == std::string::npos) {
 		return {};
@@ -31,7 +31,7 @@ std::string parser::parse(const std::string& input_str, const std::string& token
 	return input_str.substr(begin, end - begin);
 }
 
-parser::device_list_t parser::parse_device_list(const std::string& input_str) {
+parser_legacy::device_list_t parser_legacy::parse_device_list(const std::string& input_str) {
 	device_list_t device_list;
 	size_t begin = 0;
 
@@ -62,12 +62,12 @@ parser::device_list_t parser::parse_device_list(const std::string& input_str) {
 
 }
 
-bool parser::get_next_parameter(std::string& input_str, parameter& read_parameter) {
+bool parser_legacy::get_next_parameter(std::string& input_str, parameter& read_parameter) {
 	std::map<std::string, std::function<void(parameter&, int32_t)>> parameter_info = {
-			{ parser::CHANNEL_TOKEN, [](auto& param, auto value) { param.set_channel(value); }  },
-			{ parser::FLAG_OWN_TOKEN, [](auto& param, auto value) { param.set_flag_own(value); }  },
-			{ parser::FLAG_WRITEABLE_TOKEN, [](auto& param, auto value) { param.set_flag_writable(value); }  },
-			{ parser::VALUE_TOKEN, [](auto& param, auto value) { param.set_value(value); }  },
+			{ parser_legacy::CHANNEL_TOKEN, [](auto& param, auto value) { param.set_channel(value); }  },
+			{ parser_legacy::FLAG_OWN_TOKEN, [](auto& param, auto value) { param.set_flag_own(value); }  },
+			{ parser_legacy::FLAG_WRITEABLE_TOKEN, [](auto& param, auto value) { param.set_flag_writable(value); }  },
+			{ parser_legacy::VALUE_TOKEN, [](auto& param, auto value) { param.set_value(value); }  },
 	};
 
 	while (true) {
@@ -94,7 +94,7 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 		const auto next_parameter = input_str.find(CODE_TOKEN, code_end);
 		const auto parameter_str = input_str.substr(code_end, next_parameter);
 		for (const auto& info : parameter_info) {
-			const auto value_str = parser::parse(parameter_str, info.first);
+			const auto value_str = parser_legacy::parse(parameter_str, info.first);
 			if (value_str.empty()) {
 				continue;
 			}
@@ -107,7 +107,7 @@ bool parser::get_next_parameter(std::string& input_str, parameter& read_paramete
 	}
 }
 
-bool parser::check_result(const std::string& input_str) {
+bool parser_legacy::check_result(const std::string& input_str) {
 	const std::string status = parse(input_str, OK_TOKEN, false);
 	return (status.length() == OK_TOKEN.length());
 }
