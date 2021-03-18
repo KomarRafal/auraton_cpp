@@ -14,7 +14,7 @@
 namespace aura
 {
 
-class parser {
+class parser_legacy {
 public:
 	typedef std::map<int32_t, std::string> device_list_t;
 	static const std::string OK_TOKEN;

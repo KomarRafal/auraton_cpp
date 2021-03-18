@@ -15,7 +15,7 @@ namespace parser
 {
 
 enum at_type {
-	OK,
+	AT_OK,
 };
 
 class at : public parser_if<at_type> {

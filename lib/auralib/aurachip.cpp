@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <regex>
 
+#include "parser/command_parser.hpp"
 #include "aurachip.hpp"
 #include "parser.hpp"
 
@@ -15,8 +16,23 @@ bool chip::test() {
 }
 
 void chip::initialize() {
-	auto device_str = serial_connection.send_command(command::compose(command::VERSION));
-	device_str.append(serial_connection.send_command(command::compose(command::ADDRESS)));
+	const auto version_str = serial_connection.send_command(command::compose(command::VERSION));
+	std::string_view version_str_view(version_str);
+	const auto is_version = parser::command_parser::parse(version_str_view);
+	if (!is_version) {
+		initialize_flag = false;
+		return;
+	}
+	std::string device_str(static_cast<std::string>(version_str_view));
+
+	const auto address_str = serial_connection.send_command(command::compose(command::ADDRESS));
+	std::string_view address_str_view(address_str);
+	const auto is_address = parser::command_parser::parse(address_str_view);
+	if (!is_address) {
+		initialize_flag = false;
+		return;
+	}
+	device_str.append(static_cast<std::string>(address_str_view));
 	device dev(device_str);
 	static_cast<device*>(this)->operator=(dev);
 	initialize_flag = true;
@@ -36,7 +52,7 @@ bool chip::link() {
 }
 
 device* chip::get_local_device(int32_t dev_id, std::string get_dev_response) {
-	const auto dev_list = parser::parse_device_list(get_dev_response);
+	const auto dev_list = parser_legacy::parse_device_list(get_dev_response);
 	const auto is_dev_id = (dev_list.count(dev_id) == 1);
 	if (!is_dev_id) {
 		return nullptr;
@@ -63,7 +79,7 @@ bool chip::update_device_parameters(int32_t dev_id) {
 		return false;
 	}
 	parameter read_parameter{0};
-	while (parser::get_next_parameter(get_dev_response, read_parameter)) {
+	while (parser_legacy::get_next_parameter(get_dev_response, read_parameter)) {
 		my_device->add_parameter(read_parameter);
 	}
 	return true;
@@ -79,7 +95,7 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 		return false;
 	}
 	parameter read_parameter{0};
-	const bool is_first_paramter = parser::get_next_parameter(get_dev_response, read_parameter);
+	const bool is_first_paramter = parser_legacy::get_next_parameter(get_dev_response, read_parameter);
 	if (!is_first_paramter) {
 		return false;
 	}
@@ -87,7 +103,7 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 	if (!is_parameter) {
 		return false;
 	}
-	const bool is_other_paramter = parser::get_next_parameter(get_dev_response, read_parameter);
+	const bool is_other_paramter = parser_legacy::get_next_parameter(get_dev_response, read_parameter);
 	if (is_other_paramter) {
 		return false;
 	}
@@ -99,7 +115,7 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 bool chip::get_xtal_correction(int32_t& read_value) {
 	const std::regex value_regex{"(\\+|-)?\\d+(\r?\n|$)"};
 	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
-	const auto xtal_value = parser::parse(xtal_response, parser::VALUE_TOKEN);
+	const auto xtal_value = parser_legacy::parse(xtal_response, parser_legacy::VALUE_TOKEN);
 	if (xtal_value.empty() ||
 			!std::regex_match(xtal_value, std::regex(value_regex))) {
 		return false;
@@ -133,12 +149,12 @@ bool chip::factory_reset() {
 	const auto regex_end = std::sregex_iterator();
 	const auto clear_log_count = std::distance(regex_begin, regex_end);
 	const bool is_clear_ok = (clear_log_count == 100);
-	return is_clear_ok && parser::check_result(response);
+	return is_clear_ok && parser_legacy::check_result(response);
 }
 
 int chip::update_device_list() {
 	const auto dev_list_str = serial_connection.send_command(command::compose(command::DEV_LIST));
-	const auto dev_list_parsed = parser::parse_device_list(dev_list_str);
+	const auto dev_list_parsed = parser_legacy::parse_device_list(dev_list_str);
 	device_list.clear();
 	for (auto dev_pair : dev_list_parsed) {
 		const device dev(dev_pair.second);

@@ -20,11 +20,11 @@ TEST(parser_ut, parse_test)
 				"some important message\r\n"
 				"message_without_termination"
 			};
-		EXPECT_TRUE(aura::parser::parse(test_string, "Parameter 100").empty());
-		EXPECT_TRUE(aura::parser::parse(test_string, "Parametr_1: ") == "some_1st_value");
-		EXPECT_TRUE(aura::parser::parse(test_string, "Parametr 2: ") == "some 2nd_value");
-		EXPECT_TRUE(aura::parser::parse(test_string, "some important", false) == "some important message");
-		EXPECT_TRUE(aura::parser::parse(test_string, "message_without_termination", false) == "message_without_termination");
+		EXPECT_TRUE(aura::parser_legacy::parse(test_string, "Parameter 100").empty());
+		EXPECT_TRUE(aura::parser_legacy::parse(test_string, "Parametr_1: ") == "some_1st_value");
+		EXPECT_TRUE(aura::parser_legacy::parse(test_string, "Parametr 2: ") == "some 2nd_value");
+		EXPECT_TRUE(aura::parser_legacy::parse(test_string, "some important", false) == "some important message");
+		EXPECT_TRUE(aura::parser_legacy::parse(test_string, "message_without_termination", false) == "message_without_termination");
 	}
 	{
 		const std::string test_string{
@@ -33,7 +33,7 @@ TEST(parser_ut, parse_test)
 				"tempor incididunt ut labore et dolore magna aliqua.\r\n"
 				"param_without: termination"
 			};
-		EXPECT_TRUE(aura::parser::parse(test_string, "param_without: ", true) == "termination");
+		EXPECT_TRUE(aura::parser_legacy::parse(test_string, "param_without: ", true) == "termination");
 	}
 }
 
@@ -59,7 +59,7 @@ TEST(parser_ut, parse_device_list_test)
 			"HVER: 1\r\n"
 			"MANCODE: 30\r\n"
 		};
-	const aura::parser::device_list_t ok_devices{
+	const aura::parser_legacy::device_list_t ok_devices{
 			{ 45,
 			"Lorem ipsum dolor sit amet,\r\n"
 			"consectetur adipiscing elit, sed do eiusmod\r\n"
@@ -109,9 +109,9 @@ TEST(parser_ut, parse_device_list_test)
 			"HVER: 1\r\n"
 			"MANCODE: 30"
 		};
-	const auto device_list_ok = aura::parser::parse_device_list(ok_test_string);
-	const auto device_list_error = aura::parser::parse_device_list(error_test_string);
-	const auto device_list_duplicate_id = aura::parser::parse_device_list(duplicate_id_test_string);
+	const auto device_list_ok = aura::parser_legacy::parse_device_list(ok_test_string);
+	const auto device_list_error = aura::parser_legacy::parse_device_list(error_test_string);
+	const auto device_list_duplicate_id = aura::parser_legacy::parse_device_list(duplicate_id_test_string);
 
 	EXPECT_EQ(device_list_ok.size(), ok_devices.size());
 	for (auto dev : ok_devices) {
@@ -148,9 +148,9 @@ TEST(parser_ut, check_result_test)
 				"tempor incididunt ut labore et dolore magna aliqua.\r\n"
 				"ERROR\r\n"
 			};
-	EXPECT_TRUE(aura::parser::check_result(terminated_ok_test_string));
-	EXPECT_TRUE(aura::parser::check_result(ok_test_string));
-	EXPECT_FALSE(aura::parser::check_result(error_test_string));
+	EXPECT_TRUE(aura::parser_legacy::check_result(terminated_ok_test_string));
+	EXPECT_TRUE(aura::parser_legacy::check_result(ok_test_string));
+	EXPECT_FALSE(aura::parser_legacy::check_result(error_test_string));
 }
 
 TEST(parser_ut, parse_get_next_parameter_test_ok)
@@ -199,7 +199,7 @@ TEST(parser_ut, parse_get_next_parameter_test_ok)
 	std::vector<aura::parameter> read_parameters;
 
 	aura::parameter parameter{0};
-	while (aura::parser::get_next_parameter(test_string, parameter)) {
+	while (aura::parser_legacy::get_next_parameter(test_string, parameter)) {
 		read_parameters.push_back(parameter);
 	}
 	EXPECT_EQ(test_parameters, read_parameters);
@@ -225,7 +225,7 @@ TEST(parser_ut, parse_get_next_parameter_test_not_all_ok)
 	std::vector<aura::parameter> read_parameters;
 
 	aura::parameter parameter{0};
-	while (aura::parser::get_next_parameter(test_string, parameter)) {
+	while (aura::parser_legacy::get_next_parameter(test_string, parameter)) {
 		read_parameters.push_back(parameter);
 	}
 	EXPECT_EQ(test_parameters, read_parameters);
@@ -252,5 +252,5 @@ TEST(parser_ut, parse_get_next_parameter_test_code_fail)
 	};
 
 	aura::parameter parameter{0};
-	EXPECT_FALSE(aura::parser::get_next_parameter(test_string, parameter));
+	EXPECT_FALSE(aura::parser_legacy::get_next_parameter(test_string, parameter));
 }

@@ -56,7 +56,7 @@ const std::string connection::send_command(const std::string& command, uint16_t 
 
 bool connection::simple_command(const std::string& command, uint32_t wait_time_ms) {
 	const std::string result = send_command(command, MAX_BUFFER_LENGTH, wait_time_ms);
-	return parser::check_result(result);
+	return parser_legacy::check_result(result);
 }
 
 bool connection::check_event(const std::string& event) {
@@ -66,11 +66,11 @@ bool connection::check_event(const std::string& event) {
 	if (bytes_count <= 0) {
 		return false;
 	}
-	const auto read_event = parser::parse(input_buffer.get(), event, false);
+	const auto read_event = parser_legacy::parse(input_buffer.get(), event, false);
 	if (read_event.length() != event.length()) {
 		return false;
 	}
-	return parser::check_result(std::string(input_buffer.get() + event.length() + parser::EOL.length()));
+	return parser_legacy::check_result(std::string(input_buffer.get() + event.length() + parser_legacy::EOL.length()));
 }
 
 bool connection::test_uart() {

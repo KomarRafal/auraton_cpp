@@ -56,6 +56,20 @@ target_include_directories(statusparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
+add_library(commandparserlib)
+
+target_sources(commandparserlib
+	PRIVATE
+		${AURATON_SRC}/parser/command_parser.cpp
+)
+
+target_include_directories(commandparserlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+
+target_link_libraries(commandparserlib atparserlib sourceparserlib statusparserlib)
+
 add_library(cmdtestparserlib)
 
 target_sources(cmdtestparserlib
@@ -98,6 +112,13 @@ add_test(
     COMMAND cmd_test_parser_ut
 )
 
+add_executable(command_parser_ut command_parser_ut.cpp)					  
+target_link_libraries(command_parser_ut gtest gtest_main commandparserlib)
+add_test(
+    NAME command_parser_ut
+    COMMAND command_parser_ut
+)
+
 set_target_properties(atparserlib
                       at_parser_ut 
                       sourceparserlib 
@@ -106,6 +127,8 @@ set_target_properties(atparserlib
                       status_parser_ut
                       cmdtestparserlib
                       cmd_test_parser_ut
+                      commandparserlib
+                      command_parser_ut
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF

@@ -21,7 +21,7 @@ std::optional<at_type> at::parse(std::string_view& message) {
 		return std::nullopt;
 	}
 	message.remove_prefix(begin + BEGIN_TOKEN.size());
-	return at_type::OK;
+	return at_type::AT_OK;
 }
 
 }
