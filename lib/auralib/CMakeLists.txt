@@ -3,6 +3,8 @@ cmake_minimum_required (VERSION 3.13)
 project (auraton)
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
+add_subdirectory(parser)
+
 add_library(auralib)
 
 target_sources(auralib
@@ -18,3 +20,12 @@ target_include_directories(auralib
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/>
 )
+
+target_link_libraries(auralib parserlib)
+
+set_target_properties(auralib
+                      PROPERTIES
+                      CXX_STANDARD 17
+                      CXX_EXTENSIONS OFF
+                      CXX_STANDARD_REQUIRED ON
+                      )
