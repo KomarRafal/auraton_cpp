@@ -80,6 +80,8 @@ target_sources(parserslib
 	PRIVATE
 		${AURATON_SRC}/parser/at.cpp
 		${AURATON_SRC}/parser/source.cpp
+		${AURATON_SRC}/parser/source_command.cpp
+		${AURATON_SRC}/parser/simple_token.cpp
 		${AURATON_SRC}/parser/status.cpp
 		${AURATON_SRC}/parser/command_parser.cpp
 )

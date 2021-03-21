@@ -16,7 +16,6 @@ TEST(cmd_test_parser_ut, cmd_test_test_simple_ok)
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::TEST_OK);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_radio_error)
@@ -29,8 +28,7 @@ TEST(cmd_test_parser_ut, cmd_test_radio_error)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::RADIO_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_flash_error)
@@ -43,8 +41,7 @@ TEST(cmd_test_parser_ut, cmd_test_flash_error)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::FLASH_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_backup_error)
@@ -57,8 +54,7 @@ TEST(cmd_test_parser_ut, cmd_test_backup_error)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::BACKUP_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_radio_wrong_token)
@@ -71,8 +67,7 @@ TEST(cmd_test_parser_ut, cmd_test_radio_wrong_token)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::RADIO_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_radio_missing_token)
@@ -84,8 +79,7 @@ TEST(cmd_test_parser_ut, cmd_test_radio_missing_token)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::RADIO_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_flash_wrong_token)
@@ -98,8 +92,7 @@ TEST(cmd_test_parser_ut, cmd_test_flash_wrong_token)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::FLASH_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_flash_missing_token)
@@ -111,8 +104,7 @@ TEST(cmd_test_parser_ut, cmd_test_flash_missing_token)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::FLASH_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_backup_wrong_token)
@@ -125,8 +117,7 @@ TEST(cmd_test_parser_ut, cmd_test_backup_wrong_token)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::BACKUP_ERROR);
+	EXPECT_FALSE(parse_result);
 }
 
 TEST(cmd_test_parser_ut, cmd_test_backup_missing_token)
@@ -138,6 +129,5 @@ TEST(cmd_test_parser_ut, cmd_test_backup_missing_token)
 	std::string_view test_string_view(test_string);
 	aura::parser::cmd_test parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-	EXPECT_EQ(parse_result.value(), aura::parser::cmd_test_type::BACKUP_ERROR);
+	EXPECT_FALSE(parse_result);
 }

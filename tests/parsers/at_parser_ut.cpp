@@ -24,6 +24,19 @@ TEST(at_parser_ut, at_parse_test_simple_ok)
 	EXPECT_EQ(test_payload, static_cast<std::string>(test_string_view));
 }
 
+TEST(at_parser_ut, at_parse_test_empty)
+{
+	const std::string test_string {
+		"AT:START\r\n"
+		"AT:STOP\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::at parser_ut;
+	const auto parse_result = parser_ut.parse(test_string_view);
+	EXPECT_TRUE(parse_result);
+	EXPECT_TRUE(test_string_view.empty());
+}
+
 TEST(at_parser_ut, at_parse_test_complex_ok)
 {
 	const std::string test_payload {

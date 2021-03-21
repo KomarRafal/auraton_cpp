@@ -14,13 +14,9 @@ namespace aura
 namespace parser
 {
 
-enum at_type {
-	AT_OK,
-};
-
-class at : public parser_if<at_type> {
+class at : public parser_if {
 public:
-	virtual std::optional<at_type> parse(std::string_view& message);
+	virtual bool parse(std::string_view& message);
 
 private:
 	const std::string BEGIN_TOKEN = "AT:START" + EOL;
