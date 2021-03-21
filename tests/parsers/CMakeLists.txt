@@ -32,14 +32,16 @@ target_include_directories(atparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-add_library(sourceparserlib)
+add_library(sourcecommandparserlib)
 
-target_sources(sourceparserlib
+target_sources(sourcecommandparserlib
 	PRIVATE
+		${AURATON_SRC}/parser/source_command.cpp
 		${AURATON_SRC}/parser/source.cpp
+		${AURATON_SRC}/parser/simple_token.cpp
 )
 
-target_include_directories(sourceparserlib
+target_include_directories(sourcecommandparserlib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
@@ -49,6 +51,7 @@ add_library(statusparserlib)
 target_sources(statusparserlib
 	PRIVATE
 		${AURATON_SRC}/parser/status.cpp
+		${AURATON_SRC}/parser/simple_token.cpp
 )
 
 target_include_directories(statusparserlib
@@ -68,13 +71,14 @@ target_include_directories(commandparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-target_link_libraries(commandparserlib atparserlib sourceparserlib statusparserlib)
+target_link_libraries(commandparserlib atparserlib sourcecommandparserlib statusparserlib)
 
 add_library(cmdtestparserlib)
 
 target_sources(cmdtestparserlib
 	PRIVATE
 		${AURATON_SRC}/parser/cmd_test.cpp
+        ${AURATON_SRC}/parser/simple_token.cpp
 )
 
 target_include_directories(cmdtestparserlib
@@ -91,11 +95,11 @@ add_test(
     COMMAND at_parser_ut
 )
 
-add_executable(source_parser_ut source_parser_ut.cpp)					  
-target_link_libraries(source_parser_ut gtest gtest_main sourceparserlib)
+add_executable(source_command_parser_ut source_command_parser_ut.cpp)					  
+target_link_libraries(source_command_parser_ut gtest gtest_main sourcecommandparserlib)
 add_test(
-    NAME source_parser_ut
-    COMMAND source_parser_ut
+    NAME source_command_parser_ut
+    COMMAND source_command_parser_ut
 )
 
 add_executable(status_parser_ut status_parser_ut.cpp)					  
@@ -121,8 +125,8 @@ add_test(
 
 set_target_properties(atparserlib
                       at_parser_ut 
-                      sourceparserlib 
-                      source_parser_ut 
+                      sourcecommandparserlib 
+                      source_command_parser_ut 
                       statusparserlib
                       status_parser_ut
                       cmdtestparserlib

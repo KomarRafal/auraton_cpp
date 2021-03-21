@@ -1,9 +1,9 @@
 /*
  * command_parser.cpp
  */
-
+#include <vector>
 #include "command_parser.hpp"
-#include "source.hpp"
+#include "source_command.hpp"
 #include "status.hpp"
 #include "at.hpp"
 
@@ -16,22 +16,17 @@ namespace parser
 bool command_parser::parse(std::string_view& message)
 {
 	/* TODO: const */ parser::at at_parser;
-	const auto at_parser_result = at_parser.parse(message);
-	if (!at_parser_result.has_value())
-	{
-		return false;
-	}
-	/* const */parser::source source_parser;
-	const auto source_parser_result = source_parser.parse(message);
-	if (!source_parser_result.has_value() || source_parser_result.value() != source_type::COMMAND)
-	{
-		return false;
-	}
+	/* const */parser::source_command source_command_parser;
 	/*const */parser::status status_parser;
-	const auto status_parser_result = status_parser.parse(message);
-	if (!status_parser_result.has_value() || status_parser_result.value() != status_type::OK)
-	{
-		return false;
+	const std::vector<parser_if*> command_parser = {
+			&at_parser,
+			&source_command_parser,
+			&status_parser
+	};
+	for (auto parser : command_parser) {
+		if (parser->parse(message) == false) {
+			return false;
+		}
 	}
 	return true;
 }

@@ -10,7 +10,9 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/at.cpp
 		${CMAKE_CURRENT_LIST_DIR}/cmd_test.cpp
 		${CMAKE_CURRENT_LIST_DIR}/command_parser.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/simple_token.cpp
 		${CMAKE_CURRENT_LIST_DIR}/source.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/source_command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/status.cpp
 )
 
