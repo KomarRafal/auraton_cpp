@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 #include "parser/command_parser.hpp"
 
-TEST(command_parser_ut, command_parser_test_simple_ok)
+TEST(command_parser_ut, command_parser_test_simpl_ok)
 {
 	const std::string test_payload {
 		"Lorem ipsum dolor sit amet,\r\n"

@@ -77,8 +77,13 @@ add_library(cmdtestparserlib)
 
 target_sources(cmdtestparserlib
 	PRIVATE
+		${AURATON_SRC}/parser/at.cpp
 		${AURATON_SRC}/parser/cmd_test.cpp
         ${AURATON_SRC}/parser/simple_token.cpp
+        ${AURATON_SRC}/parser/status.cpp
+        ${AURATON_SRC}/parser/source_command.cpp
+        ${AURATON_SRC}/parser/source.cpp
+        ${AURATON_SRC}/parser/command.cpp
 )
 
 target_include_directories(cmdtestparserlib
