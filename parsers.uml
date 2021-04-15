@@ -1,0 +1,79 @@
+@startuml
+
+abstract class parser_if {
+  - EOL
+  + parse()
+}
+
+abstract class simple_token {
+  + parse()
+  + get_token()
+  + is_value_ok()
+}
+
+class source {
+  - SOURCE_TOKEN
+  + get_token()
+}
+
+class status {
+  - STATUS_TOKEN
+  + get_token()
+}
+
+class command {
+  - COMMAND_TOKEN
+  + get_token()
+}
+
+class at {
+  - BEGIN_TOKEN
+  - END_TOKEN
+  + parse()
+}
+
+class source_command {
+  + is_value_ok()
+}
+
+namespace commands {
+
+class test_command {
+  - TEST_COMMAND
+  + is_value_ok()
+}
+
+class test {
+  + parse()
+}
+
+class test_flash {
+  + get_token()
+}
+
+class test_radio {
+  + get_token()
+}
+
+class test_backup {
+  + get_token()
+}
+
+}
+
+parser_if <|-- simple_token
+simple_token <|-- source
+simple_token <|-- command
+source <|-- source_command
+simple_token <|-- status
+parser_if <|-- at
+parse_if <|-- commands.test
+command <|-- commands.test_command
+simple_token <|-- commands.test_flash
+commands.test *-- commands.test_flash
+simple_token <|-- commands.test_radio
+commands.test *-- commands.test_radio
+simple_token <|-- commands.test_backup
+commands.test *-- commands.test_backup
+
+@enduml

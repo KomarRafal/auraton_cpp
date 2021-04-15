@@ -3,7 +3,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "parser/command_parser.hpp"
+#include "parsers/command_parser.hpp"
 
 TEST(command_parser_ut, command_parser_test_simpl_ok)
 {
