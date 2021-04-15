@@ -3,7 +3,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "parser/at.hpp"
+#include "parsers/at.hpp"
 
 TEST(at_parser_ut, at_parse_test_simple_ok)
 {

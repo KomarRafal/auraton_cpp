@@ -78,12 +78,12 @@ add_library(parserslib)
 
 target_sources(parserslib
 	PRIVATE
-		${AURATON_SRC}/parser/at.cpp
-		${AURATON_SRC}/parser/source.cpp
-		${AURATON_SRC}/parser/source_command.cpp
-		${AURATON_SRC}/parser/simple_token.cpp
-		${AURATON_SRC}/parser/status.cpp
-		${AURATON_SRC}/parser/command_parser.cpp
+		${AURATON_SRC}/parsers/at.cpp
+		${AURATON_SRC}/parsers/source.cpp
+		${AURATON_SRC}/parsers/source_command.cpp
+		${AURATON_SRC}/parsers/simple_token.cpp
+		${AURATON_SRC}/parsers/status.cpp
+		${AURATON_SRC}/parsers/command_parser.cpp
 )
 
 target_include_directories(parserslib

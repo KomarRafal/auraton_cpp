@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <regex>
 
-#include "parser/command_parser.hpp"
+#include "parsers/command_parser.hpp"
 #include "aurachip.hpp"
 #include "parser.hpp"
 
