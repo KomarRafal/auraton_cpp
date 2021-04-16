@@ -61,20 +61,25 @@ target_include_directories(statusparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-add_library(commandparserlib)
+add_library(parserexecutorlib)
 
-target_sources(commandparserlib
+target_sources(parserexecutorlib
 	PRIVATE
-        ${AURATON_SRC}/parsers/command.cpp
-        ${AURATON_SRC}/parsers/command_parser.cpp
+	    ${AURATON_SRC}/parsers/parser_executor.cpp
+	    ${AURATON_SRC}/parsers/at.cpp
+	    ${AURATON_SRC}/parsers/source.cpp
+	    ${AURATON_SRC}/parsers/specific_source.cpp
+	    ${AURATON_SRC}/parsers/status.cpp
+	    ${AURATON_SRC}/parsers/command.cpp
+        ${AURATON_SRC}/parsers/commands/specific_command.cpp
 )
 
-target_include_directories(commandparserlib
+target_include_directories(parserexecutorlib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-target_link_libraries(commandparserlib atparserlib specificsourcelib statusparserlib)
+target_link_libraries(parserexecutorlib atparserlib specificsourcelib statusparserlib)
 
 enable_testing()
 
@@ -99,11 +104,11 @@ add_test(
     COMMAND status_parser_ut
 )			  
 
-add_executable(command_parser_ut command_parser_ut.cpp)					  
-target_link_libraries(command_parser_ut gtest gtest_main commandparserlib)
+add_executable(parser_executor_ut parser_executor_ut.cpp)					  
+target_link_libraries(parser_executor_ut gtest gtest_main parserexecutorlib)
 add_test(
-    NAME command_parser_ut
-    COMMAND command_parser_ut
+    NAME parser_executor_ut
+    COMMAND parser_executor_ut
 )
 
 set_target_properties(atparserlib
@@ -112,8 +117,8 @@ set_target_properties(atparserlib
                       specific_source_parser_ut 
                       statusparserlib
                       status_parser_ut
-                      commandparserlib
-                      command_parser_ut
+                      parserexecutorlib
+                      parser_executor_ut
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF

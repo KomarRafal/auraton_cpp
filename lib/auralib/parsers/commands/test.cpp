@@ -43,7 +43,7 @@ bool test::parse(std::string_view& message)
 			&flash_parser,
 			&backup_parser
 	};
-	// TODO: use common class
+	// TODO: parser_executor
 	for (auto parser : cmd_test_parser) {
 		if (parser->parse(message) == false) {
 			return false;

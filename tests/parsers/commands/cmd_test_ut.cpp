@@ -3,6 +3,7 @@
  */
 
 #include "parsers/commands/specific_command.hpp"
+#include "parsers/parser_executor.hpp"
 #include "parsers/commands/test.hpp"
 #include "gtest/gtest.h"
 
@@ -146,13 +147,9 @@ TEST(cmd_test_ut, cmd_test_algorithm_ok)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	bool status = false;
-	for (auto &parser : aura::parser::commands::test_builder::build()) {
-		status = parser->parse(test_string_view);
-		if (!status) {
-			break;
-		}
-	}
+	const bool status = aura::parser::parser_executor::execute(
+			test_string_view,
+			aura::parser::commands::test_builder::build());
 	EXPECT_TRUE(status);
 }
 
