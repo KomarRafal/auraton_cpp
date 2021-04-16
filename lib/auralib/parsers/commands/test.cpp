@@ -2,8 +2,8 @@
  * test.cpp
  */
 
+#include "parsers/commands/specific_command.hpp"
 #include "parsers/specific_source.hpp"
-#include "specific_command.hpp"
 #include "parsers/status.hpp"
 #include "parsers/at.hpp"
 #include "test.hpp"
@@ -62,7 +62,7 @@ const std::string test::get_command_token()
 test_builder::builder_t test_builder::build() const
 {
 	parser_ptr at_parser = std::make_unique<at>();
-	parser_ptr source_commnand_parser = std::make_unique<specific_source>(specific_source::COMMAND);
+	parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
 	parser_ptr test_command_parser = std::make_unique<specific_command>(test::get_command_token());
 	parser_ptr status_parser = std::make_unique<status>();
 	parser_ptr test_parser = std::make_unique<test>();

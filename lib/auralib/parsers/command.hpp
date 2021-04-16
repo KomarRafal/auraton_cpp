@@ -15,6 +15,8 @@ namespace parser
 
 class command : public simple_token {
 public:
+	static const std::string SOURCE_TOKEN;
+
 	virtual const std::string& get_token() const;
 
 private:
