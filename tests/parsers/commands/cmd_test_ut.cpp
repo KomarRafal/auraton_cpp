@@ -2,6 +2,7 @@
  * cmd_test_ut.cpp
  */
 
+#include "parsers/commands/specific_command.hpp"
 #include "parsers/commands/test.hpp"
 #include "gtest/gtest.h"
 
@@ -133,17 +134,6 @@ TEST(cmd_test_ut, cmd_test_backup_missing_token)
 }
 
 //TODO: whole response tests with builders - needs to be refactored
-TEST(cmd_test_ut, test_command_ok)
-{
-	const std::string test_string {
-		"COMMAND:TEST?\r\n"
-	};
-	std::string_view test_string_view(test_string);
-	aura::parser::commands::test parser_ut;
-	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_TRUE(parse_result);
-}
-
 TEST(cmd_test_ut, test_command_fail)
 {
 	const std::string test_string {
