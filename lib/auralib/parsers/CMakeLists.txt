@@ -11,7 +11,7 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/command_parser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/simple_token.cpp
 		${CMAKE_CURRENT_LIST_DIR}/source.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/source_command.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/specific_source.cpp
 		${CMAKE_CURRENT_LIST_DIR}/status.cpp
 )
 

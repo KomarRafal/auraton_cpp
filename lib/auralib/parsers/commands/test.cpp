@@ -2,7 +2,7 @@
  * test.cpp
  */
 
-#include "parsers/source_command.hpp"
+#include "parsers/specific_source.hpp"
 #include "specific_command.hpp"
 #include "parsers/status.hpp"
 #include "parsers/at.hpp"
@@ -34,6 +34,7 @@ const std::string& test_backup::get_token() const
 
 bool test::parse(std::string_view& message)
 {
+	// TODO: consts
 	/*const*/ test_radio radio_parser;
 	/*const*/ test_flash flash_parser;
 	/*const*/ test_backup backup_parser;
@@ -61,7 +62,7 @@ const std::string test::get_command_token()
 test_builder::builder_t test_builder::build() const
 {
 	parser_ptr at_parser = std::make_unique<at>();
-	parser_ptr source_commnand_parser = std::make_unique<source_command>();
+	parser_ptr source_commnand_parser = std::make_unique<specific_source>(specific_source::COMMAND);
 	parser_ptr test_command_parser = std::make_unique<specific_command>(test::get_command_token());
 	parser_ptr status_parser = std::make_unique<status>();
 	parser_ptr test_parser = std::make_unique<test>();

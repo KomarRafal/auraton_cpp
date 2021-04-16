@@ -25,7 +25,7 @@ add_library(parserslib)
 target_sources(parserslib
 	PRIVATE
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
-		${AURATON_SRC}/parsers/source_command.cpp
+		${AURATON_SRC}/parsers/specific_source.cpp
 		${AURATON_SRC}/parsers/at.cpp
 		${AURATON_SRC}/parsers/command.cpp
         ${AURATON_SRC}/parsers/command_parser.cpp
@@ -45,7 +45,7 @@ target_sources(cmdtestlib
 	PRIVATE
 		${AURATON_SRC}/parsers/commands/test.cpp
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
-		${AURATON_SRC}/parsers/source_command.cpp
+		${AURATON_SRC}/parsers/specific_source.cpp
 		${AURATON_SRC}/parsers/at.cpp
 		${AURATON_SRC}/parsers/command.cpp
 		${AURATON_SRC}/parsers/source.cpp
