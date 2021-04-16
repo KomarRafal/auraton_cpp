@@ -7,7 +7,6 @@
 
 #include "parsers/simple_token.hpp"
 #include "parsers/parser_if.hpp"
-#include "builder_if.hpp"
 
 namespace aura
 {
@@ -54,10 +53,10 @@ private:
 	static const std::string COMMAND_TEST_TOKEN;
 };
 
-class test_builder : public builder_if
+class test_builder
 {
 public:
-	virtual builder_t build() const;
+	static parser_if::parser_algorithm_t build();
 };
 
 }
