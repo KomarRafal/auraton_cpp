@@ -65,7 +65,8 @@ add_library(commandparserlib)
 
 target_sources(commandparserlib
 	PRIVATE
-		${AURATON_SRC}/parsers/command_parser.cpp
+        ${AURATON_SRC}/parsers/command.cpp
+        ${AURATON_SRC}/parsers/command_parser.cpp
 )
 
 target_include_directories(commandparserlib

@@ -19,9 +19,6 @@ public:
 	explicit specific_source(std::string specific_source);
 	virtual bool is_value_ok(const std::string_view& value) const;
 
-	static const std::string COMMAND;
-	static const std::string EVENT;
-
 private:
 	std::string source;
 };
