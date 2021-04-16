@@ -1,14 +1,13 @@
 /*
- * cmd_test.hpp
+ * test.hpp
  */
 
-#ifndef CMD_TEST_HPP_
-#define CMD_TEST_HPP_
+#ifndef COMMAND_TEST_HPP_
+#define COMMAND_TEST_HPP_
 
-#include <memory>
-#include "simple_token.hpp"
-#include "parser_if.hpp"
-#include "command.hpp"
+#include "parsers/simple_token.hpp"
+#include "parsers/parser_if.hpp"
+#include "builder_if.hpp"
 
 namespace aura
 {
@@ -46,18 +45,19 @@ private:
 	const std::string BACKUP_TOKEN = "BACKUP:";
 };
 
-class test_command : public command {
-public:
-	virtual bool is_value_ok(const std::string_view& value) const;
-
-private:
-	const std::string TEST_COMMAND = "TEST?";
-};
-
-class test : public parser_if {
+class test : public parser_if
+{
 public:
 	virtual bool parse(std::string_view& message);
-	static std::vector<std::unique_ptr<parser_if>> parser_builder();
+	static const std::string get_command_token();
+private:
+	static const std::string COMMAND_TEST_TOKEN;
+};
+
+class test_builder : public builder_if
+{
+public:
+	virtual builder_t build() const;
 };
 
 }

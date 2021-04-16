@@ -1,12 +1,12 @@
 /*
- * cmd_test.cpp
+ * test.cpp
  */
 
-#include <vector>
-#include "cmd_test.hpp"
-#include "at.hpp"
-#include "status.hpp"
-#include "source_command.hpp"
+#include "parsers/source_command.hpp"
+#include "specific_command.hpp"
+#include "parsers/status.hpp"
+#include "parsers/at.hpp"
+#include "test.hpp"
 
 namespace aura
 {
@@ -42,6 +42,7 @@ bool test::parse(std::string_view& message)
 			&flash_parser,
 			&backup_parser
 	};
+	// TODO: use common class
 	for (auto parser : cmd_test_parser) {
 		if (parser->parse(message) == false) {
 			return false;
@@ -50,26 +51,28 @@ bool test::parse(std::string_view& message)
 	return true;
 }
 
-std::vector<std::unique_ptr<parser_if>> test::parser_builder()
-{
-	std::unique_ptr<parser_if> at_parser = std::make_unique<at>();
-	std::unique_ptr<parser_if> source_commnand_parser = std::make_unique<source_command>();
-	std::unique_ptr<parser_if> test_command_parser = std::make_unique<test_command>();
-	std::unique_ptr<parser_if> status_parser = std::make_unique<status>();
-	std::unique_ptr<parser_if> test_parser = std::make_unique<test>();
+const std::string test::COMMAND_TEST_TOKEN = "TEST?";
 
-	std::vector<std::unique_ptr<parser_if>> parse_algorithm;
+const std::string test::get_command_token()
+{
+	return COMMAND_TEST_TOKEN;
+}
+
+test_builder::builder_t test_builder::build() const
+{
+	parser_ptr at_parser = std::make_unique<at>();
+	parser_ptr source_commnand_parser = std::make_unique<source_command>();
+	parser_ptr test_command_parser = std::make_unique<specific_command>(test::get_command_token());
+	parser_ptr status_parser = std::make_unique<status>();
+	parser_ptr test_parser = std::make_unique<test>();
+
+	builder_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));
 	parse_algorithm.push_back(std::move(source_commnand_parser));
 	parse_algorithm.push_back(std::move(test_command_parser));
 	parse_algorithm.push_back(std::move(status_parser));
 	parse_algorithm.push_back(std::move(test_parser));
 	return parse_algorithm;
-}
-
-bool test_command::is_value_ok(const std::string_view& value) const
-{
-	return (value == test_command::TEST_COMMAND);
 }
 
 }
