@@ -133,18 +133,6 @@ TEST(cmd_test_ut, cmd_test_backup_missing_token)
 	EXPECT_FALSE(parse_result);
 }
 
-//TODO: whole response tests with builders - needs to be refactored
-TEST(cmd_test_ut, test_command_fail)
-{
-	const std::string test_string {
-		"COMMAND:UKNOWN\r\n"
-	};
-	std::string_view test_string_view(test_string);
-	aura::parser::commands::test parser_ut;
-	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_FALSE(parse_result);
-}
-
 TEST(cmd_test_ut, cmd_test_algorithm_ok)
 {
 	const std::string test_string {
@@ -158,9 +146,8 @@ TEST(cmd_test_ut, cmd_test_algorithm_ok)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	const auto parser_builder = aura::parser::commands::test_builder();
 	bool status = false;
-	for (auto &parser : parser_builder.build()) {
+	for (auto &parser : aura::parser::commands::test_builder::build()) {
 		status = parser->parse(test_string_view);
 		if (!status) {
 			break;

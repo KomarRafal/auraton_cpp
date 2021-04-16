@@ -59,15 +59,15 @@ const std::string test::get_command_token()
 	return COMMAND_TEST_TOKEN;
 }
 
-test_builder::builder_t test_builder::build() const
+parser_if::parser_algorithm_t test_builder::build()
 {
-	parser_ptr at_parser = std::make_unique<at>();
-	parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
-	parser_ptr test_command_parser = std::make_unique<specific_command>(test::get_command_token());
-	parser_ptr status_parser = std::make_unique<status>();
-	parser_ptr test_parser = std::make_unique<test>();
+	parser_if::parser_ptr at_parser = std::make_unique<at>();
+	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
+	parser_if::parser_ptr test_command_parser = std::make_unique<specific_command>(test::get_command_token());
+	parser_if::parser_ptr status_parser = std::make_unique<status>();
+	parser_if::parser_ptr test_parser = std::make_unique<test>();
 
-	builder_t parse_algorithm;
+	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));
 	parse_algorithm.push_back(std::move(source_commnand_parser));
 	parse_algorithm.push_back(std::move(test_command_parser));
