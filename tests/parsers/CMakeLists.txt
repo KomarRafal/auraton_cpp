@@ -34,16 +34,16 @@ target_include_directories(atparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-add_library(sourcecommandparserlib)
+add_library(specificsourcelib)
 
-target_sources(sourcecommandparserlib
+target_sources(specificsourcelib
 	PRIVATE
-		${AURATON_SRC}/parsers/source_command.cpp
+		${AURATON_SRC}/parsers/specific_source.cpp
 		${AURATON_SRC}/parsers/source.cpp
 		${AURATON_SRC}/parsers/simple_token.cpp
 )
 
-target_include_directories(sourcecommandparserlib
+target_include_directories(specificsourcelib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
@@ -73,7 +73,7 @@ target_include_directories(commandparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-target_link_libraries(commandparserlib atparserlib sourcecommandparserlib statusparserlib)
+target_link_libraries(commandparserlib atparserlib specificsourcelib statusparserlib)
 
 enable_testing()
 
@@ -84,11 +84,11 @@ add_test(
     COMMAND at_parser_ut
 )
 
-add_executable(source_command_parser_ut source_command_parser_ut.cpp)					  
-target_link_libraries(source_command_parser_ut gtest gtest_main sourcecommandparserlib)
+add_executable(specific_source_parser_ut specific_source_parser_ut.cpp)					  
+target_link_libraries(specific_source_parser_ut gtest gtest_main specificsourcelib)
 add_test(
-    NAME source_command_parser_ut
-    COMMAND source_command_parser_ut
+    NAME specific_source_parser_ut
+    COMMAND specific_source_parser_ut
 )
 
 add_executable(status_parser_ut status_parser_ut.cpp)					  
@@ -107,8 +107,8 @@ add_test(
 
 set_target_properties(atparserlib
                       at_parser_ut 
-                      sourcecommandparserlib 
-                      source_command_parser_ut 
+                      specificsourcelib 
+                      specific_source_parser_ut 
                       statusparserlib
                       status_parser_ut
                       commandparserlib
