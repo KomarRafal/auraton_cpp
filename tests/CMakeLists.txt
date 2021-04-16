@@ -74,23 +74,6 @@ target_include_directories(commandlib
 )
 target_link_libraries(commandlib gmock)
 
-add_library(parserslib)
-
-target_sources(parserslib
-	PRIVATE
-		${AURATON_SRC}/parsers/at.cpp
-		${AURATON_SRC}/parsers/source.cpp
-		${AURATON_SRC}/parsers/source_command.cpp
-		${AURATON_SRC}/parsers/simple_token.cpp
-		${AURATON_SRC}/parsers/status.cpp
-		${AURATON_SRC}/parsers/command_parser.cpp
-)
-
-target_include_directories(parserslib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/parser>
-)
-
 add_library(aurachiplib)
 
 target_sources(aurachiplib
@@ -147,7 +130,6 @@ set_target_properties(device_ut
                       connectionlib 
                       connection_ut 
                       aurachip_ut 
-                      parserslib
                       aurachiplib
                       PROPERTIES
             CXX_STANDARD 17

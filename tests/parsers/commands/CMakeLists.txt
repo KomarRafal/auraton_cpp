@@ -20,6 +20,24 @@ FetchContent_MakeAvailable(googletest)
 set(AURATON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/auralib)
 set(STUBS ${CMAKE_CURRENT_SOURCE_DIR}/../../stubs)
 
+add_library(parserslib)
+
+target_sources(parserslib
+	PRIVATE
+		${AURATON_SRC}/parsers/commands/specific_command.cpp
+		${AURATON_SRC}/parsers/source_command.cpp
+		${AURATON_SRC}/parsers/at.cpp
+		${AURATON_SRC}/parsers/command.cpp
+        ${AURATON_SRC}/parsers/command_parser.cpp
+		${AURATON_SRC}/parsers/source.cpp
+		${AURATON_SRC}/parsers/status.cpp
+		${AURATON_SRC}/parsers/simple_token.cpp
+)
+
+target_include_directories(parserslib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
 
 add_library(cmdtestlib)
 
@@ -49,8 +67,17 @@ add_test(
     COMMAND cmd_test_ut
 )
 
+add_executable(specific_command_parser_ut specific_command_parser_ut.cpp)					  
+target_link_libraries(specific_command_parser_ut gtest gtest_main parserslib)
+add_test(
+    NAME specific_command_parser_ut
+    COMMAND specific_command_parser_ut
+)
+
 set_target_properties(cmdtestlib
+                      parserslib
                       cmd_test_ut
+                      specific_command_parser_ut
                       PROPERTIES
                       CXX_STANDARD 17
                       CXX_EXTENSIONS OFF
