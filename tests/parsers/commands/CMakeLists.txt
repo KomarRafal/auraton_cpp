@@ -29,6 +29,7 @@ target_sources(parserslib
 		${AURATON_SRC}/parsers/at.cpp
 		${AURATON_SRC}/parsers/command.cpp
         ${AURATON_SRC}/parsers/command_parser.cpp
+		${AURATON_SRC}/parsers/parser_executor.cpp
 		${AURATON_SRC}/parsers/source.cpp
 		${AURATON_SRC}/parsers/status.cpp
 		${AURATON_SRC}/parsers/simple_token.cpp
@@ -45,12 +46,6 @@ target_sources(cmdtestlib
 	PRIVATE
 		${AURATON_SRC}/parsers/commands/test.cpp
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
-		${AURATON_SRC}/parsers/specific_source.cpp
-		${AURATON_SRC}/parsers/at.cpp
-		${AURATON_SRC}/parsers/command.cpp
-		${AURATON_SRC}/parsers/source.cpp
-		${AURATON_SRC}/parsers/status.cpp
-		${AURATON_SRC}/parsers/simple_token.cpp
 )
 
 target_include_directories(cmdtestlib
@@ -61,7 +56,7 @@ target_include_directories(cmdtestlib
 enable_testing()
 
 add_executable(cmd_test_ut cmd_test_ut.cpp)					  
-target_link_libraries(cmd_test_ut gtest gtest_main cmdtestlib)
+target_link_libraries(cmd_test_ut gtest gtest_main cmdtestlib parserslib)
 add_test(
     NAME cmd_test_ut
     COMMAND cmd_test_ut
