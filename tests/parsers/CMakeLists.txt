@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.18)
 project(auraton_test)
 include(FetchContent)
 
+add_subdirectory(commands)
+
 set(GTEST_VERSION 1.10.0 CACHE STRING "Google test version")
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
@@ -73,24 +75,6 @@ target_include_directories(commandparserlib
 
 target_link_libraries(commandparserlib atparserlib sourcecommandparserlib statusparserlib)
 
-add_library(cmdtestparserlib)
-
-target_sources(cmdtestparserlib
-	PRIVATE
-		${AURATON_SRC}/parsers/at.cpp
-		${AURATON_SRC}/parsers/cmd_test.cpp
-        ${AURATON_SRC}/parsers/simple_token.cpp
-        ${AURATON_SRC}/parsers/status.cpp
-        ${AURATON_SRC}/parsers/source_command.cpp
-        ${AURATON_SRC}/parsers/source.cpp
-        ${AURATON_SRC}/parsers/command.cpp
-)
-
-target_include_directories(cmdtestparserlib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
-)
-
 enable_testing()
 
 add_executable(at_parser_ut at_parser_ut.cpp)					  
@@ -112,14 +96,7 @@ target_link_libraries(status_parser_ut gtest gtest_main statusparserlib)
 add_test(
     NAME status_parser_ut
     COMMAND status_parser_ut
-)
-
-add_executable(cmd_test_parser_ut cmd_test_parser_ut.cpp)					  
-target_link_libraries(cmd_test_parser_ut gtest gtest_main cmdtestparserlib)
-add_test(
-    NAME cmd_test_parser_ut
-    COMMAND cmd_test_parser_ut
-)
+)			  
 
 add_executable(command_parser_ut command_parser_ut.cpp)					  
 target_link_libraries(command_parser_ut gtest gtest_main commandparserlib)
@@ -134,8 +111,6 @@ set_target_properties(atparserlib
                       source_command_parser_ut 
                       statusparserlib
                       status_parser_ut
-                      cmdtestparserlib
-                      cmd_test_parser_ut
                       commandparserlib
                       command_parser_ut
                       PROPERTIES
