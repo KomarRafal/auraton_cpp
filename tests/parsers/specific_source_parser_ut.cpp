@@ -3,7 +3,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "parsers/specific_source.hpp"
+#include "specific_source.hpp"
 
 const std::string test_payload {
 	"Lorem ipsum dolor sit amet,\r\n"

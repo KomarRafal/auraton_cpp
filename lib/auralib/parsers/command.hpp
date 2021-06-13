@@ -2,6 +2,8 @@
  * command.hpp
  */
 
+// TODO: there are two headers: command.hpp.
+// Add prefix to include guard "PARSERS" and remove trailing "_"
 #ifndef COMMAND_HPP_
 #define COMMAND_HPP_
 

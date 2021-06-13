@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <regex>
 
+#include "parsers/parser_executor.hpp"
 #include "parsers/command_parser.hpp"
+#include "parsers/commands/test.hpp"
 #include "aurachip.hpp"
 #include "parser.hpp"
 
@@ -12,7 +14,12 @@ namespace aura
 {
 
 bool chip::test() {
-	return serial_connection.simple_command(command::compose(command::TEST));
+	auto command_result = serial_connection.send_command(command::compose(command::TEST));
+	std::string_view command_result_view{command_result};
+	const auto is_command_test_ok = parser::parser_executor::execute(
+			command_result_view,
+			parser::commands::test_builder::build());
+	return is_command_test_ok;
 }
 
 void chip::initialize() {

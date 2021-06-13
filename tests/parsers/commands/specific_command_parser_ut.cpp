@@ -3,7 +3,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "parsers/commands/specific_command.hpp"
+#include "commands/specific_command.hpp"
 
 const std::string test_payload {
 	"Lorem ipsum dolor sit amet,\r\n"

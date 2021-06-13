@@ -2,10 +2,10 @@
  * test.cpp
  */
 
-#include "parsers/commands/specific_command.hpp"
-#include "parsers/specific_source.hpp"
-#include "parsers/status.hpp"
-#include "parsers/at.hpp"
+#include "commands/specific_command.hpp"
+#include "specific_source.hpp"
+#include "status.hpp"
+#include "at.hpp"
 #include "test.hpp"
 
 namespace aura
@@ -52,7 +52,8 @@ bool test::parse(std::string_view& message)
 	return true;
 }
 
-const std::string test::COMMAND_TEST_TOKEN = "TEST?";
+// TODO: remove whitespace after fw fix
+const std::string test::COMMAND_TEST_TOKEN = " TEST?";
 
 const std::string test::get_command_token()
 {

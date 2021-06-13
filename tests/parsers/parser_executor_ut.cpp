@@ -2,12 +2,12 @@
  * parser_executor_ut.cpp
  */
 
-#include "parsers/commands/specific_command.hpp"
-#include "parsers/specific_source.hpp"
-#include "parsers/parser_executor.hpp"
-#include "parsers/parser_if.hpp"
-#include "parsers/status.hpp"
-#include "parsers/at.hpp"
+#include "commands/specific_command.hpp"
+#include "specific_source.hpp"
+#include "parser_executor.hpp"
+#include "parser_if.hpp"
+#include "status.hpp"
+#include "at.hpp"
 #include "gtest/gtest.h"
 
 class parser_executor_ut : public ::testing::Test
