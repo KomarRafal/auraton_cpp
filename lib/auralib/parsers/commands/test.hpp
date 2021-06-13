@@ -5,8 +5,8 @@
 #ifndef COMMAND_TEST_HPP_
 #define COMMAND_TEST_HPP_
 
-#include "parsers/simple_token.hpp"
-#include "parsers/parser_if.hpp"
+#include "simple_token.hpp"
+#include "parser_if.hpp"
 
 namespace aura
 {

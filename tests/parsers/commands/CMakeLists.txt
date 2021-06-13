@@ -25,6 +25,7 @@ add_library(parserslib)
 target_sources(parserslib
 	PRIVATE
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
+		${AURATON_SRC}/parsers/commands/test.cpp
 		${AURATON_SRC}/parsers/specific_source.cpp
 		${AURATON_SRC}/parsers/at.cpp
 		${AURATON_SRC}/parsers/command.cpp
@@ -37,7 +38,7 @@ target_sources(parserslib
 
 target_include_directories(parserslib
 	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
 add_library(cmdtestlib)
@@ -50,7 +51,7 @@ target_sources(cmdtestlib
 
 target_include_directories(cmdtestlib
 	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
 enable_testing()

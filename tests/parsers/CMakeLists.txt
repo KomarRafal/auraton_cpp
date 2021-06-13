@@ -31,7 +31,7 @@ target_sources(atparserlib
 
 target_include_directories(atparserlib
 	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
 add_library(specificsourcelib)
@@ -45,7 +45,7 @@ target_sources(specificsourcelib
 
 target_include_directories(specificsourcelib
 	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
 add_library(statusparserlib)
@@ -58,7 +58,7 @@ target_sources(statusparserlib
 
 target_include_directories(statusparserlib
 	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
 add_library(parserexecutorlib)
@@ -76,7 +76,7 @@ target_sources(parserexecutorlib
 
 target_include_directories(parserexecutorlib
 	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
 target_link_libraries(parserexecutorlib atparserlib specificsourcelib statusparserlib)

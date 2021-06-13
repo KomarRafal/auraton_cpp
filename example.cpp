@@ -14,6 +14,14 @@ void clean_cin() {
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
+bool open_device(aura::chip& aurachip) {
+	const bool is_opened = aurachip.get_connection().open();
+	if (is_opened) {
+		aurachip.get_connection().clear_receiver();
+	}
+	return is_opened;
+}
+
 bool show_device_info(aura::chip& aurachip) {
 	if (!aurachip.get_connection().test_uart()) {
 		return false;
@@ -161,8 +169,8 @@ bool handle_xtal_correction(aura::chip& aurachip) {
 
 using menu_t = std::tuple<const std::string, std::function<bool(aura::chip&)>>;
 std::map<char, menu_t> menu = {
-		{'o', { "open serial", [](aura::chip& aurachip) { return aurachip.get_connection().open(); } } },
-		{'c', { "close serial", [](aura::chip& aurachip)->bool { aurachip.get_connection().close(); return true; } } },
+		{'o', { "open serial device", [](aura::chip& aurachip) { return open_device(aurachip); } } },
+		{'c', { "close serial device", [](aura::chip& aurachip)->bool { aurachip.get_connection().close(); return true; } } },
 		{'u', { "test serial connection", [](aura::chip& aurachip)->bool { return aurachip.get_connection().test_uart(); } } },
 		{'t', { "test radio connection", [](aura::chip& aurachip)->bool { return aurachip.test(); } } },
 		{'i', { "show aurachip info", [](aura::chip& aurachip)->bool { return show_device_info(aurachip); } } },

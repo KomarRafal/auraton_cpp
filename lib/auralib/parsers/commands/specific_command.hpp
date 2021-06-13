@@ -6,7 +6,7 @@
 #define SPECIFIC_COMMAND_HPP_
 
 #include <string>
-#include "parsers/command.hpp"
+#include "command.hpp"
 
 namespace aura
 {

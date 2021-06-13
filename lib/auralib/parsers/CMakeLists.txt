@@ -15,6 +15,8 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/source.cpp
         ${CMAKE_CURRENT_LIST_DIR}/specific_source.cpp
 		${CMAKE_CURRENT_LIST_DIR}/status.cpp
+		${CMAKE_CURRENT_LIST_DIR}/commands/specific_command.cpp
+		${CMAKE_CURRENT_LIST_DIR}/commands/test.cpp
 )
 
 target_include_directories(parserlib

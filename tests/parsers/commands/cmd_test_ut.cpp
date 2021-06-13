@@ -2,9 +2,9 @@
  * cmd_test_ut.cpp
  */
 
-#include "parsers/commands/specific_command.hpp"
-#include "parsers/parser_executor.hpp"
-#include "parsers/commands/test.hpp"
+#include "commands/specific_command.hpp"
+#include "parser_executor.hpp"
+#include "commands/test.hpp"
 #include "gtest/gtest.h"
 
 TEST(cmd_test_ut, cmd_test_test_simple_ok)
@@ -139,7 +139,8 @@ TEST(cmd_test_ut, cmd_test_algorithm_ok)
 	const std::string test_string {
 		"AT:START\r\n"
 		"SOURCE:COMMAND\r\n"
-		"COMMAND:TEST?\r\n"
+		/* TODO: remove whitespace after FW fix */
+		"COMMAND: TEST?\r\n"
 		"STATUS:OK\r\n"
 		"RADIO:OK\r\n"
 		"FLASH:OK\r\n"
