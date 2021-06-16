@@ -6,7 +6,7 @@
 #define SIMPLE_TOKEN_HPP_
 
 #include <string>
-#include <map>
+//#include <map>
 #include "parser_if.hpp"
 
 namespace aura

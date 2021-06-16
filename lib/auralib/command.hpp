@@ -11,6 +11,7 @@
 
 namespace aura {
 
+// TODO: Remove it?
 class command {
 public:
 	enum code {

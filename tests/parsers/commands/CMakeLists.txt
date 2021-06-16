@@ -25,6 +25,7 @@ add_library(parserslib)
 target_sources(parserslib
 	PRIVATE
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
+		${AURATON_SRC}/parsers/commands/address.cpp
 		${AURATON_SRC}/parsers/commands/test.cpp
 		${AURATON_SRC}/parsers/specific_source.cpp
 		${AURATON_SRC}/parsers/at.cpp
@@ -54,6 +55,19 @@ target_include_directories(cmdtestlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(cmdaddresslib)
+
+target_sources(cmdaddresslib
+	PRIVATE
+		${AURATON_SRC}/parsers/commands/address.cpp
+		${AURATON_SRC}/parsers/commands/specific_command.cpp
+)
+
+target_include_directories(cmdaddresslib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 enable_testing()
 
 add_executable(cmd_test_ut cmd_test_ut.cpp)					  
@@ -61,6 +75,13 @@ target_link_libraries(cmd_test_ut gtest gtest_main cmdtestlib parserslib)
 add_test(
     NAME cmd_test_ut
     COMMAND cmd_test_ut
+)
+
+add_executable(cmd_address_ut cmd_address_ut.cpp)					  
+target_link_libraries(cmd_address_ut gtest gtest_main cmdaddresslib parserslib)
+add_test(
+    NAME cmd_address_ut
+    COMMAND cmd_address_ut
 )
 
 add_executable(specific_command_parser_ut specific_command_parser_ut.cpp)					  
@@ -71,8 +92,10 @@ add_test(
 )
 
 set_target_properties(cmdtestlib
+                      cmdaddresslib
                       parserslib
                       cmd_test_ut
+                      cmd_address_ut
                       specific_command_parser_ut
                       PROPERTIES
                       CXX_STANDARD 17

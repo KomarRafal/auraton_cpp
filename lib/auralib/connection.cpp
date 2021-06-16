@@ -82,6 +82,7 @@ bool connection::check_event(const std::string& event) {
 	return parser_legacy::check_result(std::string(input_buffer.get() + event.length() + parser_legacy::EOL.length()));
 }
 
+// TODO: check only AT layer?
 bool connection::test_uart() {
 	return simple_command("AT\n\r");
 }
