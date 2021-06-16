@@ -193,8 +193,7 @@ int main(int argc, char **argv) {
 #if defined (_WIN32) || defined( _WIN64)
 	const std::string uart_port = "COM4";
 #else
-	const std::string uart_port o
-	= "/dev/ttyUSB0";
+	const std::string uart_port = "/dev/ttyUSB0";
 #endif
 	aura::chip my_aura_chip{uart_port};
 	while (true) {
