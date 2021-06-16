@@ -13,7 +13,7 @@ namespace parser
 namespace commands
 {
 
-specific_command::specific_command(std::string specific_command) :
+specific_command::specific_command(const std::string& specific_command) :
 	command(specific_command) {
 }
 

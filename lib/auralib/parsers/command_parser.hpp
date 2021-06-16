@@ -6,8 +6,8 @@
 #define COMMAND_PARSER_HPP_
 
 #include <string_view>
+#include "parser_if.hpp"
 
-//TODO: DELETE this file and cpp
 namespace aura
 {
 
@@ -16,7 +16,13 @@ namespace parser
 
 class command_parser {
 public:
-	static bool parse(std::string_view& message);
+	static bool parse(std::string_view& message, const std::string& command);
+};
+
+class command_parser_builder
+{
+public:
+	static parser_if::parser_algorithm_t build(const std::string& command);
 };
 
 }

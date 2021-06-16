@@ -25,7 +25,7 @@ bool chip::test() {
 void chip::initialize() {
 	const auto version_str = serial_connection.send_command(command::compose(command::VERSION));
 	std::string_view version_str_view(version_str);
-	const auto is_version = parser::command_parser::parse(version_str_view);
+	const auto is_version = parser::command_parser::parse(version_str_view, command::Get(command::VERSION));
 	if (!is_version) {
 		initialize_flag = false;
 		return;
@@ -34,7 +34,7 @@ void chip::initialize() {
 
 	const auto address_str = serial_connection.send_command(command::compose(command::ADDRESS));
 	std::string_view address_str_view(address_str);
-	const auto is_address = parser::command_parser::parse(address_str_view);
+	const auto is_address = parser::command_parser::parse(address_str_view, command::Get(command::ADDRESS));
 	if (!is_address) {
 		initialize_flag = false;
 		return;

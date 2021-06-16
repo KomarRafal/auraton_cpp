@@ -38,7 +38,8 @@ TEST_F(parser_executor_ut, parser_executor_test_simpl_ok)
 	const std::string test_string {
 		"AT:START\r\n"
 		"SOURCE:TEST_SOURCE\r\n"
-		"COMMAND:TEST_COMMAND\r\n"
+		//TODO: remove space after fix
+		"COMMAND: TEST_COMMAND\r\n"
 		"STATUS:OK\r\n" +
 		test_payload +
 		"AT:STOP\r\n"

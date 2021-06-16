@@ -10,7 +10,7 @@ namespace aura
 namespace parser
 {
 
-specific_source::specific_source(std::string specific_source) :
+specific_source::specific_source(const std::string& specific_source) :
 	source(specific_source) {
 }
 

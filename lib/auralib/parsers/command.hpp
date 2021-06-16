@@ -22,7 +22,8 @@ public:
 	virtual const std::string& get_token() const;
 
 private:
-	const std::string COMMAND_TOKEN = "COMMAND:";
+	// TODO: remove whitespace after fw fix
+	const std::string COMMAND_TOKEN = "COMMAND: ";
 };
 
 }

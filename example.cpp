@@ -23,9 +23,6 @@ bool open_device(aura::chip& aurachip) {
 }
 
 bool show_device_info(aura::chip& aurachip) {
-	if (!aurachip.get_connection().test_uart()) {
-		return false;
-	}
 	aurachip.initialize();
 	std::cout << "product_code: " << aurachip.get_product_code() << std::endl;
 	std::cout << "fw_version: " << aurachip.get_fw_version() << std::endl;
@@ -196,7 +193,8 @@ int main(int argc, char **argv) {
 #if defined (_WIN32) || defined( _WIN64)
 	const std::string uart_port = "COM4";
 #else
-	const std::string uart_port = "/dev/ttyUSB0";
+	const std::string uart_port o
+	= "/dev/ttyUSB0";
 #endif
 	aura::chip my_aura_chip{uart_port};
 	while (true) {

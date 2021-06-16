@@ -19,7 +19,7 @@ namespace commands
 
 class specific_command : public command {
 public:
-	explicit specific_command(std::string specific_command);
+	explicit specific_command(const std::string& specific_command);
 	virtual bool is_value_ok(const std::string_view& value) const;
 
 private:
