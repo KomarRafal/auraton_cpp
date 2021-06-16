@@ -67,7 +67,7 @@ simple_token <|-- command
 source <|-- source_command
 simple_token <|-- status
 parser_if <|-- at
-parse_if <|-- commands.test
+parser_if <|-- commands.test
 command <|-- commands.test_command
 simple_token <|-- commands.test_flash
 commands.test *-- commands.test_flash
