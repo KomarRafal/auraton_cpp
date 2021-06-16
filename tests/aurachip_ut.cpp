@@ -31,6 +31,8 @@ TEST(aurachip_ut, initialize)
 	const std::string device_version {
 		"AT:START\r\n"
 		"SOURCE:COMMAND\r\n"
+		//TODO: remove space after fix
+		"COMMAND: VER?\r\n"
 		"STATUS:OK\r\n"
 		"HVER: 28\r\n"
 		"MANCODE: 2020\r\n"
@@ -42,6 +44,8 @@ TEST(aurachip_ut, initialize)
 	const std::string device_address {
 		"AT:START\r\n"
 		"SOURCE:COMMAND\r\n"
+		//TODO: remove space after fix
+		"COMMAND: ADDR?\r\n"
 		"STATUS:OK\r\n"
 		"ADDRESS: 3054412\r\n"
 		"AT:STOP\r\n"

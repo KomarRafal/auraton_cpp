@@ -52,8 +52,7 @@ bool test::parse(std::string_view& message)
 	return true;
 }
 
-// TODO: remove whitespace after fw fix
-const std::string test::COMMAND_TEST_TOKEN = " TEST?";
+const std::string test::COMMAND_TEST_TOKEN = "TEST?";
 
 const std::string test::get_command_token()
 {

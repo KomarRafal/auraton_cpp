@@ -2,9 +2,10 @@
  * command_parser.cpp
  */
 #include <vector>
-#include "command_parser.hpp"
+#include "commands/specific_command.hpp"
+#include "parser_executor.hpp"
 #include "specific_source.hpp"
-#include "command.hpp"
+#include "command_parser.hpp"
 #include "status.hpp"
 #include "at.hpp"
 
@@ -13,23 +14,29 @@ namespace aura
 
 namespace parser
 {
-//TODO: DELETE this file?
-bool command_parser::parse(std::string_view& message)
+
+parser_if::parser_algorithm_t command_parser_builder::build(const std::string& command)
 {
-	/* TODO: const */ parser::at at_parser;
-	/* const */parser::specific_source source_command_parser(parser::command::SOURCE_TOKEN);
-	/*const */parser::status status_parser;
-	const std::vector<parser_if*> command_parser = {
-			&at_parser,
-			&source_command_parser,
-			&status_parser
-	};
-	for (auto parser : command_parser) {
-		if (parser->parse(message) == false) {
-			return false;
-		}
-	}
-	return true;
+	// TODO: const everywhere
+	parser_if::parser_ptr at_parser = std::make_unique<at>();
+	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
+	parser_if::parser_ptr specific_command_parser = std::make_unique<commands::specific_command>(command);
+	parser_if::parser_ptr status_parser = std::make_unique<status>();
+
+	parser_if::parser_algorithm_t parse_algorithm;
+	parse_algorithm.push_back(std::move(at_parser));
+	parse_algorithm.push_back(std::move(source_commnand_parser));
+	parse_algorithm.push_back(std::move(specific_command_parser));
+	parse_algorithm.push_back(std::move(status_parser));
+	return parse_algorithm;
+}
+
+bool command_parser::parse(std::string_view& message, const std::string& command)
+{
+	const auto is_command_ok = parser::parser_executor::execute(
+			message,
+			command_parser_builder::build(command));
+	return is_command_ok;
 }
 
 }

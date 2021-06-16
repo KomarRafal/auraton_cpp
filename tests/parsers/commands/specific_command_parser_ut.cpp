@@ -17,7 +17,8 @@ TEST(specific_command_parser_ut, specific_command_test_ok)
 		"SPECIFIC_COMMAND"
 	};
 	const std::string test_string {
-		"COMMAND:" +
+		//TODO: remove space after fix
+		"COMMAND: " +
 		command +
 		"\r\n" +
 		test_payload

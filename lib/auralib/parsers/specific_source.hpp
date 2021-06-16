@@ -16,7 +16,7 @@ namespace parser
 
 class specific_source : public source {
 public:
-	explicit specific_source(std::string specific_source);
+	explicit specific_source(const std::string& specific_source);
 	virtual bool is_value_ok(const std::string_view& value) const;
 
 private:
