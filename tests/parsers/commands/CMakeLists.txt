@@ -27,6 +27,7 @@ target_sources(parserslib
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
 		${AURATON_SRC}/parsers/commands/address.cpp
 		${AURATON_SRC}/parsers/commands/test.cpp
+		${AURATON_SRC}/parsers/commands/xtal_correction.cpp
 		${AURATON_SRC}/parsers/specific_source.cpp
 		${AURATON_SRC}/parsers/at.cpp
 		${AURATON_SRC}/parsers/command.cpp
@@ -35,6 +36,7 @@ target_sources(parserslib
 		${AURATON_SRC}/parsers/source.cpp
 		${AURATON_SRC}/parsers/status.cpp
 		${AURATON_SRC}/parsers/simple_token.cpp
+		${AURATON_SRC}/parsers/simple_value.cpp
 )
 
 target_include_directories(parserslib
@@ -59,11 +61,24 @@ add_library(cmdaddresslib)
 
 target_sources(cmdaddresslib
 	PRIVATE
-		${AURATON_SRC}/parsers/commands/address.cpp
+		${AURATON_SRC}/parsers/commands/xtal_correction.cpp
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
 )
 
 target_include_directories(cmdaddresslib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
+add_library(cmdxtalcorrectionlib)
+
+target_sources(cmdxtalcorrectionlib
+	PRIVATE
+		${AURATON_SRC}/parsers/commands/address.cpp
+		${AURATON_SRC}/parsers/commands/specific_command.cpp
+)
+
+target_include_directories(cmdxtalcorrectionlib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
@@ -84,6 +99,13 @@ add_test(
     COMMAND cmd_address_ut
 )
 
+add_executable(cmd_xtal_correction_ut cmd_xtal_correction_ut.cpp)					  
+target_link_libraries(cmd_xtal_correction_ut gtest gtest_main cmdxtalcorrectionlib parserslib)
+add_test(
+    NAME cmd_xtal_correction_ut
+    COMMAND cmd_xtal_correction_ut
+)
+
 add_executable(specific_command_parser_ut specific_command_parser_ut.cpp)					  
 target_link_libraries(specific_command_parser_ut gtest gtest_main parserslib)
 add_test(
@@ -93,9 +115,11 @@ add_test(
 
 set_target_properties(cmdtestlib
                       cmdaddresslib
+                      cmdxtalcorrectionlib
                       parserslib
                       cmd_test_ut
                       cmd_address_ut
+                      cmd_xtal_correction_ut
                       specific_command_parser_ut
                       PROPERTIES
                       CXX_STANDARD 17

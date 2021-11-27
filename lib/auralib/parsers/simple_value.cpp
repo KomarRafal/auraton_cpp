@@ -24,6 +24,7 @@ bool simple_value::parse(std::string_view& message) {
 	}
 	const auto value = message.substr(0, end);
 	//TODO: there is only one line different from simple_token
+	message.remove_suffix(simple_value::EOL.size());
 	return is_value_ok(value);
 }
 
