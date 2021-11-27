@@ -48,3 +48,35 @@ TEST(cmd_xtal_correction_ut, cmdxtal_correction_wrong_token)
 	EXPECT_FALSE(parse_result);
 }
 
+TEST(cmd_xtal_correction_ut, cmdxtal_correction_wrong_value_1)
+{
+	const std::string test_string {
+		"VALUE: *800000\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::commands::xtal_correction parser_ut;
+	const auto parse_result = parser_ut.parse(test_string_view);
+	EXPECT_FALSE(parse_result);
+}
+
+TEST(cmd_xtal_correction_ut, cmdxtal_correction_wrong_value_2)
+{
+	const std::string test_string {
+		"VALUE: 800000 S\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::commands::xtal_correction parser_ut;
+	const auto parse_result = parser_ut.parse(test_string_view);
+	EXPECT_FALSE(parse_result);
+}
+
+TEST(cmd_xtal_correction_ut, cmdxtal_correction_wrong_value_3)
+{
+	const std::string test_string {
+		"VALUE: 80000A0\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::commands::xtal_correction parser_ut;
+	const auto parse_result = parser_ut.parse(test_string_view);
+	EXPECT_FALSE(parse_result);
+}

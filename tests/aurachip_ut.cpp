@@ -1360,7 +1360,14 @@ TEST(aurachip_ut, get_xtal_correction_ok)
 	auto& timeout_instance = timeout_raii.get_instance();
 
 	const int32_t xtal_value = -6548;
-	const std::string correct_answer{"VALUE: " + std::to_string(xtal_value) + "\r\n"};
+	const std::string correct_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: CRYSTALCORRECTION?\r\n"
+			"STATUS:OK\r\n"
+			"VALUE: " + std::to_string(xtal_value) + "\r\n"
+			"AT:STOP\r\n"
+	};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -1391,7 +1398,14 @@ TEST(aurachip_ut, get_xtal_correction_failed_token)
 	auto& timeout_instance = timeout_raii.get_instance();
 
 	const int32_t xtal_value = -6548;
-	const std::string wrong_answer{"VAL: " + std::to_string(xtal_value) + "\r\n"};
+	const std::string wrong_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: CRYSTALCORRECTION?\r\n"
+			"STATUS:OK\r\n"
+			"VAL: " + std::to_string(xtal_value) + "\r\n"
+			"AT:STOP\r\n"
+	};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -1419,8 +1433,14 @@ TEST(aurachip_ut, get_xtal_correction_failed_value)
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-
-	const std::string wrong_answer{"VALUE: 123AA\r\n"};
+	const std::string wrong_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: CRYSTALCORRECTION?\r\n"
+			"STATUS:OK\r\n"
+			"VALUE: 123AA\r\n"
+			"AT:STOP\r\n"
+	};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
