@@ -33,7 +33,7 @@ const std::string& xtal_correction::get_token() const
 
 bool xtal_correction::is_value_ok(const std::string_view& value) const
 {
-	const std::regex value_regex{"(\\+|-)?\\d+(\\s+)(\r?\n|$|$)"};
+	const std::regex value_regex{"(\\+|-)?\\d+(\\s+|$)"};
 	const auto xtal_value = static_cast<std::string>(value);
 	if (std::regex_match(xtal_value, std::regex(value_regex)))
 	{
