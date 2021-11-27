@@ -16,12 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout reposistory
+    - name: Checkout repository and submodules
       uses: actions/checkout@v2
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
       with:
-        remote: true
+        submodules: recursive
     - name: Get latest CMake and ninja
       uses: lukka/get-cmake@latest
     - name: Create Build Environment
@@ -29,7 +27,7 @@ jobs:
     - name: Generate
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        cmake -G Ninja --config $BUILD_TYPE $TESTS_SOURCE_FOLDER
+        cmake -G Ninja $TESTS_SOURCE_FOLDER
     - name: Build
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
@@ -43,12 +41,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout reposistory
+    - name: Checkout repository and submodules
       uses: actions/checkout@v2
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
       with:
-        remote: true
+        submodules: recursive
     - name: Get latest CMake and ninja
       uses: lukka/get-cmake@latest
     - name: Create Build Environment
@@ -56,7 +52,7 @@ jobs:
     - name: Generate
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
-        cmake -G Ninja --config $BUILD_TYPE $SOURCE_FOLDER
+        cmake -G Ninja $SOURCE_FOLDER
     - name: Build
       run: |
         cd ${{github.workspace}}/$BUILD_FOLDER
