@@ -11,11 +11,13 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/command_parser.cpp
 		${CMAKE_CURRENT_LIST_DIR}/parser_executor.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/simple_token.cpp
+		${CMAKE_CURRENT_LIST_DIR}/simple_token.cpp
+		${CMAKE_CURRENT_LIST_DIR}/simple_value.cpp
 		${CMAKE_CURRENT_LIST_DIR}/source.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/specific_source.cpp
+		${CMAKE_CURRENT_LIST_DIR}/specific_source.cpp
 		${CMAKE_CURRENT_LIST_DIR}/status.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/specific_command.cpp
+		${CMAKE_CURRENT_LIST_DIR}/commands/xtal_correction.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/test.cpp
 )
 

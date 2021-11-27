@@ -142,8 +142,8 @@ bool handle_xtal_correction(aura::chip& aurachip) {
 	const std::string string_buffer{read_buffer};
 	if (string_buffer.empty()) {
 		int32_t xtal_value;
-		const auto is_read_ok = aurachip.get_xtal_correction(xtal_value);
-		if (is_read_ok) {
+		status = aurachip.get_xtal_correction(xtal_value);
+		if (status == true) {
 			std::cout << "Crystal correction value: " << xtal_value << std::endl;
 		}
 		else {

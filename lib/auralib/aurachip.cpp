@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <regex>
 
+#include "parsers/commands/xtal_correction.hpp"
 #include "parsers/parser_executor.hpp"
 #include "parsers/command_parser.hpp"
 #include "parsers/commands/test.hpp"
@@ -120,15 +121,15 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 
 // std::optional could be better here for c++17
 bool chip::get_xtal_correction(int32_t& read_value) {
-	const std::regex value_regex{"(\\+|-)?\\d+(\r?\n|$)"};
 	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
-	const auto xtal_value = parser_legacy::parse(xtal_response, parser_legacy::VALUE_TOKEN);
-	if (xtal_value.empty() ||
-			!std::regex_match(xtal_value, std::regex(value_regex))) {
-		return false;
+	std::string_view xtal_response_view{xtal_response};
+	const auto is_command_xtal_correction_ok = parser::parser_executor::execute(
+			xtal_response_view,
+			parser::commands::xtal_correction_builder::build());
+	if (is_command_xtal_correction_ok) {
+		read_value = std::stoi(static_cast<std::string>(xtal_response_view));
 	}
-	read_value = std::stoi(xtal_value);
-	return true;
+	return is_command_xtal_correction_ok;
 }
 
 bool chip::set_xtal_correction(int32_t value) {
