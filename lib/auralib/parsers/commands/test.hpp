@@ -8,6 +8,16 @@
 #include "simple_token.hpp"
 #include "parser_if.hpp"
 
+/*
+AT:START
+SOURCE:COMMAND
+COMMAND: TEST?
+STATUS:OK
+RADIO:OK
+FLASH:OK
+BACKUP:OK
+AT:STOP
+*/
 namespace aura
 {
 

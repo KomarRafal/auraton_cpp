@@ -19,6 +19,7 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/commands/specific_command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/xtal_correction.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/test.cpp
+		${CMAKE_CURRENT_LIST_DIR}/commands/version.cpp
 )
 
 target_include_directories(parserlib
