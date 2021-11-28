@@ -7,12 +7,17 @@
 
 TEST(cmd_address_ut, cmd_address_ok)
 {
+	const std::string test_address = "9CDEB60B";
 	const std::string test_string {
-		"ADDRESS: 9CDEB60B\r\n"
+		"ADDRESS: " +
+		test_address +
+		"\r\n"
 	};
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::address parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
+	const auto parsed_value = static_cast<std::string>(test_string_view);
+	EXPECT_EQ(test_address, parsed_value);
 	EXPECT_TRUE(parse_result);
 }
 
@@ -27,7 +32,7 @@ TEST(cmd_address_ut, cmd_address_wrong_token)
 	EXPECT_FALSE(parse_result);
 }
 
-TEST(cmd_address_ut, cmd_address_wrong_value)
+TEST(cmd_address_ut, cmd_address_wrong_value_1)
 {
 	const std::string test_string {
 		"ADDRESS: CDEB60B\r\n"
@@ -38,3 +43,24 @@ TEST(cmd_address_ut, cmd_address_wrong_value)
 	EXPECT_FALSE(parse_result);
 }
 
+TEST(cmd_address_ut, cmd_address_wrong_value_2)
+{
+	const std::string test_string {
+		"ADDRESS: AABBCCRF\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::commands::address parser_ut;
+	const auto parse_result = parser_ut.parse(test_string_view);
+	EXPECT_FALSE(parse_result);
+}
+
+TEST(cmd_address_ut, cmd_address_wrong_value_3)
+{
+	const std::string test_string {
+		"ADDRESS: AABBCCDDEE\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::commands::address parser_ut;
+	const auto parse_result = parser_ut.parse(test_string_view);
+	EXPECT_FALSE(parse_result);
+}
