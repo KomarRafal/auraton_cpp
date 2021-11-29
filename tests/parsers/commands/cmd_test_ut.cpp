@@ -148,9 +148,9 @@ TEST(cmd_test_ut, cmd_test_algorithm_ok)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	const bool status = aura::parser::parser_executor::execute(
+	const auto status = aura::parser::parser_executor::execute(
 			test_string_view,
 			aura::parser::commands::test_builder::build());
-	EXPECT_TRUE(status);
+	EXPECT_TRUE(static_cast<bool>(status));
 }
 

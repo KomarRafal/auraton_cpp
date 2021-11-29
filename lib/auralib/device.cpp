@@ -2,10 +2,14 @@
  * device.cpp
  */
 #include <functional>
+#include <regex>
 #include <map>
 
 #include "parser.hpp"
 #include "device.hpp"
+
+// TBR
+#include <iostream>
 
 namespace aura
 {
@@ -30,6 +34,19 @@ device::device(const std::string& device_str) :
 	for (const auto& info : device_info) {
 		info.second(parser_legacy::parse(device_str, info.first));
 	}
+//	const uint8_t TOKENS_NUMBER = 5u;
+//	const std::regex split_regex{"(.+)(?:|$)"};
+//    auto lines_begin =  std::sregex_iterator(device_str.begin(), device_str.end(), split_regex);
+//    auto lines_end = std::sregex_iterator();
+//    if (std::distance(lines_begin, lines_end) != TOKENS_NUMBER) {
+//    	// TODO: throw?
+//    	return;
+//    }
+//    for (std::sregex_iterator it = lines_begin; it != lines_end; ++it) {
+//           std::smatch line = *it;
+//           std::string line_str = line.str();
+//           std::cout << line_str << " --- \n";
+//    }
 }
 
 }

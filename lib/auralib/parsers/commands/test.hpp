@@ -57,7 +57,7 @@ private:
 class test : public parser_if
 {
 public:
-	virtual bool parse(std::string_view& message);
+	virtual parsed_value parse(std::string_view& message);
 	static const std::string get_command_token();
 private:
 	static const std::string COMMAND_TEST_TOKEN;

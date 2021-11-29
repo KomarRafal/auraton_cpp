@@ -20,7 +20,7 @@ bool chip::test() {
 	const auto is_command_test_ok = parser::parser_executor::execute(
 			command_result_view,
 			parser::commands::test_builder::build());
-	return is_command_test_ok;
+	return is_command_test_ok.has_value();
 }
 
 void chip::initialize() {
@@ -123,13 +123,14 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 bool chip::get_xtal_correction(int32_t& read_value) {
 	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
 	std::string_view xtal_response_view{xtal_response};
-	const auto is_command_xtal_correction_ok = parser::parser_executor::execute(
+	const auto result_xtal_correction = parser::parser_executor::execute(
 			xtal_response_view,
 			parser::commands::xtal_correction_builder::build());
-	if (is_command_xtal_correction_ok) {
-		read_value = std::stoi(static_cast<std::string>(xtal_response_view));
+	if (result_xtal_correction.has_value()) {
+		read_value = std::stoi(*result_xtal_correction);
+		return true;
 	}
-	return is_command_xtal_correction_ok;
+	return false;
 }
 
 bool chip::set_xtal_correction(int32_t value) {

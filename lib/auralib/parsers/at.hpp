@@ -16,7 +16,7 @@ namespace parser
 
 class at : public parser_if {
 public:
-	virtual bool parse(std::string_view& message);
+	virtual parsed_value parse(std::string_view& message);
 
 private:
 	const std::string BEGIN_TOKEN = "AT:START" + EOL;

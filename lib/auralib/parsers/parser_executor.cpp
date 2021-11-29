@@ -10,9 +10,9 @@ namespace aura
 namespace parser
 {
 
-bool parser_executor::execute(std::string_view& message, const parser_if::parser_algorithm_t& parser_algorithm)
+parser_if::parsed_value parser_executor::execute(std::string_view& message, const parser_if::parser_algorithm_t& parser_algorithm)
 {
-	bool status = false;
+	parser_if::parsed_value status = {};
 	for (auto &parser : parser_algorithm) {
 		status = parser->parse(message);
 		if (!status) {

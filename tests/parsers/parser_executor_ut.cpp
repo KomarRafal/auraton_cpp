@@ -33,7 +33,7 @@ protected:
 	};
 };
 
-TEST_F(parser_executor_ut, parser_executor_test_simpl_ok)
+TEST_F(parser_executor_ut, parser_executor_test_simple_ok)
 {
 	const std::string test_string {
 		"AT:START\r\n"
@@ -45,8 +45,8 @@ TEST_F(parser_executor_ut, parser_executor_test_simpl_ok)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	const bool parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
-	EXPECT_TRUE(parse_result);
+	const auto parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
+	EXPECT_TRUE(parse_result.has_value());
 	EXPECT_EQ(test_payload, static_cast<std::string>(test_string_view));
 }
 
@@ -67,8 +67,8 @@ TEST_F(parser_executor_ut, parser_executor_test_fail)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	const bool parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
-	EXPECT_FALSE(parse_result);
+	const auto parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
+	EXPECT_FALSE(parse_result.has_value());
 }
 
 TEST_F(parser_executor_ut, parser_executor_algorithm_fail_1)
@@ -89,8 +89,8 @@ TEST_F(parser_executor_ut, parser_executor_algorithm_fail_1)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	const bool parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
-	EXPECT_FALSE(parse_result);
+	const auto parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
+	EXPECT_FALSE(static_cast<bool>(parse_result));
 }
 
 TEST_F(parser_executor_ut, parser_executor_algorithm_fail_2)
@@ -109,7 +109,7 @@ TEST_F(parser_executor_ut, parser_executor_algorithm_fail_2)
 		"AT:STOP\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	const bool parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
-	EXPECT_FALSE(parse_result);
+	const auto parse_result = aura::parser::parser_executor::execute(test_string_view, parse_algorithm);
+	EXPECT_FALSE(static_cast<bool>(parse_result));
 }
 

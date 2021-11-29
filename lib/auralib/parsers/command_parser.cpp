@@ -31,7 +31,7 @@ parser_if::parser_algorithm_t command_parser_builder::build(const std::string& c
 	return parse_algorithm;
 }
 
-bool command_parser::parse(std::string_view& message, const std::string& command)
+parser_if::parsed_value command_parser::parse(std::string_view& message, const std::string& command)
 {
 	const auto is_command_ok = parser::parser_executor::execute(
 			message,
