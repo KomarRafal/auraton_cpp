@@ -3,6 +3,7 @@
  */
 
 #include "commands/specific_command.hpp"
+#include "parser_executor.hpp"
 #include "specific_source.hpp"
 #include "status.hpp"
 #include "at.hpp"
@@ -32,24 +33,22 @@ const std::string& test_backup::get_token() const
 	return BACKUP_TOKEN;
 }
 
-bool test::parse(std::string_view& message)
+parser_if::parsed_value test::parse(std::string_view& message)
 {
-	// TODO: consts
-	/*const*/ test_radio radio_parser;
-	/*const*/ test_flash flash_parser;
-	/*const*/ test_backup backup_parser;
-	const std::vector<parser_if*> cmd_test_parser = {
-			&radio_parser,
-			&flash_parser,
-			&backup_parser
-	};
-	// TODO: parser_executor
-	for (auto parser : cmd_test_parser) {
-		if (parser->parse(message) == false) {
-			return false;
-		}
-	}
-	return true;
+	// TODO: const everywhere
+	parser_if::parser_ptr radio_parser = std::make_unique<test_radio>();
+	parser_if::parser_ptr flash_parser = std::make_unique<test_flash>();
+	parser_if::parser_ptr backup_parser = std::make_unique<test_backup>();
+
+	parser_if::parser_algorithm_t parse_algorithm;
+	parse_algorithm.push_back(std::move(radio_parser));
+	parse_algorithm.push_back(std::move(flash_parser));
+	parse_algorithm.push_back(std::move(backup_parser));
+
+	const auto is_test_ok = parser::parser_executor::execute(
+			message,
+			parse_algorithm);
+	return is_test_ok;
 }
 
 const std::string test::COMMAND_TEST_TOKEN = "TEST?";

@@ -16,7 +16,7 @@ namespace parser
 
 class command_parser {
 public:
-	static bool parse(std::string_view& message, const std::string& command);
+	static parser_if::parsed_value parse(std::string_view& message, const std::string& command);
 };
 
 class command_parser_builder
