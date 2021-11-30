@@ -34,6 +34,18 @@ target_include_directories(atparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(simpletokenlib)
+
+target_sources(simpletokenlib
+	PRIVATE
+		${AURATON_SRC}/parsers/simple_token.cpp
+)
+
+target_include_directories(simpletokenlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(specificsourcelib)
 
 target_sources(specificsourcelib
@@ -97,6 +109,13 @@ add_test(
     COMMAND specific_source_parser_ut
 )
 
+add_executable(simple_token_ut simple_token_ut.cpp)					  
+target_link_libraries(simple_token_ut gtest gtest_main simpletokenlib)
+add_test(
+    NAME simple_token_ut
+    COMMAND simple_token_ut
+)	
+
 add_executable(status_parser_ut status_parser_ut.cpp)					  
 target_link_libraries(status_parser_ut gtest gtest_main statusparserlib)
 add_test(
@@ -113,6 +132,8 @@ add_test(
 
 set_target_properties(atparserlib
                       at_parser_ut 
+                      simpletokenlib
+                      simple_token_ut
                       specificsourcelib 
                       specific_source_parser_ut 
                       statusparserlib
