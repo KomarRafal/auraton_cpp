@@ -5,7 +5,7 @@
 #ifndef COMMANDS_ADDRESS_HPP_
 #define COMMANDS_ADDRESS_HPP_
 
-#include "simple_value.hpp"
+#include "simple_token.hpp"
 
 namespace aura
 {
@@ -17,7 +17,7 @@ namespace commands
 {
 
 
-class address : public simple_value
+class address : public simple_token
 {
 public:
 	virtual const std::string& get_token() const;

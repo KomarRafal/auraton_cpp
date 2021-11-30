@@ -5,7 +5,7 @@
 #ifndef COMMANDS_XTAL_CORRECTION_HPP_
 #define COMMANDS_XTAL_CORRECTION_HPP_
 
-#include "simple_value.hpp"
+#include "simple_token.hpp"
 #include "parser_if.hpp"
 
 /*
@@ -27,9 +27,8 @@ namespace commands
 {
 
 // TODO:
-// 1. UT
-// 2. make builder common
-class xtal_correction : public simple_value
+// - make builder common
+class xtal_correction : public simple_token
 {
 public:
 	static const std::string get_command_token();

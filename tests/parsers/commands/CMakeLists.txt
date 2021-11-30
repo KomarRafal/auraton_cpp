@@ -37,7 +37,6 @@ target_sources(parserslib
 		${AURATON_SRC}/parsers/source.cpp
 		${AURATON_SRC}/parsers/status.cpp
 		${AURATON_SRC}/parsers/simple_token.cpp
-		${AURATON_SRC}/parsers/simple_value.cpp
 )
 
 target_include_directories(parserslib

@@ -5,7 +5,7 @@
 #ifndef COMMAND_VERSION_HPP_
 #define COMMAND_VERSION_HPP_
 
-#include "simple_value.hpp"
+#include "simple_token.hpp"
 
 /*
 PCODE: 300c
@@ -23,7 +23,7 @@ namespace parser
 namespace commands
 {
 
-class version_pcode : public simple_value
+class version_pcode : public simple_token
 {
 public:
 	virtual const std::string& get_token() const;
@@ -33,7 +33,7 @@ private:
 	const std::string PCODE_TOKEN = "PCODE: ";
 };
 
-class version_fw_version : public simple_value
+class version_fw_version : public simple_token
 {
 public:
 	virtual const std::string& get_token() const;
@@ -43,7 +43,7 @@ private:
 	const std::string FW_VERSION_TOKEN = "FVER: ";
 };
 
-class version_hw_version : public simple_value
+class version_hw_version : public simple_token
 {
 public:
 	virtual const std::string& get_token() const;
@@ -53,7 +53,7 @@ private:
 	const std::string HW_VERSION_TOKEN = "HVER: ";
 };
 
-class version_man_code : public simple_value
+class version_man_code : public simple_token
 {
 public:
 	virtual const std::string& get_token() const;
