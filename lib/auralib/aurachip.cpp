@@ -35,12 +35,12 @@ void chip::initialize() {
 
 	const auto address_str = serial_connection.send_command(command::compose(command::ADDRESS));
 	std::string_view address_str_view(address_str);
-	const auto is_address = parser::command_parser::parse(address_str_view, command::Get(command::ADDRESS));
-	if (!is_address) {
+	const auto address = parser::command_parser::parse(address_str_view, command::Get(command::ADDRESS));
+	if (!address.has_value()) {
 		initialize_flag = false;
 		return;
 	}
-	device_str.append(static_cast<std::string>(address_str_view));
+	device_str.append(address_str_view);
 	device dev(device_str);
 	static_cast<device*>(this)->operator=(dev);
 	initialize_flag = true;
@@ -119,18 +119,16 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 	return true;
 }
 
-// std::optional could be better here for c++17
-bool chip::get_xtal_correction(int32_t& read_value) {
+std::optional<int32_t> chip::get_xtal_correction() {
 	const auto xtal_response = serial_connection.send_command(command::compose(command::GET_XTAL_CORRECTION));
 	std::string_view xtal_response_view{xtal_response};
 	const auto result_xtal_correction = parser::parser_executor::execute(
 			xtal_response_view,
 			parser::commands::xtal_correction_builder::build());
 	if (result_xtal_correction.has_value()) {
-		read_value = std::stoi(*result_xtal_correction);
-		return true;
+		return std::stoi(*result_xtal_correction);
 	}
-	return false;
+	return std::nullopt;
 }
 
 bool chip::set_xtal_correction(int32_t value) {

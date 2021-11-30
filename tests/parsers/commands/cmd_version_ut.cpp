@@ -18,8 +18,7 @@ TEST(cmd_version_ut, cmd_pcode_version_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::version_pcode parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_value, parsed_value);
+	EXPECT_EQ(test_value, *parse_result);
 	EXPECT_TRUE(parse_result);
 }
 
@@ -56,8 +55,7 @@ TEST(cmd_version_ut, cmd_fw_version_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::version_fw_version parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_value, parsed_value);
+	EXPECT_EQ(test_value, *parse_result);
 	EXPECT_TRUE(parse_result);
 }
 
@@ -94,8 +92,7 @@ TEST(cmd_version_ut, cmd_hw_version_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::version_hw_version parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_value, parsed_value);
+	EXPECT_EQ(test_value, *parse_result);
 	EXPECT_TRUE(parse_result);
 }
 
@@ -132,8 +129,7 @@ TEST(cmd_version_ut, cmd_man_code_version_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::version_man_code parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_value, parsed_value);
+	EXPECT_EQ(test_value, *parse_result);
 	EXPECT_TRUE(parse_result);
 }
 

@@ -5,6 +5,7 @@
 #ifndef AURACHIP_HPP
 #define AURACHIP_HPP
 
+#include <optional>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -33,7 +34,7 @@ public:
 	bool link();
 	bool update_device_parameters(int32_t dev_id);
 	bool update_device_parameter(int32_t dev_id, int32_t code);
-	bool get_xtal_correction(int32_t& read_value);
+	std::optional<int32_t> get_xtal_correction();
 	bool set_xtal_correction(int32_t value);
 	static const uint32_t LINK_WAIT_MS = 32000;
 	bool reset();

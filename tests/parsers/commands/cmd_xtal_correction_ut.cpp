@@ -16,8 +16,7 @@ TEST(cmd_xtal_correction_ut, cmd_xtal_correction_positive_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::xtal_correction parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_value, parsed_value);
+	EXPECT_EQ(test_value, *parse_result);
 	EXPECT_TRUE(parse_result);
 }
 
@@ -32,8 +31,7 @@ TEST(cmd_xtal_correction_ut, cmd_xtal_correction_negative_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::xtal_correction parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_value, parsed_value);
+	EXPECT_EQ(test_value, *parse_result);
 	EXPECT_TRUE(parse_result);
 }
 

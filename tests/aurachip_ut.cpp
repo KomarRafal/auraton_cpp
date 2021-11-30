@@ -1384,9 +1384,9 @@ TEST(aurachip_ut, get_xtal_correction_ok)
 				testing::Return(correct_answer.length()))
 				);
 
-	int32_t read_value = 123;
-	EXPECT_TRUE(aura_chip_uut.get_xtal_correction(read_value));
-	EXPECT_EQ(read_value, xtal_value);
+	const auto read_value = aura_chip_uut.get_xtal_correction();
+	EXPECT_TRUE(read_value);
+	EXPECT_EQ(*read_value, xtal_value);
 }
 
 TEST(aurachip_ut, get_xtal_correction_failed_token)
@@ -1422,8 +1422,8 @@ TEST(aurachip_ut, get_xtal_correction_failed_token)
 				testing::Return(wrong_answer.length()))
 				);
 
-	int32_t read_value = 123;
-	EXPECT_FALSE(aura_chip_uut.get_xtal_correction(read_value));
+	const auto read_value = aura_chip_uut.get_xtal_correction();
+	EXPECT_FALSE(read_value);
 }
 
 TEST(aurachip_ut, get_xtal_correction_failed_value)
@@ -1457,6 +1457,6 @@ TEST(aurachip_ut, get_xtal_correction_failed_value)
 				testing::Return(wrong_answer.length()))
 				);
 
-	int32_t read_value = 123;
-	EXPECT_FALSE(aura_chip_uut.get_xtal_correction(read_value));
+	const auto read_value = aura_chip_uut.get_xtal_correction();
+	EXPECT_FALSE(read_value);
 }

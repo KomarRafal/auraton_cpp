@@ -16,9 +16,8 @@ TEST(cmd_address_ut, cmd_address_ok)
 	std::string_view test_string_view(test_string);
 	aura::parser::commands::address parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	const auto parsed_value = static_cast<std::string>(test_string_view);
-	EXPECT_EQ(test_address, parsed_value);
 	EXPECT_TRUE(parse_result);
+	EXPECT_EQ(test_address, *parse_result);
 }
 
 TEST(cmd_address_ut, cmd_address_wrong_token)
