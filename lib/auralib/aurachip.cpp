@@ -124,7 +124,7 @@ std::optional<int32_t> chip::get_xtal_correction() {
 	std::string_view xtal_response_view{xtal_response};
 	const auto result_xtal_correction = parser::parser_executor::execute(
 			xtal_response_view,
-			parser::commands::xtal_correction_builder::build());
+			parser::commands::get_xtal_correction_builder::build());
 	if (result_xtal_correction.has_value()) {
 		return std::stoi(*result_xtal_correction);
 	}
@@ -132,7 +132,15 @@ std::optional<int32_t> chip::get_xtal_correction() {
 }
 
 bool chip::set_xtal_correction(int32_t value) {
-	return serial_connection.simple_command(command::compose(command::SET_XTAL_CORRECTION, std::to_string(value)), 100);
+	const auto xtal_response = serial_connection.send_command(command::compose(command::SET_XTAL_CORRECTION, std::to_string(value)), 100, 100);
+	std::string_view xtal_response_view{xtal_response};
+	const auto result_xtal_correction = parser::parser_executor::execute(
+			xtal_response_view,
+			parser::commands::set_xtal_correction_builder::build());
+	if (result_xtal_correction.has_value()) {
+		return true;
+	}
+	return false;
 }
 
 bool chip::reset() {

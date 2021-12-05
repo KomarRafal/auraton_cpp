@@ -1294,13 +1294,20 @@ TEST(aurachip_ut, reset_fail)
 
 TEST(aurachip_ut, set_xtal_correction_ok)
 {
+	const std::string correct_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: CRYSTALCORRECTION\r\n"
+			"STATUS:OK\r\n"
+			"AT:STOP\r\n"
+	};
+
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
 
-	const std::string correct_answer{"OK\r\n"};
 	const int32_t xtal_value = -6548;
 	const std::string xtal_cmd{"AT+CRYSTALCORRECTION=" + std::to_string(xtal_value) + "\n"};
 
@@ -1320,6 +1327,42 @@ TEST(aurachip_ut, set_xtal_correction_ok)
 				);
 
 	EXPECT_TRUE(aura_chip_uut.set_xtal_correction(xtal_value));
+}
+
+TEST(aurachip_ut, set_xtal_correction_error)
+{
+	const std::string wrong_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: CRYSTALCORRECTION\r\n"
+			"STATUS:ERROR\r\n"
+			"AT:STOP\r\n"
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	const int32_t xtal_value = -6548;
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(wrong_answer),
+				testing::Return(wrong_answer.length()))
+				);
+
+	EXPECT_FALSE(aura_chip_uut.set_xtal_correction(xtal_value));
 }
 
 TEST(aurachip_ut, set_xtal_correction_fail)
