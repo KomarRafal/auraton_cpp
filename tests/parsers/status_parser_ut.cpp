@@ -81,7 +81,7 @@ TEST(status_parser_ut, status_parse_test_ok_eol_missing)
 	std::string_view test_string_view(test_string);
 	aura::parser::status parser_ut;
 	const auto parse_result = parser_ut.parse(test_string_view);
-	EXPECT_FALSE(parse_result);
+	EXPECT_TRUE(parse_result);
 }
 
 TEST(status_parser_ut, status_parse_test_ok_payload_missing)

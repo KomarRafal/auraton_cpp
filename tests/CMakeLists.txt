@@ -47,6 +47,8 @@ target_include_directories(devicelib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
+target_link_libraries(devicelib parserslib)
+
 add_library(connectionlib)
 
 target_sources(connectionlib
@@ -98,7 +100,7 @@ add_test(
 )
 
 add_executable(device_ut device_ut.cpp)
-target_link_libraries(device_ut gtest gtest_main parserlegacylib devicelib)
+target_link_libraries(device_ut gtest gtest_main devicelib)
            
 add_test(
     NAME device_ut
@@ -131,6 +133,7 @@ set_target_properties(device_ut
                       connection_ut 
                       aurachip_ut 
                       aurachiplib
+                      devicelib
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF

@@ -1,52 +1,44 @@
 /*
  * device.cpp
  */
+#include <string_view>
 #include <functional>
-#include <regex>
 #include <map>
 
-#include "parser.hpp"
+#include "parsers/commands/version.hpp"
+#include "parsers/commands/address.hpp"
+#include "parsers/simple_token.hpp"
 #include "device.hpp"
-
-// TBR
-#include <iostream>
 
 namespace aura
 {
 
-const std::string device::PRODUCT_CODE_TOKEN = "PCODE: ";
-const std::string device::FW_VERSION_TOKEN = "FVER: ";
-const std::string device::HW_VERSION_TOKEN = "HVER: ";
-const std::string device::MANUFACTURE_CODE_TOKEN = "MANCODE: ";
-const std::string device::ADDRESS_TOKEN = "ADDRESS: ";
-
-
 device::device(const std::string& device_str) :
 		product_code(), fw_version(), hw_version(), manufacture_code(), address(0), parameter_map() {
-	std::map<std::string, std::function<void(std::string)>> device_info = {
-			{ device::PRODUCT_CODE_TOKEN, [this](auto value) { set_product_code(value); } },
-			{ device::FW_VERSION_TOKEN, [this](auto value) { set_fw_version(value); }  },
-			{ device::HW_VERSION_TOKEN, [this](auto value) { set_hw_version(value); }  },
-			{ device::MANUFACTURE_CODE_TOKEN, [this](auto value) { set_manufacture_code(value); } },
-			{ device::ADDRESS_TOKEN, [this](auto value) { set_address(value); } },
+	parser::commands::address address_parser;
+	parser::commands::version_pcode pcode_parser;
+	parser::commands::version_fw_version fw_version_parser;
+	parser::commands::version_hw_version hw_version_parser;
+	parser::commands::version_man_code man_code_parser;
+
+	std::map<parser::simple_token*, std::function<void(std::string)>> device_info = {
+			{ &address_parser, [this](auto value) { set_address(value); } },
+			{ &pcode_parser, [this](auto value) { set_product_code(value); } },
+			{ &fw_version_parser, [this](auto value) { set_fw_version(value); }  },
+			{ &hw_version_parser, [this](auto value) { set_hw_version(value); }  },
+			{ &man_code_parser, [this](auto value) { set_manufacture_code(value); } },
 	};
 
 	for (const auto& info : device_info) {
-		info.second(parser_legacy::parse(device_str, info.first));
+		auto tmp_string = device_str;
+		std::string_view device_str_view(tmp_string);
+		const auto token = info.first->get_token();
+		const auto message = info.first->find(device_str_view, token);
+		std::string message_str = message.value_or("");
+		std::string_view message_str_view(message_str);
+		const auto value = info.first->parse(message_str_view);
+		info.second(value.value_or(""));
 	}
-//	const uint8_t TOKENS_NUMBER = 5u;
-//	const std::regex split_regex{"(.+)(?:|$)"};
-//    auto lines_begin =  std::sregex_iterator(device_str.begin(), device_str.end(), split_regex);
-//    auto lines_end = std::sregex_iterator();
-//    if (std::distance(lines_begin, lines_end) != TOKENS_NUMBER) {
-//    	// TODO: throw?
-//    	return;
-//    }
-//    for (std::sregex_iterator it = lines_begin; it != lines_end; ++it) {
-//           std::smatch line = *it;
-//           std::string line_str = line.str();
-//           std::cout << line_str << " --- \n";
-//    }
 }
 
 }
