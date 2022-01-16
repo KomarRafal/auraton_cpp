@@ -7,22 +7,25 @@
 
 #include "gtest/gtest.h"
 #include "device.hpp"
-#include "parser.hpp"
 
 class device_ut : public ::testing::Test {
 
 protected:
-	const std::string device_1_address{"1234ABCD"};
-	const int address = 305441741;
+	const std::string device_address{"1234ABCD"};
+	const int address = std::stoi(device_address, 0, 16);
+	const std::string hw_version{"28"};
+	const std::string manufacture_code{"2020"};
+	const std::string fw_version {"1.5.0"};
+	const std::string product_code{"23651.23"};
 	const std::string device_1 {
 		"Lorem ipsum dolor sit amet,"
-		"HVER: 28\r\n"
-		"MANCODE: 2020\r\n"
+		"HVER: " + hw_version + "\r\n"
+		"MANCODE: " + manufacture_code + "\r\n"
 		"consectetur adipiscing elit, sed do eiusmod\r\n"
-		"FVER: 1.5.0\r\n"
-		"PCODE: 23651.23\r\n"
+		"FVER: " + fw_version + "\r\n"
+		"PCODE: " + product_code + "\r\n"
 		"tempor incididunt ut labore et dolore magna aliqua.\r\n"
-		"ADDRESS: " + device_1_address};
+		"ADDRESS: " + device_address };
 
     bool is_empty(aura::device& dev_uut) {
     	const bool all_fields_empty = dev_uut.get_product_code().empty() &&
@@ -45,14 +48,10 @@ TEST_F(device_ut, ctor)
 {
 	aura::device dev_uut{device_1};
 	EXPECT_FALSE(is_empty(dev_uut));
-	EXPECT_EQ(dev_uut.get_product_code(),
-			aura::parser_legacy::parse(device_1, aura::device::PRODUCT_CODE_TOKEN));
-	EXPECT_EQ(dev_uut.get_fw_version(),
-			aura::parser_legacy::parse(device_1, aura::device::FW_VERSION_TOKEN));
-	EXPECT_EQ(dev_uut.get_hw_version(),
-			aura::parser_legacy::parse(device_1, aura::device::HW_VERSION_TOKEN));
-	EXPECT_EQ(dev_uut.get_manufacture_code(),
-			aura::parser_legacy::parse(device_1, aura::device::MANUFACTURE_CODE_TOKEN));
+	EXPECT_EQ(dev_uut.get_product_code(), product_code);
+	EXPECT_EQ(dev_uut.get_fw_version(), fw_version);
+	EXPECT_EQ(dev_uut.get_hw_version(), hw_version);
+	EXPECT_EQ(dev_uut.get_manufacture_code(), manufacture_code);
 	EXPECT_EQ(dev_uut.get_address(), address);
 }
 

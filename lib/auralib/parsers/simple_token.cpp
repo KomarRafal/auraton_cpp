@@ -23,11 +23,15 @@ parser_if::parsed_value simple_token::parse(std::string_view& message) {
 	}
 	message.remove_prefix(get_token().size());
 	const auto end = message.find(simple_token::EOL);
-	if (end == std::string_view::npos) 	{
-		return std::nullopt;
-	}
 	const auto value = message.substr(0, end);
-	message.remove_prefix(end + simple_token::EOL.size());
+	if (end == std::string::npos) {
+		// remove everything
+		message.remove_prefix(message.size());
+	}
+	else {
+		message.remove_prefix(end + simple_token::EOL.size());
+	}
+
 	if (is_value_ok(value)) {
 		return static_cast<std::string>(value);
 	}
