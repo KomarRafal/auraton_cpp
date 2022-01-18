@@ -33,9 +33,6 @@ bool show_device_info(aura::chip& aurachip) {
 }
 
 bool show_parred_devices(aura::chip& aurachip) {
-	if (!aurachip.get_connection().test_uart()) {
-		return false;
-	}
 	auto dev_cnt = aurachip.update_device_list();
 	std::cout << "Found: " << dev_cnt << " devices" << std::endl;
 	for (auto dev : aurachip.device_list) {
@@ -50,9 +47,6 @@ bool show_parred_devices(aura::chip& aurachip) {
 }
 
 bool show_dev_parameters(aura::chip& aurachip) {
-	if (!aurachip.get_connection().test_uart()) {
-		return false;
-	}
 	bool status = false;
 	const uint16_t max_buffer_size = 10;
 	char read_buffer[max_buffer_size];
@@ -89,9 +83,6 @@ bool show_dev_parameters(aura::chip& aurachip) {
 }
 
 bool show_dev_parameter(aura::chip& aurachip) {
-	if (!aurachip.get_connection().test_uart()) {
-		return false;
-	}
 	bool status = false;
 	const uint16_t max_buffer_size = 10;
 	char dev_id_buffer[max_buffer_size];
@@ -130,9 +121,6 @@ bool show_dev_parameter(aura::chip& aurachip) {
 }
 
 bool handle_xtal_correction(aura::chip& aurachip) {
-	if (!aurachip.get_connection().test_uart()) {
-		return false;
-	}
 	bool status = false;
 	const uint16_t max_buffer_size = 100;
 	char read_buffer[max_buffer_size];
@@ -168,7 +156,6 @@ using menu_t = std::tuple<const std::string, std::function<bool(aura::chip&)>>;
 std::map<char, menu_t> menu = {
 		{'o', { "open serial device", [](aura::chip& aurachip) { return open_device(aurachip); } } },
 		{'c', { "close serial device", [](aura::chip& aurachip)->bool { aurachip.get_connection().close(); return true; } } },
-		{'u', { "test serial connection", [](aura::chip& aurachip)->bool { return aurachip.get_connection().test_uart(); } } },
 		{'t', { "test radio connection", [](aura::chip& aurachip)->bool { return aurachip.test(); } } },
 		{'i', { "show aurachip info", [](aura::chip& aurachip)->bool { return show_device_info(aurachip); } } },
 		{'r', { "reset", [](aura::chip& aurachip)->bool { return aurachip.reset(); } } },
