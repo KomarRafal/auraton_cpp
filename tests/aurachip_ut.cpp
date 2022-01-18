@@ -1238,13 +1238,19 @@ TEST(aurachip_ut, update_device_list_ok)
 
 TEST(aurachip_ut, reset_ok)
 {
+	const std::string correct_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: RST\r\n"
+			"STATUS:OK\r\n"
+			"AT:STOP\r\n"
+	};
+
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-
-	const std::string correct_answer{"OK\r\n"};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -1266,13 +1272,19 @@ TEST(aurachip_ut, reset_ok)
 
 TEST(aurachip_ut, reset_fail)
 {
+	const std::string wrong_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: RST\r\n"
+			"STATUS:ERROR\r\n"
+			"AT:STOP\r\n"
+	};
+
 	const std::string device_port{"COM6"};
 	aura::chip aura_chip_uut{device_port};
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-
-	const std::string wrong_answer{"NULL\r\n"};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);

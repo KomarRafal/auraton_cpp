@@ -144,7 +144,10 @@ bool chip::set_xtal_correction(int32_t value) {
 }
 
 bool chip::reset() {
-	return serial_connection.simple_command(command::compose(command::RESET));
+	const auto reset_response = serial_connection.send_command(command::compose(command::RESET));
+	std::string_view reset_response_view{reset_response};
+	const auto is_reset_ok = parser::command_parser::parse(reset_response_view, command::Get(command::RESET));
+	return is_reset_ok.has_value();
 }
 
 bool chip::factory_reset() {
