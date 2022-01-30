@@ -79,8 +79,6 @@ TEST(clear_parser_ut, builder_ok)
 	const std::string test_value = "17";
 	const std::string test_string {
 		"AT:START\r\n"
-		"AT:STOP\r\n"
-		"AT:START\r\n"
 		"SOURCE:CLEAR\r\n"
 		"STATUS:OK\r\n"
 		"PROGRESS:" + test_value + "\r\n"
