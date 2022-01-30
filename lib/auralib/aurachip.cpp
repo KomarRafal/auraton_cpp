@@ -152,22 +152,16 @@ bool chip::reset() {
 
 bool chip::factory_reset() {
 	const auto response = serial_connection.send_command(command::compose(command::FACTORY_RESET), FACTORY_RESET_BUFFER_SIZE, FACTORY_RESET_WAIT_MS);
-	// Response should be:
-	// Clear:1%
-	// Clear:2%
-	// ...
-	// Clear:99%
-	// Clear:100%
-	// CheckIfPerformBackup, actual firmware is in 1 half
-	// OK
-	//
-	// So let's check clearing progress first.
-	const std::regex clear_regex{"\\Clear:\\d+%(?=\r?\n|$)"};
-	const auto regex_begin = std::sregex_iterator(response.begin(), response.end(), clear_regex);
-	const auto regex_end = std::sregex_iterator();
-	const auto clear_log_count = std::distance(regex_begin, regex_end);
-	const bool is_clear_ok = (clear_log_count == 100);
-	return is_clear_ok && parser_legacy::check_result(response);
+	std::string_view reset_response_view{response};
+	const auto is_reset_ok = parser::command_parser::parse(reset_response_view, command::Get(command::FACTORY_RESET));
+	if (!is_reset_ok.has_value()) {
+		return false;
+	}
+
+//	const auto status = aura::parser::parser_executor::execute(
+//			test_string_view,
+//			aura::parser::clear_builder::build());
+	return true;
 }
 
 int chip::update_device_list() {
