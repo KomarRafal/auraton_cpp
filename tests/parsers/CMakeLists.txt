@@ -34,6 +34,18 @@ target_include_directories(atparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(attraverselib)
+
+target_sources(attraverselib
+	PRIVATE
+		${AURATON_SRC}/parsers/at_traverse.cpp
+)
+
+target_include_directories(attraverselib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(simpletokenlib)
 
 target_sources(simpletokenlib
@@ -73,6 +85,24 @@ target_include_directories(statusparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(clearparserlib)
+
+target_sources(clearparserlib
+	PRIVATE
+		${AURATON_SRC}/parsers/clear.cpp
+		${AURATON_SRC}/parsers/simple_token.cpp
+		${AURATON_SRC}/parsers/specific_source.cpp
+		${AURATON_SRC}/parsers/source.cpp
+		${AURATON_SRC}/parsers/status.cpp
+		${AURATON_SRC}/parsers/at.cpp
+		${AURATON_SRC}/parsers/parser_executor.cpp
+)
+
+target_include_directories(clearparserlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(parserexecutorlib)
 
 target_sources(parserexecutorlib
@@ -102,6 +132,13 @@ add_test(
     COMMAND at_parser_ut
 )
 
+add_executable(at_traverse_ut at_traverse_ut.cpp)					  
+target_link_libraries(at_traverse_ut gtest gtest_main attraverselib)
+add_test(
+    NAME at_traverse_ut
+    COMMAND at_traverse_ut
+)
+
 add_executable(specific_source_parser_ut specific_source_parser_ut.cpp)					  
 target_link_libraries(specific_source_parser_ut gtest gtest_main specificsourcelib)
 add_test(
@@ -123,6 +160,13 @@ add_test(
     COMMAND status_parser_ut
 )			  
 
+add_executable(clear_parser_ut clear_parser_ut.cpp)					  
+target_link_libraries(clear_parser_ut gtest gtest_main clearparserlib)
+add_test(
+    NAME clear_parser_ut
+    COMMAND clear_parser_ut
+)	
+
 add_executable(parser_executor_ut parser_executor_ut.cpp)					  
 target_link_libraries(parser_executor_ut gtest gtest_main parserexecutorlib)
 add_test(
@@ -131,13 +175,17 @@ add_test(
 )
 
 set_target_properties(atparserlib
-                      at_parser_ut 
+                      at_parser_ut
+                      attraverselib
+                      at_traverse_ut
                       simpletokenlib
                       simple_token_ut
                       specificsourcelib 
                       specific_source_parser_ut 
                       statusparserlib
                       status_parser_ut
+                      clearparserlib
+                      clear_parser_ut
                       parserexecutorlib
                       parser_executor_ut
                       PROPERTIES

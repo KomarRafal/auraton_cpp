@@ -217,6 +217,11 @@ TEST(aurachip_ut, link_event_fail)
 TEST(aurachip_ut, factory_reset_ok)
 {
 	const std::string correct_answer {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: MSTRST\r\n"
+		"STATUS:OK\r\n"
+		"AT:STOP\r\n"
 			"Clear:1%\r\n"
 			"Clear:2%\r\n"
 			"Clear:3%\r\n"
