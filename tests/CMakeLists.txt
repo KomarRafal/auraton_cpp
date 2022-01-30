@@ -88,7 +88,7 @@ target_include_directories(aurachiplib
 		${STUBS}/
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
-target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib parserslib)
+target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib parserslib attraverselib clearparserlib)
 
 enable_testing()
 

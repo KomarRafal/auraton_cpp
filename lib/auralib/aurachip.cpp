@@ -8,6 +8,8 @@
 #include "parsers/parser_executor.hpp"
 #include "parsers/command_parser.hpp"
 #include "parsers/commands/test.hpp"
+#include "parsers/at_traverse.hpp"
+#include "parsers/clear.hpp"
 #include "aurachip.hpp"
 #include "parser.hpp"
 
@@ -153,14 +155,32 @@ bool chip::reset() {
 bool chip::factory_reset() {
 	const auto response = serial_connection.send_command(command::compose(command::FACTORY_RESET), FACTORY_RESET_BUFFER_SIZE, FACTORY_RESET_WAIT_MS);
 	std::string_view reset_response_view{response};
-	const auto is_reset_ok = parser::command_parser::parse(reset_response_view, command::Get(command::FACTORY_RESET));
+
+	parser::at_traverse response_traverse{ reset_response_view };
+	auto at_reset_block = response_traverse.get_next_block();
+	if (!at_reset_block.has_value()) {
+		return false;
+	}
+	std::string_view factory_reset_block_view{ at_reset_block.value() };
+	const auto is_reset_ok = parser::command_parser::parse(factory_reset_block_view, command::Get(command::FACTORY_RESET));
 	if (!is_reset_ok.has_value()) {
 		return false;
 	}
 
-//	const auto status = aura::parser::parser_executor::execute(
-//			test_string_view,
-//			aura::parser::clear_builder::build());
+	for (uint32_t percent = 1; percent <= 100; percent++) {
+		auto at_clear_block = response_traverse.get_next_block();
+		if (!at_clear_block.has_value()) {
+			return false;
+		}
+		std::string_view clear_block_view{ at_clear_block.value() };
+		const auto percent_str = aura::parser::parser_executor::execute(
+				clear_block_view,
+				aura::parser::clear_builder::build());
+		const auto is_percent_ok = (std::to_string(percent) == percent_str.value_or(""));
+		if (!is_percent_ok) {
+			return false;
+		}
+	}
 	return true;
 }
 

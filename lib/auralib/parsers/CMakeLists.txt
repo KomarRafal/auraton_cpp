@@ -8,6 +8,8 @@ add_library(parserlib)
 target_sources(parserlib
 	PRIVATE
 		${CMAKE_CURRENT_LIST_DIR}/at.cpp
+		${CMAKE_CURRENT_LIST_DIR}/at_traverse.cpp
+		${CMAKE_CURRENT_LIST_DIR}/clear.cpp
 		${CMAKE_CURRENT_LIST_DIR}/command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/command_parser.cpp
 		${CMAKE_CURRENT_LIST_DIR}/parser_executor.cpp
