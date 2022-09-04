@@ -38,6 +38,7 @@ public:
 		}
 		return static_cast<std::string>(message.substr(begin, end - begin));
 	}
+	virtual ~parser_if() { };
 };
 
 }

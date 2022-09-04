@@ -1,9 +1,9 @@
 /*
- * specific_command_parser_ut.cpp
+ * specific_event_parser_ut.cpp
  */
 
 #include "gtest/gtest.h"
-#include "commands/specific_command.hpp"
+#include "events/specific_event.hpp"
 
 const std::string test_payload {
 	"Lorem ipsum dolor sit amet,\r\n"
@@ -11,41 +11,39 @@ const std::string test_payload {
 	"tempor incididunt ut labore et dolore magna aliqua.\r\n"
 };
 
-TEST(specific_command_parser_ut, specific_command_test_ok)
+TEST(specific_event_parser_ut, specific_event_test_ok)
 {
-	const std::string command {
-		"SPECIFIC_COMMAND"
+	const std::string event {
+		"SPECIFIC_EVENT"
 	};
 	const std::string test_string {
-		//TODO: remove space after fix
-		"COMMAND: " +
-		command +
+		"EVENT:" +
+		event +
 		"\r\n" +
 		test_payload
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::specific_command parser_ut(command);
+	aura::parser::events::specific_event parser_ut(event);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_TRUE(parse_result);
 	EXPECT_EQ(test_payload, static_cast<std::string>(test_string_view));
 }
 
-TEST(specific_command_parser_ut, specific_command_test_fail)
+TEST(specific_event_parser_ut, specific_event_test_fail)
 {
-	const std::string command {
-		"SPECIFIC_COMMAND"
+	const std::string event {
+		"SPECIFIC_EVENT"
 	};
-	const std::string wrong_command {
-		"WRONG_COMMAND"
+	const std::string wrong_event {
+		"WRONG_EVENT"
 	};
 	const std::string test_string {
-		//TODO: remove space after fix
-		"COMMAND: " +
-		command +
+		"EVENT:" +
+		event +
 		"\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::specific_command parser_ut(wrong_command);
+	aura::parser::events::specific_event parser_ut(wrong_event);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }
