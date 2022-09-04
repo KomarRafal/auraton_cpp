@@ -61,7 +61,23 @@ const std::string connection::send_command(const std::string& command, uint16_t 
 	return std::string(input_buffer.get());
 }
 
-// TODO: can be removed?
+// TODO: add UT
+const std::string connection::read_event(uint16_t max_buffer_length, uint32_t max_wait_time_ms) {
+	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(max_buffer_length + 1);
+	if (max_wait_time_ms > 0) {
+		const auto is_empty = !wait_for_read(max_wait_time_ms);
+		if (is_empty) {
+			return std::string();
+		}
+	}
+	const auto bytes_count = serial_dev.readBytes(input_buffer.get(), max_buffer_length, 100, 0);
+	if (bytes_count <= 0) {
+		return std::string();
+	}
+	return std::string(input_buffer.get());
+}
+
+// TODO: can be removed after UT fixed
 bool connection::check_event(const std::string& event) {
 	const uint32_t buffer_length = event.length() + 10;
 	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(buffer_length);

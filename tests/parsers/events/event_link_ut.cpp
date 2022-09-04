@@ -74,12 +74,7 @@ TEST(event_link_ut, event_link_missing_token)
 
 TEST(event_link_ut, event_link_algorithm_ok)
 {
-	const std::string event_string {
-		"AT:START\r\n"
-		"SOURCE:EVENT\r\n"
-		"EVENT:LINK\r\n"
-		"STATUS:OK\r\n"
-		"DIRECTION:RECEIVE\r\n"
+	const std::string event_device {
 		"ID: 1\r\n"
 		"ADDRESS: 30090005\r\n"
 		"PCODE: 3009\r\n"
@@ -91,6 +86,14 @@ TEST(event_link_ut, event_link_algorithm_ok)
 		"FLAG OWN: 0\r\n"
 		"FLAG WRITEABLE: 1\r\n"
 		"VALUE: 0\r\n"
+	};
+	const std::string event_string {
+		"AT:START\r\n"
+		"SOURCE:EVENT\r\n"
+		"EVENT:LINK\r\n"
+		"STATUS:OK\r\n"
+		"DIRECTION:RECEIVE\r\n" +
+		event_device +
 		"AT:STOP\r\n"
 	};
 	std::string_view event_string_view(event_string);
@@ -98,5 +101,6 @@ TEST(event_link_ut, event_link_algorithm_ok)
 			event_string_view,
 			aura::parser::events::link_builder::build());
 	EXPECT_TRUE(static_cast<bool>(status));
+	EXPECT_EQ(std::string{event_string_view}, event_device);
 }
 

@@ -10,6 +10,7 @@
 #include "parsers/commands/test.hpp"
 #include "parsers/at_traverse.hpp"
 #include "parsers/clear.hpp"
+#include "events/link.hpp"
 #include "aurachip.hpp"
 #include "parser.hpp"
 
@@ -49,18 +50,18 @@ void chip::initialize() {
 }
 
 bool chip::link() {
-	const auto link_str = serial_connection.send_command(command::compose(command::LINK));
-	std::string_view link_str_view{link_str};
+	const auto link_string = serial_connection.send_command(command::compose(command::LINK));
+	std::string_view link_str_view{link_string};
 	const auto is_link_ok = parser::command_parser::parse(link_str_view, command::Get(command::LINK));
 	if (!is_link_ok.has_value()) {
 		return false;
 	}
-	const bool is_event = serial_connection.wait_for_read(LINK_WAIT_MS);
-	if (!is_event) {
-		return false;
-	}
-	const bool is_event_ok = serial_connection.check_event(command::Get(command::EVENT_LINK));
-	return is_event_ok;
+	const auto event_string = serial_connection.read_event(parser::events::link::MAX_BUFFER_BYTES, parser::events::link::LINK_WAIT_MS);
+	std::string_view event_string_view{event_string};
+	const auto status = aura::parser::parser_executor::execute(
+			event_string_view,
+			aura::parser::events::link_builder::build());
+	return static_cast<bool>(status);
 }
 
 device* chip::get_local_device(int32_t dev_id, std::string get_dev_response) {
