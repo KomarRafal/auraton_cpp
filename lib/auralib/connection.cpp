@@ -62,12 +62,6 @@ const std::string connection::send_command(const std::string& command, uint16_t 
 }
 
 // TODO: can be removed?
-bool connection::simple_command(const std::string& command, uint32_t wait_time_ms) {
-	const std::string result = send_command(command, MAX_BUFFER_LENGTH, wait_time_ms);
-	return parser_legacy::check_result(result);
-}
-
-// TODO: can be removed?
 bool connection::check_event(const std::string& event) {
 	const uint32_t buffer_length = event.length() + 10;
 	std::unique_ptr<char[]> input_buffer = std::make_unique<char[]>(buffer_length);

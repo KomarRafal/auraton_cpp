@@ -18,7 +18,6 @@ public:
 	bool wait_for_read(uint32_t max_time_ms = WAIT_SLEEP_MS);
 	void clear_receiver();
 	const std::string send_command(const std::string& command, uint16_t max_buffer_length = MAX_BUFFER_LENGTH, uint32_t wait_time_ms = WAIT_TIMEOUT_MS);
-	bool simple_command(const std::string& command, uint32_t wait_time_ms = WAIT_TIMEOUT_MS);
 	bool check_event(const std::string& event);
 	serialib& get_serial_dev() {
 		return serial_dev;
