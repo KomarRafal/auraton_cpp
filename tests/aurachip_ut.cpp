@@ -88,7 +88,13 @@ TEST(aurachip_ut, link_ok)
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-	const std::string correct_answer{"OK\r\n"};
+	const std::string correct_answer{
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LINK\r\n"
+		"STATUS:OK\r\n"
+		"AT:STOP\r\n"
+		};
 	const std::string correct_event{
 		"EVENT_LINK\r\n"
 		"OK\r\n"
@@ -126,7 +132,13 @@ TEST(aurachip_ut, link_cmd_fail)
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-	const std::string wrong_answer{"ERR\r\n"};
+	const std::string wrong_answer{
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LINK\r\n"
+			"STATUS:ERROR\r\n"
+			"AT:STOP\r\n"
+	};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -153,7 +165,13 @@ TEST(aurachip_ut, link_event_missing)
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-	const std::string correct_answer{"OK\r\n"};
+	const std::string correct_answer{
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LINK\r\n"
+		"STATUS:OK\r\n"
+		"AT:STOP\r\n"
+		};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.WillRepeatedly(testing::Return());
@@ -183,7 +201,13 @@ TEST(aurachip_ut, link_event_fail)
 	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
 	TimeoutRAII timeout_raii;
 	auto& timeout_instance = timeout_raii.get_instance();
-	const std::string correct_answer{"OK\r\n"};
+	const std::string correct_answer{
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LINK\r\n"
+		"STATUS:OK\r\n"
+		"AT:STOP\r\n"
+		};
 	const std::string correct_event{
 		"EVENT_LINK\r\n"
 		"ERR\r\n"
