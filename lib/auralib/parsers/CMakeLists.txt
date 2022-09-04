@@ -22,6 +22,10 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/commands/xtal_correction.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/test.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/version.cpp
+		${CMAKE_CURRENT_LIST_DIR}/events/direction.cpp
+		${CMAKE_CURRENT_LIST_DIR}/events/event.cpp
+		${CMAKE_CURRENT_LIST_DIR}/events/link.cpp
+		${CMAKE_CURRENT_LIST_DIR}/events/specific_event.cpp
 )
 
 target_include_directories(parserlib

@@ -96,9 +96,24 @@ TEST(aurachip_ut, link_ok)
 		"AT:STOP\r\n"
 		};
 	const std::string correct_event{
-		"EVENT_LINK\r\n"
-		"OK\r\n"
-		};
+		"AT:START\r\n"
+		"SOURCE:EVENT\r\n"
+		"EVENT:LINK\r\n"
+		"STATUS:OK\r\n"
+		"DIRECTION:RECEIVE\r\n"
+		"ID: 1\r\n"
+		"ADDRESS: 30090005\r\n"
+		"PCODE: 3009\r\n"
+		"FVER: 1.11\r\n"
+		"HVER: 1.0\r\n"
+		"MANCODE: 30\r\n"
+		"CODE: 32\r\n"
+		"CHANNEL: 0\r\n"
+		"FLAG OWN: 0\r\n"
+		"FLAG WRITEABLE: 1\r\n"
+		"VALUE: 0\r\n"
+		"AT:STOP\r\n"
+	};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(1);
@@ -208,9 +223,12 @@ TEST(aurachip_ut, link_event_fail)
 		"STATUS:OK\r\n"
 		"AT:STOP\r\n"
 		};
-	const std::string correct_event{
-		"EVENT_LINK\r\n"
-		"ERR\r\n"
+	const std::string error_event{
+		"AT:START\r\n"
+		"SOURCE:EVENT\r\n"
+		"EVENT:LINK\r\n"
+		"STATUS:ERROR\r\n"
+		"AT:STOP\r\n"
 		};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
@@ -228,8 +246,8 @@ TEST(aurachip_ut, link_event_fail)
 				testing::Return(correct_answer.length()))
 				)
 		.WillOnce(testing::DoAll(
-				SetArgNPointeeTo<0>(correct_event),
-				testing::Return(correct_event.length()))
+				SetArgNPointeeTo<0>(error_event),
+				testing::Return(error_event.length()))
 				);
 
 	EXPECT_CALL(serial_dev, available())

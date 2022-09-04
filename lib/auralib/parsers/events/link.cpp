@@ -19,8 +19,7 @@ namespace parser
 namespace events
 {
 
-parser_if::parsed_value link::parse(std::string_view& message)
-{
+parser_if::parsed_value link::parse(std::string_view& message) {
 	// TODO: const everywhere
 	parser_if::parser_ptr direction_parser = std::make_unique<direction::receive>();
 
@@ -35,13 +34,11 @@ parser_if::parsed_value link::parse(std::string_view& message)
 
 const std::string link::EVENT_LINK_TOKEN = "LINK";
 
-const std::string link::get_event_token()
-{
+const std::string link::get_event_token() {
 	return EVENT_LINK_TOKEN;
 }
 
-parser_if::parser_algorithm_t link_builder::build()
-{
+parser_if::parser_algorithm_t link_builder::build() {
 	parser_if::parser_ptr at_parser = std::make_unique<at>();
 	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(event::SOURCE_TOKEN);
 	parser_if::parser_ptr link_event_parser = std::make_unique<specific_event>(link::get_event_token());

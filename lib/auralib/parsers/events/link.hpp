@@ -39,6 +39,8 @@ namespace events
 class link : public parser_if
 {
 public:
+	static const uint32_t LINK_WAIT_MS = 32000;
+	static const uint32_t MAX_BUFFER_BYTES = 3000;
 	virtual parsed_value parse(std::string_view& message);
 	static const std::string get_event_token();
 private:

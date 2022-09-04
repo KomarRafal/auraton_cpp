@@ -36,7 +36,6 @@ public:
 	bool update_device_parameter(int32_t dev_id, int32_t code);
 	std::optional<int32_t> get_xtal_correction();
 	bool set_xtal_correction(int32_t value);
-	static const uint32_t LINK_WAIT_MS = 32000;
 	bool reset();
 	static const uint16_t FACTORY_RESET_BUFFER_SIZE = 7000;
 	static const uint32_t FACTORY_RESET_WAIT_MS = 22000;
