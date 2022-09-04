@@ -27,7 +27,7 @@ bool chip::test() {
 
 void chip::initialize() {
 	const auto version_str = serial_connection.send_command(command::compose(command::VERSION));
-	std::string_view version_str_view(version_str);
+	std::string_view version_str_view{version_str};
 	const auto is_version = parser::command_parser::parse(version_str_view, command::Get(command::VERSION));
 	if (!is_version) {
 		initialize_flag = false;
@@ -36,7 +36,7 @@ void chip::initialize() {
 	std::string device_str(static_cast<std::string>(version_str_view));
 
 	const auto address_str = serial_connection.send_command(command::compose(command::ADDRESS));
-	std::string_view address_str_view(address_str);
+	std::string_view address_str_view{address_str};
 	const auto address = parser::command_parser::parse(address_str_view, command::Get(command::ADDRESS));
 	if (!address.has_value()) {
 		initialize_flag = false;
@@ -49,8 +49,10 @@ void chip::initialize() {
 }
 
 bool chip::link() {
-	const bool is_cmd_ok = serial_connection.simple_command(command::compose(command::LINK));
-	if (!is_cmd_ok) {
+	const auto link_str = serial_connection.send_command(command::compose(command::LINK));
+	std::string_view link_str_view{link_str};
+	const auto is_link_ok = parser::command_parser::parse(link_str_view, command::Get(command::LINK));
+	if (!is_link_ok.has_value()) {
 		return false;
 	}
 	const bool is_event = serial_connection.wait_for_read(LINK_WAIT_MS);
