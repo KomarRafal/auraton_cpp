@@ -165,7 +165,7 @@ std::map<char, menu_t> menu = {
 		{'i', { "show aurachip info", [](aura::chip& aurachip)->bool { return show_device_info(aurachip); } } },
 		{'r', { "reset", [](aura::chip& aurachip)->bool { return aurachip.reset(); } } },
 		{'f', { "factory reset", [](aura::chip& aurachip)->bool { return start_factory_reset(aurachip); } } },
-		{'l', { "start linking", [](aura::chip& aurachip)->bool { return aurachip.link(); } } },
+		{'l', { "start linking (~30s)", [](aura::chip& aurachip)->bool { return aurachip.link(); } } },
 		{'d', { "show parried devices", [](aura::chip& aurachip)->bool { return show_parred_devices(aurachip); } } },
 		{'p', { "show device options", [](aura::chip& aurachip)->bool { return show_dev_parameters(aurachip); } } },
 		{'n', { "show device option", [](aura::chip& aurachip)->bool { return show_dev_parameter(aurachip); } } },
