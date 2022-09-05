@@ -177,32 +177,16 @@ TEST(connection_ut, send_command_fail)
 	EXPECT_TRUE(response.empty());
 }
 
-TEST(connection_ut, check_event_ok)
+TEST(connection_ut, read_event_ok)
 {
 	const std::string device_port{"COM6"};
 	aura::connection connection_uut{device_port};
 	auto& serial_dev = connection_uut.get_serial_dev();
-	const std::string test_event{"EVENT_UT"};
 	const char receive_buffer[] = "XXX\r\nEVENT_UT\r\nOK\r\nX";
 	const size_t buffer_size = sizeof(receive_buffer);
 
-	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
-		.WillOnce(testing::DoAll(
-				SetArgNPointeeTo<0>(std::begin(receive_buffer), buffer_size),
-				testing::Return(buffer_size))
-				);
-
-	EXPECT_TRUE(connection_uut.check_event(test_event));
-}
-
-TEST(connection_ut, check_event_fail_wrong_token)
-{
-	const std::string device_port{"COM6"};
-	aura::connection connection_uut{device_port};
-	auto& serial_dev = connection_uut.get_serial_dev();
-	const std::string test_event{"EVENT_UT"};
-	const char receive_buffer[] = "XXX\r\nEVENT\r\nOK\r\nX";
-	const size_t buffer_size = sizeof(receive_buffer);
+	EXPECT_CALL(serial_dev, available())
+		.WillRepeatedly(testing::Return(buffer_size));
 
 	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
@@ -210,25 +194,8 @@ TEST(connection_ut, check_event_fail_wrong_token)
 				testing::Return(buffer_size))
 				);
 
-	EXPECT_FALSE(connection_uut.check_event(test_event));
-}
-
-TEST(connection_ut, check_event_fail_wrong_status)
-{
-	const std::string device_port{"COM6"};
-	aura::connection connection_uut{device_port};
-	auto& serial_dev = connection_uut.get_serial_dev();
-	const std::string test_event{"EVENT_UT"};
-	const char receive_buffer[] = "XXX\r\nEVENT_UT\r\nERROR\r\nX";
-	const size_t buffer_size = sizeof(receive_buffer);
-
-	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
-		.WillOnce(testing::DoAll(
-				SetArgNPointeeTo<0>(std::begin(receive_buffer), buffer_size),
-				testing::Return(buffer_size))
-				);
-
-	EXPECT_FALSE(connection_uut.check_event(test_event));
+	const auto event = connection_uut.read_event(buffer_size, 100);
+	EXPECT_EQ(event, receive_buffer);
 }
 
 TEST(connection_ut, check_event_fail_empty_buffer)
@@ -241,5 +208,6 @@ TEST(connection_ut, check_event_fail_empty_buffer)
 	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::Return(0));
 
-	EXPECT_FALSE(connection_uut.check_event(test_event));
+	auto const event = connection_uut.read_event(10, 0);
+	EXPECT_TRUE(event.empty());
 }
