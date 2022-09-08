@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 project(auraton_test)
 include(FetchContent)
 
@@ -47,7 +47,7 @@ target_include_directories(devicelib
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
 
-target_link_libraries(devicelib parserslib)
+target_link_libraries(devicelib parserlib)
 
 add_library(connectionlib)
 
@@ -88,7 +88,7 @@ target_include_directories(aurachiplib
 		${STUBS}/
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
-target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib parserslib attraverselib clearparserlib eventslib)
+target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib parserlib attraverselib clearparserlib)
 
 enable_testing()
 

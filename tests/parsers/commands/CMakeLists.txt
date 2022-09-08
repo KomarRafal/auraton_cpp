@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 project(auraton_test)
 include(FetchContent)
 
@@ -20,29 +20,7 @@ FetchContent_MakeAvailable(googletest)
 set(AURATON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/auralib)
 set(STUBS ${CMAKE_CURRENT_SOURCE_DIR}/../../stubs)
 
-add_library(parserslib)
-
-target_sources(parserslib
-	PRIVATE
-		${AURATON_SRC}/parsers/commands/specific_command.cpp
-		${AURATON_SRC}/parsers/commands/address.cpp
-		${AURATON_SRC}/parsers/commands/test.cpp
-		${AURATON_SRC}/parsers/commands/version.cpp
-		${AURATON_SRC}/parsers/commands/xtal_correction.cpp
-		${AURATON_SRC}/parsers/specific_source.cpp
-		${AURATON_SRC}/parsers/at.cpp
-		${AURATON_SRC}/parsers/command.cpp
-        ${AURATON_SRC}/parsers/command_parser.cpp
-		${AURATON_SRC}/parsers/parser_executor.cpp
-		${AURATON_SRC}/parsers/source.cpp
-		${AURATON_SRC}/parsers/status.cpp
-		${AURATON_SRC}/parsers/simple_token.cpp
-)
-
-target_include_directories(parserslib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
-)
+add_subdirectory(${AURATON_SRC}/parsers parserlib)
 
 add_library(cmdtestlib)
 
@@ -98,35 +76,35 @@ target_include_directories(cmdxtalcorrectionlib
 enable_testing()
 
 add_executable(cmd_test_ut cmd_test_ut.cpp)					  
-target_link_libraries(cmd_test_ut gtest gtest_main cmdtestlib parserslib)
+target_link_libraries(cmd_test_ut gtest gtest_main cmdtestlib parserlib)
 add_test(
     NAME cmd_test_ut
     COMMAND cmd_test_ut
 )
 
 add_executable(cmd_version_ut cmd_version_ut.cpp)					  
-target_link_libraries(cmd_version_ut gtest gtest_main cmdversionlib parserslib)
+target_link_libraries(cmd_version_ut gtest gtest_main cmdversionlib parserlib)
 add_test(
     NAME cmd_version_ut
     COMMAND cmd_version_ut
 )
 
 add_executable(cmd_address_ut cmd_address_ut.cpp)					  
-target_link_libraries(cmd_address_ut gtest gtest_main cmdaddresslib parserslib)
+target_link_libraries(cmd_address_ut gtest gtest_main cmdaddresslib parserlib)
 add_test(
     NAME cmd_address_ut
     COMMAND cmd_address_ut
 )
 
 add_executable(cmd_xtal_correction_ut cmd_xtal_correction_ut.cpp)					  
-target_link_libraries(cmd_xtal_correction_ut gtest gtest_main cmdxtalcorrectionlib parserslib)
+target_link_libraries(cmd_xtal_correction_ut gtest gtest_main cmdxtalcorrectionlib parserlib)
 add_test(
     NAME cmd_xtal_correction_ut
     COMMAND cmd_xtal_correction_ut
 )
 
 add_executable(specific_command_parser_ut specific_command_parser_ut.cpp)					  
-target_link_libraries(specific_command_parser_ut gtest gtest_main parserslib)
+target_link_libraries(specific_command_parser_ut gtest gtest_main parserlib)
 add_test(
     NAME specific_command_parser_ut
     COMMAND specific_command_parser_ut
@@ -136,7 +114,6 @@ set_target_properties(cmdtestlib
                       cmdversionlib
                       cmdaddresslib
                       cmdxtalcorrectionlib
-                      parserslib
                       cmd_test_ut
                       cmd_version_ut
                       cmd_address_ut
