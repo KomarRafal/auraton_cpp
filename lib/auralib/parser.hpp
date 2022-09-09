@@ -28,7 +28,6 @@ public:
 	static std::string parse(const std::string& input_str, const std::string& token, bool omit_token = true);
 	static device_list_t parse_device_list(const std::string& input_str);
 	static bool get_next_parameter(std::string& input_string, parameter& read_parameter);
-	static bool check_result(const std::string& input_str);
 };
 
 }

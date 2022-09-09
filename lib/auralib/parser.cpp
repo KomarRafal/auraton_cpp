@@ -107,9 +107,5 @@ bool parser_legacy::get_next_parameter(std::string& input_str, parameter& read_p
 	}
 }
 
-bool parser_legacy::check_result(const std::string& input_str) {
-	const std::string status = parse(input_str, OK_TOKEN, false);
-	return (status.length() == OK_TOKEN.length());
-}
 
 }
