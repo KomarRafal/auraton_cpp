@@ -127,32 +127,6 @@ TEST(parser_ut, parse_device_list_test)
 	EXPECT_EQ(device_dup, ok_it_dup->second);
 }
 
-TEST(parser_ut, check_result_test)
-{
-	const std::string terminated_ok_test_string{
-				"Lorem ipsum dolor sit amet,\r\n"
-				"consectetur adipiscing elit, sed do eiusmod\r\n"
-				"tempor incididunt ut labore et dolore magna aliqua.\r\n"
-				"OK\r\n"
-				"Everything else should be omitted."
-			};
-	const std::string ok_test_string{
-				"Lorem ipsum dolor sit amet,\r\n"
-				"consectetur adipiscing elit, sed do eiusmod\r\n"
-				"tempor incididunt ut labore et dolore magna aliqua.\r\n"
-				"OK"
-			};
-	const std::string error_test_string{
-				"Lorem ipsum dolor sit amet,\r\n"
-				"consectetur adipiscing elit, sed do eiusmod\r\n"
-				"tempor incididunt ut labore et dolore magna aliqua.\r\n"
-				"ERROR\r\n"
-			};
-	EXPECT_TRUE(aura::parser_legacy::check_result(terminated_ok_test_string));
-	EXPECT_TRUE(aura::parser_legacy::check_result(ok_test_string));
-	EXPECT_FALSE(aura::parser_legacy::check_result(error_test_string));
-}
-
 TEST(parser_ut, parse_get_next_parameter_test_ok)
 {
 	std::string test_string{
