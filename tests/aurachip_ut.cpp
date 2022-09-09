@@ -1020,12 +1020,17 @@ TEST(aurachip_ut, update_device_parameters_ok)
 	};
 
 	const std::string device_str {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::vector<aura::parameter> test_parameters {
@@ -1187,12 +1192,17 @@ TEST(aurachip_ut, update_device_parameters_wrong_device)
 	};
 
 	const std::string device_str {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 222222\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const int32_t dev_id = 3;
@@ -1275,12 +1285,17 @@ TEST(aurachip_ut, update_device_parameter_ok)
 	};
 
 	const std::string device_str = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const aura::parameter test_parameter{ code, 2, 1, 0 , 202 };
@@ -1361,12 +1376,17 @@ TEST(aurachip_ut, update_device_parameter_wrong_dev)
 	};
 
 	const std::string device_str = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const aura::parameter test_parameter{ code, 2, 1, 0 , 202 };
@@ -1446,12 +1466,17 @@ TEST(aurachip_ut, update_device_parameter_missing_param)
 	};
 
 	const std::string device_str = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const aura::parameter test_parameter{ code, 2, 1, 0 , 202 };
@@ -1531,12 +1556,17 @@ TEST(aurachip_ut, update_device_parameter_wrong_code)
 	};
 
 	const std::string device_str = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const aura::parameter test_parameter{ code, 2, 1, 0 , 202 };
@@ -1615,12 +1645,17 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 	};
 
 	const std::string device_str = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
 			"FVER: 1.11\r\n"
 			"HVER: 28.1\r\n"
 			"MANCODE: 37\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const aura::parameter test_parameter{ code, 2, 1, 0 , 202 };
@@ -1664,6 +1699,10 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 TEST(aurachip_ut, update_device_list_ok)
 {
 	const std::string correct_answer {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: LIST?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 1\r\n"
 			"ADDRESS: 90FC4F9B\r\n"
 			"PCODE: 300d\r\n"
@@ -1676,6 +1715,7 @@ TEST(aurachip_ut, update_device_list_ok)
 			"FVER: 1.5\r\n"
 			"HVER: 1\r\n"
 			"MANCODE: 30\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_1 {

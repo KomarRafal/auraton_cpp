@@ -189,6 +189,11 @@ bool chip::factory_reset() {
 
 int chip::update_device_list() {
 	const auto dev_list_str = serial_connection.send_command(command::compose(command::DEV_LIST));
+	std::string_view dev_list_str_view{dev_list_str};
+	const auto is_dev_list = parser::command_parser::parse(dev_list_str_view, command::Get(command::DEV_LIST));
+	if (!is_dev_list) {
+		return 0;
+	}
 	const auto dev_list_parsed = parser_legacy::parse_device_list(dev_list_str);
 	device_list.clear();
 	for (auto dev_pair : dev_list_parsed) {
