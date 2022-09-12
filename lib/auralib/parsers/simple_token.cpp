@@ -22,14 +22,14 @@ parser_if::parsed_value simple_token::parse(std::string_view& message) {
 		return std::nullopt;
 	}
 	message.remove_prefix(get_token().size());
-	const auto end = message.find(simple_token::EOL);
+	const auto end = message.find(parser_if::EOL);
 	const auto value = message.substr(0, end);
 	if (end == std::string::npos) {
 		// remove everything
 		message.remove_prefix(message.size());
 	}
 	else {
-		message.remove_prefix(end + simple_token::EOL.size());
+		message.remove_prefix(end + parser_if::EOL.size());
 	}
 
 	if (is_value_ok(value)) {

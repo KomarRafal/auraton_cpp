@@ -22,6 +22,18 @@ set(STUBS ${CMAKE_CURRENT_SOURCE_DIR}/../../stubs)
 
 add_subdirectory(${AURATON_SRC}/parsers parserlib)
 
+add_library(cmddevicelistlib)
+
+target_sources(cmddevicelistlib
+	PRIVATE
+		${AURATON_SRC}/parsers/commands/device_list.cpp
+)
+
+target_include_directories(cmddevicelistlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(cmdtestlib)
 
 target_sources(cmdtestlib
@@ -75,6 +87,13 @@ target_include_directories(cmdxtalcorrectionlib
 
 enable_testing()
 
+add_executable(cmd_device_list_ut cmd_device_list_ut.cpp)					  
+target_link_libraries(cmd_device_list_ut gtest gtest_main cmddevicelistlib parserlib)
+add_test(
+    NAME cmd_device_list_ut
+    COMMAND cmd_device_list_ut
+)
+
 add_executable(cmd_test_ut cmd_test_ut.cpp)					  
 target_link_libraries(cmd_test_ut gtest gtest_main cmdtestlib parserlib)
 add_test(
@@ -110,10 +129,12 @@ add_test(
     COMMAND specific_command_parser_ut
 )
 
-set_target_properties(cmdtestlib
+set_target_properties(cmddevicelistlib
+                      cmdtestlib
                       cmdversionlib
                       cmdaddresslib
                       cmdxtalcorrectionlib
+                      cmd_device_list_ut
                       cmd_test_ut
                       cmd_version_ut
                       cmd_address_ut
