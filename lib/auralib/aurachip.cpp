@@ -5,6 +5,8 @@
 #include <regex>
 
 #include "parsers/commands/xtal_correction.hpp"
+#include "parsers/commands/device_list.hpp"
+#include "parsers/commands/device_id.hpp"
 #include "parsers/parser_executor.hpp"
 #include "parsers/command_parser.hpp"
 #include "parsers/commands/test.hpp"
@@ -188,17 +190,27 @@ bool chip::factory_reset() {
 }
 
 int chip::update_device_list() {
-	const auto dev_list_str = serial_connection.send_command(command::compose(command::DEV_LIST));
-	std::string_view dev_list_str_view{dev_list_str};
-	const auto is_dev_list = parser::command_parser::parse(dev_list_str_view, command::Get(command::DEV_LIST));
+	const auto device_list_str = serial_connection.send_command(command::compose(command::DEV_LIST));
+	std::string_view device_list_string_view{device_list_str};
+	const auto is_dev_list = parser::command_parser::parse(device_list_string_view, command::Get(command::DEV_LIST));
 	if (!is_dev_list) {
 		return 0;
 	}
-	const auto dev_list_parsed = parser_legacy::parse_device_list(dev_list_str);
+
+	aura::parser::commands::device_list device_list_parser;
 	device_list.clear();
-	for (auto dev_pair : dev_list_parsed) {
-		const device dev(dev_pair.second);
-		device_list[dev_pair.first] = dev;
+	auto device_id_str = device_list_parser.parse(device_list_string_view);
+	while (device_id_str.has_value()) {
+		std::string_view device_id_string_view{*device_id_str};
+		aura::parser::commands::device_id device_id_parser;
+		auto id_str = device_id_parser.parse(device_id_string_view);
+		if (!id_str.has_value()) {
+			continue;
+		}
+		const auto id = std::stoi(*id_str);
+		const device dev(static_cast<std::string>(device_id_string_view));
+		device_list[id] = dev;
+		device_id_str = device_list_parser.parse(device_list_string_view);
 	}
 	return device_list.size();
 }

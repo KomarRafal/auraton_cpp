@@ -31,7 +31,7 @@ public:
 		 parameter_map()
 	{ }
 
-	explicit device(const std::string& address_str);
+	explicit device(const std::string& device_str);
 
 	bool operator==(device const& dev) const {
 		return (
