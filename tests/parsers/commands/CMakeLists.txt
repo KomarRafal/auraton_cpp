@@ -63,11 +63,24 @@ add_library(cmdaddresslib)
 
 target_sources(cmdaddresslib
 	PRIVATE
-		${AURATON_SRC}/parsers/commands/xtal_correction.cpp
+		${AURATON_SRC}/parsers/commands/address.cpp
 		${AURATON_SRC}/parsers/commands/specific_command.cpp
 )
 
 target_include_directories(cmdaddresslib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
+add_library(cmddeviceidlib)
+
+target_sources(cmddeviceidlib
+	PRIVATE
+		${AURATON_SRC}/parsers/commands/device_id.cpp
+		${AURATON_SRC}/parsers/commands/specific_command.cpp
+)
+
+target_include_directories(cmddeviceidlib
 	PUBLIC
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
@@ -115,6 +128,13 @@ add_test(
     COMMAND cmd_address_ut
 )
 
+add_executable(cmd_device_id_ut cmd_device_id_ut.cpp)					  
+target_link_libraries(cmd_device_id_ut gtest gtest_main cmddeviceidlib parserlib)
+add_test(
+    NAME cmd_device_id_ut
+    COMMAND cmd_device_id_ut
+)
+
 add_executable(cmd_xtal_correction_ut cmd_xtal_correction_ut.cpp)					  
 target_link_libraries(cmd_xtal_correction_ut gtest gtest_main cmdxtalcorrectionlib parserlib)
 add_test(
@@ -133,11 +153,13 @@ set_target_properties(cmddevicelistlib
                       cmdtestlib
                       cmdversionlib
                       cmdaddresslib
+                      cmddeviceidlib
                       cmdxtalcorrectionlib
                       cmd_device_list_ut
                       cmd_test_ut
                       cmd_version_ut
                       cmd_address_ut
+                      cmd_device_id_ut
                       cmd_xtal_correction_ut
                       specific_command_parser_ut
                       PROPERTIES
