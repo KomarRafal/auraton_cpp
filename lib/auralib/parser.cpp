@@ -9,7 +9,6 @@
 namespace aura
 {
 
-const std::string parser_legacy::OK_TOKEN = "OK";
 const std::string parser_legacy::DEVICE_TOKEN = "ID: ";
 const std::string parser_legacy::EOL = "\r\n";
 const std::string parser_legacy::CODE_TOKEN = "CODE: ";

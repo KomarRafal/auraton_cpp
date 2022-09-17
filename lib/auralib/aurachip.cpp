@@ -6,8 +6,8 @@
 
 #include "parsers/commands/xtal_correction.hpp"
 #include "parsers/commands/device_list.hpp"
-#include "parsers/commands/device_id.hpp"
 #include "parsers/parser_executor.hpp"
+#include "parsers/simple_numeric.hpp"
 #include "parsers/command_parser.hpp"
 #include "parsers/commands/test.hpp"
 #include "parsers/at_traverse.hpp"
@@ -89,6 +89,13 @@ bool chip::update_device_parameters(int32_t dev_id) {
 	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTIONS, std::to_string(dev_id));
 	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd,
 			device::MAX_DEVICE_LENGTH + device::MAX_PARAMETERS * parameter::MAX_PARAM_LENGTH);
+
+	std::string_view get_dev_response_view{get_dev_response};
+	const auto is_dev_option = parser::command_parser::parse(get_dev_response_view, command::Get(command::GET_DEV_OPTIONS) + "?");
+	if (!is_dev_option) {
+		return false;
+	}
+
 	device* my_device = get_local_device(dev_id, get_dev_response);
 	if (my_device == nullptr) {
 		return false;
@@ -190,6 +197,7 @@ bool chip::factory_reset() {
 }
 
 int chip::update_device_list() {
+	const std::string DEVICE_ID_TOKEN = "ID: ";
 	const auto device_list_str = serial_connection.send_command(command::compose(command::DEV_LIST));
 	std::string_view device_list_string_view{device_list_str};
 	const auto is_dev_list = parser::command_parser::parse(device_list_string_view, command::Get(command::DEV_LIST));
@@ -202,7 +210,7 @@ int chip::update_device_list() {
 	auto device_id_str = device_list_parser.parse(device_list_string_view);
 	while (device_id_str.has_value()) {
 		std::string_view device_id_string_view{*device_id_str};
-		aura::parser::commands::device_id device_id_parser;
+		aura::parser::commands::simple_numeric device_id_parser{DEVICE_ID_TOKEN};
 		auto id_str = device_id_parser.parse(device_id_string_view);
 		if (!id_str.has_value()) {
 			continue;

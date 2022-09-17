@@ -1,55 +1,59 @@
 /*
- * cmd_device_id_ut.cpp
+ * simple_numeric_ut.cpp
  */
 
-#include "commands/device_id.hpp"
+#include "simple_numeric.hpp"
 #include "gtest/gtest.h"
 
-TEST(cmd_device_id_ut, cmd_device_id_ok)
+TEST(simple_numeric_ut, simple_numeric_ok)
 {
-	const std::string test_device_id = "45";
+	const std::string test_number = "45";
+	const std::string test_token = "ID: ";
 	const std::string test_string {
-		"ID: " +
-		test_device_id +
+		test_token +
+		test_number +
 		"\r\n"
 		"Some device parameters\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::device_id parser_ut;
+	aura::parser::commands::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	ASSERT_TRUE(parse_result);
-	EXPECT_EQ(test_device_id, *parse_result);
+	EXPECT_EQ(test_number, *parse_result);
 }
 
-TEST(cmd_device_id_ut, cmd_device_id_wrong_token)
+TEST(simple_numeric_ut, simple_numeric_wrong_token)
 {
+	const std::string test_token = "ID: ";
 	const std::string test_string {
 		"IX: 45\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::device_id parser_ut;
+	aura::parser::commands::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }
 
-TEST(cmd_device_id_ut, cmd_device_id_wrong_value)
+TEST(simple_numeric_ut, simple_numeric_wrong_value)
 {
+	const std::string test_token = "ID: ";
 	const std::string test_string {
 		"ID: AB\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::device_id parser_ut;
+	aura::parser::commands::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }
 
-TEST(cmd_device_id_ut, cmd_device_id_empty)
+TEST(simple_numeric_ut, simple_numeric_empty)
 {
+	const std::string test_token = "ID: ";
 	const std::string test_string {
 		"ID: \r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::device_id parser_ut;
+	aura::parser::commands::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }

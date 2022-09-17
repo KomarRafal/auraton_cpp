@@ -1,9 +1,9 @@
 /*
- * device_id.hpp
+ * simple_numeric.hpp
  */
 
-#ifndef COMMANDS_ADDRESS_HPP_
-#define COMMANDS_ADDRESS_HPP_
+#ifndef SIMPLE_NUMERIC_HPP_
+#define SIMPLE_NUMERIC_HPP_
 
 #include "simple_token.hpp"
 
@@ -17,14 +17,15 @@ namespace commands
 {
 
 
-class device_id : public simple_token
+class simple_numeric : public simple_token
 {
 public:
+	simple_numeric(const std::string& specific_token);
 	virtual const std::string& get_token() const;
 	virtual bool is_value_ok(const std::string_view& value) const;
 
 private:
-	const std::string DEVICE_ID_TOKEN = "ID: ";
+	std::string token;
 };
 
 }

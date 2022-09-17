@@ -1001,6 +1001,10 @@ TEST(aurachip_ut, factory_reset_not_ok)
 TEST(aurachip_ut, update_device_parameters_ok)
 {
 	const std::string correct_answer {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1017,6 +1021,7 @@ TEST(aurachip_ut, update_device_parameters_ok)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str {
@@ -1084,6 +1089,10 @@ TEST(aurachip_ut, update_device_parameters_ok)
 TEST(aurachip_ut, update_device_parameters_failed_id)
 {
 	const std::string correct_answer {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 31\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1100,6 +1109,7 @@ TEST(aurachip_ut, update_device_parameters_failed_id)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const int32_t dev_id = 3;
@@ -1129,6 +1139,10 @@ TEST(aurachip_ut, update_device_parameters_failed_id)
 TEST(aurachip_ut, update_device_parameters_device_list_failed)
 {
 	const std::string correct_answer {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1145,6 +1159,7 @@ TEST(aurachip_ut, update_device_parameters_device_list_failed)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const int32_t dev_id = 3;
@@ -1173,6 +1188,10 @@ TEST(aurachip_ut, update_device_parameters_device_list_failed)
 TEST(aurachip_ut, update_device_parameters_wrong_device)
 {
 	const std::string correct_answer {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1189,6 +1208,7 @@ TEST(aurachip_ut, update_device_parameters_wrong_device)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str {
@@ -1252,6 +1272,10 @@ TEST(aurachip_ut, update_device_parameter_ok)
 	const int32_t dev_id = 3;
 
 	const std::string device_parameters = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1268,6 +1292,7 @@ TEST(aurachip_ut, update_device_parameter_ok)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string new_parameter = {
@@ -1343,6 +1368,10 @@ TEST(aurachip_ut, update_device_parameter_wrong_dev)
 	const int32_t dev_id = 3;
 
 	const std::string device_parameters = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1359,6 +1388,7 @@ TEST(aurachip_ut, update_device_parameter_wrong_dev)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string new_parameter = {
@@ -1433,6 +1463,10 @@ TEST(aurachip_ut, update_device_parameter_missing_param)
 	const int32_t dev_id = 3;
 
 	const std::string device_parameters = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1463,6 +1497,7 @@ TEST(aurachip_ut, update_device_parameter_missing_param)
 			"FLAG OWN: 1\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 202\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str = {
@@ -1523,6 +1558,10 @@ TEST(aurachip_ut, update_device_parameter_wrong_code)
 	const int32_t dev_id = 3;
 
 	const std::string device_parameters = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1539,6 +1578,7 @@ TEST(aurachip_ut, update_device_parameter_wrong_code)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string new_parameter = {
@@ -1613,6 +1653,10 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 	const int32_t dev_id = 3;
 
 	const std::string device_parameters = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1629,6 +1673,7 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string new_parameter = {
