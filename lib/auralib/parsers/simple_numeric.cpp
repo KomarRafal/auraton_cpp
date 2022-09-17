@@ -1,9 +1,9 @@
 /*
- * device_id.cpp
+ * simple_numeric.cpp
  */
 #include <cstdlib>
 
-#include "device_id.hpp"
+#include "simple_numeric.hpp"
 
 namespace aura
 {
@@ -14,12 +14,16 @@ namespace parser
 namespace commands
 {
 
-const std::string& device_id::get_token() const
-{
-	return DEVICE_ID_TOKEN;
+simple_numeric::simple_numeric(const std::string& specific_token) :
+	token(specific_token) {
 }
 
-bool device_id::is_value_ok(const std::string_view& value) const
+const std::string& simple_numeric::get_token() const
+{
+	return token;
+}
+
+bool simple_numeric::is_value_ok(const std::string_view& value) const
 {
 	if (value.empty()) {
 		return false;

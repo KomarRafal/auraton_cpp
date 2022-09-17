@@ -47,6 +47,19 @@ target_include_directories(attraverselib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(simplenumericlib)
+
+target_sources(simplenumericlib
+	PRIVATE
+		${AURATON_SRC}/parsers/simple_numeric.cpp
+		${AURATON_SRC}/parsers/simple_token.cpp
+)
+
+target_include_directories(simplenumericlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(simpletokenlib)
 
 target_sources(simpletokenlib
@@ -147,6 +160,13 @@ add_test(
     COMMAND specific_source_parser_ut
 )
 
+add_executable(simple_numeric_ut simple_numeric_ut.cpp)					  
+target_link_libraries(simple_numeric_ut gtest gtest_main simplenumericlib)
+add_test(
+    NAME simple_numeric_ut
+    COMMAND simple_numeric_ut
+)	
+
 add_executable(simple_token_ut simple_token_ut.cpp)					  
 target_link_libraries(simple_token_ut gtest gtest_main simpletokenlib)
 add_test(
@@ -179,6 +199,8 @@ set_target_properties(atparserlib
                       at_parser_ut
                       attraverselib
                       at_traverse_ut
+                      simplenumericlib
+                      simple_numeric_ut                      
                       simpletokenlib
                       simple_token_ut
                       specificsourcelib 

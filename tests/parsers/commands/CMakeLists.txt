@@ -31,6 +31,13 @@ add_test(
     COMMAND cmd_device_list_ut
 )
 
+add_executable(cmd_device_parameter_ut cmd_device_parameter_ut.cpp)					  
+target_link_libraries(cmd_device_parameter_ut gtest gtest_main parserlib)
+add_test(
+    NAME cmd_device_parameter_ut
+    COMMAND cmd_device_parameter_ut
+)
+
 add_executable(cmd_test_ut cmd_test_ut.cpp)					  
 target_link_libraries(cmd_test_ut gtest gtest_main parserlib)
 add_test(
@@ -52,13 +59,6 @@ add_test(
     COMMAND cmd_address_ut
 )
 
-add_executable(cmd_device_id_ut cmd_device_id_ut.cpp)					  
-target_link_libraries(cmd_device_id_ut gtest gtest_main parserlib)
-add_test(
-    NAME cmd_device_id_ut
-    COMMAND cmd_device_id_ut
-)
-
 add_executable(cmd_xtal_correction_ut cmd_xtal_correction_ut.cpp)					  
 target_link_libraries(cmd_xtal_correction_ut gtest gtest_main parserlib)
 add_test(
@@ -74,10 +74,10 @@ add_test(
 )
 
 set_target_properties(cmd_device_list_ut
+                      cmd_device_parameter_ut
                       cmd_test_ut
                       cmd_version_ut
                       cmd_address_ut
-                      cmd_device_id_ut
                       cmd_xtal_correction_ut
                       specific_command_parser_ut
                       PROPERTIES
