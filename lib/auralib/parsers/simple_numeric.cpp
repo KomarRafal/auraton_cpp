@@ -11,9 +11,6 @@ namespace aura
 namespace parser
 {
 
-namespace commands
-{
-
 simple_numeric::simple_numeric(const std::string& specific_token) :
 	token(specific_token) {
 }
@@ -34,8 +31,6 @@ bool simple_numeric::is_value_ok(const std::string_view& value) const
 		return false;
 	}
 	return true;
-}
-
 }
 
 }

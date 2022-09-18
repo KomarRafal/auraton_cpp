@@ -13,22 +13,16 @@ namespace aura
 namespace parser
 {
 
-namespace commands
-{
-
-
 class simple_numeric : public simple_token
 {
 public:
-	simple_numeric(const std::string& specific_token);
+	explicit simple_numeric(const std::string& specific_token);
 	virtual const std::string& get_token() const;
 	virtual bool is_value_ok(const std::string_view& value) const;
 
 private:
-	std::string token;
+	const std::string token;
 };
-
-}
 
 }
 

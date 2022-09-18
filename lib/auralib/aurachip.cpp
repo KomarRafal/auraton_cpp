@@ -5,9 +5,9 @@
 #include <regex>
 
 #include "parsers/commands/xtal_correction.hpp"
-#include "parsers/commands/device_list.hpp"
 #include "parsers/parser_executor.hpp"
 #include "parsers/simple_numeric.hpp"
+#include "parsers/token_traverse.hpp"
 #include "parsers/command_parser.hpp"
 #include "parsers/commands/test.hpp"
 #include "parsers/at_traverse.hpp"
@@ -205,12 +205,12 @@ int chip::update_device_list() {
 		return 0;
 	}
 
-	aura::parser::commands::device_list device_list_parser;
+	aura::parser::token_traverse device_id_traverse(DEVICE_ID_TOKEN);
 	device_list.clear();
-	auto device_id_str = device_list_parser.parse(device_list_string_view);
+	auto device_id_str = device_id_traverse.parse(device_list_string_view);
 	while (device_id_str.has_value()) {
 		std::string_view device_id_string_view{*device_id_str};
-		aura::parser::commands::simple_numeric device_id_parser{DEVICE_ID_TOKEN};
+		aura::parser::simple_numeric device_id_parser{DEVICE_ID_TOKEN};
 		auto id_str = device_id_parser.parse(device_id_string_view);
 		if (!id_str.has_value()) {
 			continue;
@@ -218,7 +218,7 @@ int chip::update_device_list() {
 		const auto id = std::stoi(*id_str);
 		const device dev(static_cast<std::string>(device_id_string_view));
 		device_list[id] = dev;
-		device_id_str = device_list_parser.parse(device_list_string_view);
+		device_id_str = device_id_traverse.parse(device_list_string_view);
 	}
 	return device_list.size();
 }

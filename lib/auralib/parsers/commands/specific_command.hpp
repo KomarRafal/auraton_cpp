@@ -23,7 +23,7 @@ public:
 	virtual bool is_value_ok(const std::string_view& value) const;
 
 private:
-	std::string command;
+	const std::string command;
 };
 
 }
