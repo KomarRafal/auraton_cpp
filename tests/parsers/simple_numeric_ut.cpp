@@ -16,7 +16,7 @@ TEST(simple_numeric_ut, simple_numeric_ok)
 		"Some device parameters\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::simple_numeric parser_ut(test_token);
+	aura::parser::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	ASSERT_TRUE(parse_result);
 	EXPECT_EQ(test_number, *parse_result);
@@ -29,7 +29,7 @@ TEST(simple_numeric_ut, simple_numeric_wrong_token)
 		"IX: 45\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::simple_numeric parser_ut(test_token);
+	aura::parser::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }
@@ -41,7 +41,7 @@ TEST(simple_numeric_ut, simple_numeric_wrong_value)
 		"ID: AB\r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::simple_numeric parser_ut(test_token);
+	aura::parser::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }
@@ -53,7 +53,7 @@ TEST(simple_numeric_ut, simple_numeric_empty)
 		"ID: \r\n"
 	};
 	std::string_view test_string_view(test_string);
-	aura::parser::commands::simple_numeric parser_ut(test_token);
+	aura::parser::simple_numeric parser_ut(test_token);
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }

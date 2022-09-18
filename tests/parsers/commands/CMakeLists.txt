@@ -24,20 +24,6 @@ add_subdirectory(${AURATON_SRC}/parsers parserlib)
 
 enable_testing()
 
-add_executable(cmd_device_list_ut cmd_device_list_ut.cpp)					  
-target_link_libraries(cmd_device_list_ut gtest gtest_main parserlib)
-add_test(
-    NAME cmd_device_list_ut
-    COMMAND cmd_device_list_ut
-)
-
-add_executable(cmd_device_parameter_ut cmd_device_parameter_ut.cpp)					  
-target_link_libraries(cmd_device_parameter_ut gtest gtest_main parserlib)
-add_test(
-    NAME cmd_device_parameter_ut
-    COMMAND cmd_device_parameter_ut
-)
-
 add_executable(cmd_test_ut cmd_test_ut.cpp)					  
 target_link_libraries(cmd_test_ut gtest gtest_main parserlib)
 add_test(
@@ -73,9 +59,7 @@ add_test(
     COMMAND specific_command_parser_ut
 )
 
-set_target_properties(cmd_device_list_ut
-                      cmd_device_parameter_ut
-                      cmd_test_ut
+set_target_properties(cmd_test_ut
                       cmd_version_ut
                       cmd_address_ut
                       cmd_xtal_correction_ut

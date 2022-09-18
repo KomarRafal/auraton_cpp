@@ -99,6 +99,18 @@ target_include_directories(statusparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(tokentraverselib)
+
+target_sources(tokentraverselib
+	PRIVATE
+		${AURATON_SRC}/parsers/token_traverse.cpp
+)
+
+target_include_directories(tokentraverselib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(clearparserlib)
 
 target_sources(clearparserlib
@@ -181,6 +193,13 @@ add_test(
     COMMAND status_parser_ut
 )			  
 
+add_executable(token_traverse_ut token_traverse_ut.cpp)					  
+target_link_libraries(token_traverse_ut gtest gtest_main tokentraverselib)
+add_test(
+    NAME token_traverse_ut
+    COMMAND token_traverse_ut
+)	
+
 add_executable(clear_parser_ut clear_parser_ut.cpp)					  
 target_link_libraries(clear_parser_ut gtest gtest_main clearparserlib)
 add_test(
@@ -207,6 +226,8 @@ set_target_properties(atparserlib
                       specific_source_parser_ut 
                       statusparserlib
                       status_parser_ut
+                      tokentraverselib
+                      token_traverse_ut
                       clearparserlib
                       clear_parser_ut
                       parserexecutorlib
