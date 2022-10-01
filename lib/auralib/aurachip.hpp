@@ -5,6 +5,7 @@
 #ifndef AURACHIP_HPP
 #define AURACHIP_HPP
 
+#include <string_view>
 #include <optional>
 #include <cstdint>
 #include <string>
@@ -67,6 +68,11 @@ private:
 	void initialize_version();
 	void initialize_address();
 	device* get_local_device(int32_t dev_id, std::string get_dev_response);
+
+	// TODO: should be moved to separate file
+	// TODO: add UT
+	using  device_id_t = std::pair<int32_t, device>;
+	device_id_t get_next_device_parameters(std::string_view& message);
 
 };
 }
