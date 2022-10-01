@@ -196,29 +196,40 @@ bool chip::factory_reset() {
 	return true;
 }
 
-int chip::update_device_list() {
+// TODO: should be moved to separate file
+// TODO: add UT
+chip::device_id_t chip::get_next_device_parameters(std::string_view& message) {
+	// TODO: make ID common
 	const std::string DEVICE_ID_TOKEN = "ID: ";
+	parser::token_traverse device_id_traverse(DEVICE_ID_TOKEN);
+	auto device_id_str = device_id_traverse.parse(message);
+	while (device_id_str.has_value()) {
+		std::string_view device_id_string_view{*device_id_str};
+		aura::parser::simple_numeric device_id_parser{DEVICE_ID_TOKEN};
+		auto id_str = device_id_parser.parse(device_id_string_view);
+		if (!id_str.has_value()) {
+			device_id_str = device_id_traverse.parse(message);
+			continue;
+		}
+		const auto id = std::stoi(*id_str);
+		const device dev(static_cast<std::string>(device_id_string_view));
+		return device_id_t{id, dev};
+	}
+	return device_id_t{};
+}
+
+int chip::update_device_list() {
 	const auto device_list_str = serial_connection.send_command(command::compose(command::DEV_LIST));
 	std::string_view device_list_string_view{device_list_str};
 	const auto is_dev_list = parser::command_parser::parse(device_list_string_view, command::Get(command::DEV_LIST));
 	if (!is_dev_list) {
 		return 0;
 	}
-
-	aura::parser::token_traverse device_id_traverse(DEVICE_ID_TOKEN);
 	device_list.clear();
-	auto device_id_str = device_id_traverse.parse(device_list_string_view);
-	while (device_id_str.has_value()) {
-		std::string_view device_id_string_view{*device_id_str};
-		aura::parser::simple_numeric device_id_parser{DEVICE_ID_TOKEN};
-		auto id_str = device_id_parser.parse(device_id_string_view);
-		if (!id_str.has_value()) {
-			continue;
-		}
-		const auto id = std::stoi(*id_str);
-		const device dev(static_cast<std::string>(device_id_string_view));
-		device_list[id] = dev;
-		device_id_str = device_id_traverse.parse(device_list_string_view);
+	auto device_id = get_next_device_parameters(device_list_string_view);
+	while (device_id.first != 0) {
+		device_list[device_id.first] = device_id.second;
+		device_id = get_next_device_parameters(device_list_string_view);
 	}
 	return device_list.size();
 }
