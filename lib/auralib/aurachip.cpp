@@ -66,19 +66,22 @@ bool chip::link() {
 	return static_cast<bool>(status);
 }
 
-device* chip::get_local_device(int32_t dev_id, std::string get_dev_response) {
-	const auto dev_list = parser_legacy::parse_device_list(get_dev_response);
-	const auto is_dev_id = (dev_list.count(dev_id) == 1);
-	if (!is_dev_id) {
-		return nullptr;
-	}
-	const device get_dev{dev_list.find(dev_id)->second};
+device* chip::get_local_device(int32_t dev_id, std::string_view& get_dev_response) {
 	const auto device_element = device_list.find(dev_id);
 	if (device_element == device_list.end()) {
 		return nullptr;
 	}
 	auto* my_dev = &device_element->second;
-	const bool is_device_on_list = (*my_dev == get_dev);
+
+	auto device_id = get_next_device_parameters(get_dev_response);
+	while (device_id.first != dev_id) {
+		if (device_id.first == 0) {
+			return nullptr;
+		}
+		device_id = get_next_device_parameters(get_dev_response);
+	}
+
+	const bool is_device_on_list = (*my_dev == device_id.second);
 	if (!is_device_on_list) {
 		return nullptr;
 	}
@@ -88,7 +91,7 @@ device* chip::get_local_device(int32_t dev_id, std::string get_dev_response) {
 bool chip::update_device_parameters(int32_t dev_id) {
 	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTIONS, std::to_string(dev_id));
 	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd,
-			device::MAX_DEVICE_LENGTH + device::MAX_PARAMETERS * parameter::MAX_PARAM_LENGTH);
+			parser::command_parser::MAX_COMMAND_LENGTH + device::MAX_DEVICE_LENGTH + device::MAX_PARAMETERS * parameter::MAX_PARAM_LENGTH);
 
 	std::string_view get_dev_response_view{get_dev_response};
 	const auto is_dev_option = parser::command_parser::parse(get_dev_response_view, command::Get(command::GET_DEV_OPTIONS) + "?");
@@ -96,7 +99,7 @@ bool chip::update_device_parameters(int32_t dev_id) {
 		return false;
 	}
 
-	device* my_device = get_local_device(dev_id, get_dev_response);
+	device* my_device = get_local_device(dev_id, get_dev_response_view);
 	if (my_device == nullptr) {
 		return false;
 	}
@@ -111,8 +114,15 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 	const auto attributes = std::to_string(dev_id) + "," + std::to_string(code);
 	const auto get_dev_option_cmd = command::compose(command::GET_DEV_OPTION, attributes);
 	auto get_dev_response = serial_connection.send_command(get_dev_option_cmd,
-			device::MAX_DEVICE_LENGTH + parameter::MAX_PARAM_LENGTH);
-	device* my_device = get_local_device(dev_id, get_dev_response);
+			parser::command_parser::MAX_COMMAND_LENGTH + device::MAX_DEVICE_LENGTH + parameter::MAX_PARAM_LENGTH);
+
+	std::string_view get_dev_response_view{get_dev_response};
+	const auto is_dev_option = parser::command_parser::parse(get_dev_response_view, command::Get(command::GET_DEV_OPTION) + "?");
+	if (!is_dev_option) {
+		return false;
+	}
+
+	device* my_device = get_local_device(dev_id, get_dev_response_view);
 	if (my_device == nullptr) {
 		return false;
 	}
