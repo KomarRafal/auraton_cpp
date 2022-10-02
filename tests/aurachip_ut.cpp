@@ -1069,9 +1069,7 @@ TEST(aurachip_ut, update_device_parameters_ok)
 				);
 
 	aura_chip_uut.update_device_list();
-	EXPECT_CALL(serial_dev, readBytes(testing::_,
-			aura::device::MAX_DEVICE_LENGTH + aura::device::MAX_PARAMETERS * aura::parameter::MAX_PARAM_LENGTH,
-			testing::_, testing::_))
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(correct_answer),
 				testing::Return(correct_answer.length()))
@@ -1296,6 +1294,10 @@ TEST(aurachip_ut, update_device_parameter_ok)
 	};
 
 	const std::string new_parameter = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVCODEOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1307,6 +1309,7 @@ TEST(aurachip_ut, update_device_parameter_ok)
 			"FLAG OWN: 1\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 202\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str = {
@@ -1351,9 +1354,7 @@ TEST(aurachip_ut, update_device_parameter_ok)
 	aura_chip_uut.update_device_list();
 	aura_chip_uut.update_device_parameters(dev_id);
 
-	EXPECT_CALL(serial_dev, readBytes(testing::_,
-			aura::device::MAX_DEVICE_LENGTH + aura::parameter::MAX_PARAM_LENGTH,
-			testing::_, testing::_))
+	EXPECT_CALL(serial_dev, readBytes(testing::_,testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(new_parameter),
 				testing::Return(new_parameter.length()))
@@ -1392,6 +1393,10 @@ TEST(aurachip_ut, update_device_parameter_wrong_dev)
 	};
 
 	const std::string new_parameter = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVCODEOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 4010\r\n"
@@ -1403,6 +1408,7 @@ TEST(aurachip_ut, update_device_parameter_wrong_dev)
 			"FLAG OWN: 1\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 202\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str = {
@@ -1447,9 +1453,7 @@ TEST(aurachip_ut, update_device_parameter_wrong_dev)
 	aura_chip_uut.update_device_list();
 	aura_chip_uut.update_device_parameters(dev_id);
 
-	EXPECT_CALL(serial_dev, readBytes(testing::_,
-			aura::device::MAX_DEVICE_LENGTH + aura::parameter::MAX_PARAM_LENGTH,
-			testing::_, testing::_))
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(new_parameter),
 				testing::Return(new_parameter.length()))
@@ -1483,9 +1487,14 @@ TEST(aurachip_ut, update_device_parameter_missing_param)
 			"FLAG OWN: 0\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string new_parameter = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVCODEOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1542,9 +1551,7 @@ TEST(aurachip_ut, update_device_parameter_missing_param)
 	aura_chip_uut.update_device_list();
 	aura_chip_uut.update_device_parameters(dev_id);
 
-	EXPECT_CALL(serial_dev, readBytes(testing::_,
-			aura::device::MAX_DEVICE_LENGTH + aura::parameter::MAX_PARAM_LENGTH,
-			testing::_, testing::_))
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(new_parameter),
 				testing::Return(new_parameter.length()))
@@ -1582,6 +1589,10 @@ TEST(aurachip_ut, update_device_parameter_wrong_code)
 	};
 
 	const std::string new_parameter = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVCODEOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1593,6 +1604,7 @@ TEST(aurachip_ut, update_device_parameter_wrong_code)
 			"FLAG OWN: 1\r\n"
 			"FLAG WRITEABLE: 0\r\n"
 			"VALUE: 202\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str = {
@@ -1637,9 +1649,7 @@ TEST(aurachip_ut, update_device_parameter_wrong_code)
 	aura_chip_uut.update_device_list();
 	aura_chip_uut.update_device_parameters(dev_id);
 
-	EXPECT_CALL(serial_dev, readBytes(testing::_,
-			aura::device::MAX_DEVICE_LENGTH + aura::parameter::MAX_PARAM_LENGTH,
-			testing::_, testing::_))
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(new_parameter),
 				testing::Return(new_parameter.length()))
@@ -1677,6 +1687,10 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 	};
 
 	const std::string new_parameter = {
+			"AT:START\r\n"
+			"SOURCE:COMMAND\r\n"
+			"COMMAND: GETDEVCODEOPTION?\r\n"
+			"STATUS:OK\r\n"
 			"ID: 3\r\n"
 			"ADDRESS: 30090005\r\n"
 			"PCODE: 3009\r\n"
@@ -1687,6 +1701,7 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 			"VALUE: 202\r\n"
 			"CODE: 101\r\n"
 			"VALUE: 1927\r\n"
+			"AT:STOP\r\n"
 	};
 
 	const std::string device_str = {
@@ -1731,9 +1746,7 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 	aura_chip_uut.update_device_list();
 	aura_chip_uut.update_device_parameters(dev_id);
 
-	EXPECT_CALL(serial_dev, readBytes(testing::_,
-			aura::device::MAX_DEVICE_LENGTH + aura::parameter::MAX_PARAM_LENGTH,
-			testing::_, testing::_))
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
 				SetArgNPointeeTo<0>(new_parameter),
 				testing::Return(new_parameter.length()))

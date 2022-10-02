@@ -30,37 +30,6 @@ std::string parser_legacy::parse(const std::string& input_str, const std::string
 	return input_str.substr(begin, end - begin);
 }
 
-parser_legacy::device_list_t parser_legacy::parse_device_list(const std::string& input_str) {
-	device_list_t device_list;
-	size_t begin = 0;
-
-	while (true)
-	{
-		size_t end;
-		begin = input_str.find(DEVICE_TOKEN, begin);
-		if (begin == std::string::npos) {
-			return device_list;
-		}
-		end = input_str.find(EOL, begin);
-		begin += DEVICE_TOKEN.length();
-		auto dev_id_str = input_str.substr(begin, end - begin);
-		if (dev_id_str.empty()) {
-			return device_list;
-		}
-		auto dev_id = std::stoul(dev_id_str);
-		begin = end + EOL.length();
-		end = input_str.find(DEVICE_TOKEN, begin);
-		if (device_list.find(dev_id) == device_list.end()) {
-			device_list[dev_id] = input_str.substr(begin, end - begin);
-		}
-		else {
-			device_list.find(dev_id)->second.append(input_str.substr(begin, end - begin));
-		}
-		begin = end;
-	}
-
-}
-
 bool parser_legacy::get_next_parameter(std::string& input_str, parameter& read_parameter) {
 	std::map<std::string, std::function<void(parameter&, int32_t)>> parameter_info = {
 			{ parser_legacy::CHANNEL_TOKEN, [](auto& param, auto value) { param.set_channel(value); }  },

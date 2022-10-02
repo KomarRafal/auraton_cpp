@@ -67,7 +67,7 @@ private:
 	bool initialize_flag;
 	void initialize_version();
 	void initialize_address();
-	device* get_local_device(int32_t dev_id, std::string get_dev_response);
+	device* get_local_device(int32_t dev_id, std::string_view& get_dev_response);
 
 	// TODO: should be moved to separate file
 	// TODO: add UT

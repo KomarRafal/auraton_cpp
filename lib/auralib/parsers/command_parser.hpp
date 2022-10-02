@@ -16,6 +16,7 @@ namespace parser
 
 class command_parser {
 public:
+	static const uint16_t MAX_COMMAND_LENGTH = 100;
 	static parser_if::parsed_value parse(std::string_view& message, const std::string& command);
 };
 
