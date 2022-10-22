@@ -25,7 +25,7 @@ public:
 
 private:
 	serialib serial_dev;
-	static const uint16_t MAX_BUFFER_LENGTH = 200;
+	static const uint16_t MAX_BUFFER_LENGTH = 300;
 	static const uint32_t WAIT_SLEEP_MS = 100;
 	static const uint32_t WAIT_TIMEOUT_MS = 10;
 	const std::string device_port;

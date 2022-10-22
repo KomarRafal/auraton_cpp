@@ -1,6 +1,7 @@
 /*
  * device_ut.cpp
  */
+#include <string_view>
 #include <functional>
 #include <utility>
 #include <string>
@@ -17,15 +18,18 @@ protected:
 	const std::string manufacture_code{"2020"};
 	const std::string fw_version {"1.5.0"};
 	const std::string product_code{"23651.23"};
+	const std::string remainder {
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit,"
+		"sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\r\n"
+	};
 	const std::string device_1 {
-		"Lorem ipsum dolor sit amet,"
+		"ADDRESS: " + device_address + "\r\n"
+		"PCODE: " + product_code + "\r\n"
+		"FVER: " + fw_version + "\r\n"
 		"HVER: " + hw_version + "\r\n"
 		"MANCODE: " + manufacture_code + "\r\n"
-		"consectetur adipiscing elit, sed do eiusmod\r\n"
-		"FVER: " + fw_version + "\r\n"
-		"PCODE: " + product_code + "\r\n"
-		"tempor incididunt ut labore et dolore magna aliqua.\r\n"
-		"ADDRESS: " + device_address };
+		+ remainder
+	};
 
     bool is_empty(aura::device& dev_uut) {
     	const bool all_fields_empty = dev_uut.get_product_code().empty() &&
@@ -46,18 +50,21 @@ TEST_F(device_ut, empty_ctor)
 
 TEST_F(device_ut, ctor)
 {
-	aura::device dev_uut{device_1};
+	std::string_view device_1_view{device_1};
+	aura::device dev_uut{device_1_view};
 	EXPECT_FALSE(is_empty(dev_uut));
 	EXPECT_EQ(dev_uut.get_product_code(), product_code);
 	EXPECT_EQ(dev_uut.get_fw_version(), fw_version);
 	EXPECT_EQ(dev_uut.get_hw_version(), hw_version);
 	EXPECT_EQ(dev_uut.get_manufacture_code(), manufacture_code);
 	EXPECT_EQ(dev_uut.get_address(), address);
+	EXPECT_EQ(static_cast<std::string>(device_1_view), remainder);
 }
 
 TEST_F(device_ut, clear)
 {
-	aura::device dev_uut{device_1};
+	std::string_view device_1_view{device_1};
+	aura::device dev_uut{device_1_view};
 	dev_uut.clear();
 	EXPECT_TRUE(is_empty(dev_uut));
 }
@@ -66,7 +73,8 @@ TEST_F(device_ut, simple_set_get_test)
 {
 	using setter_t = std::function<void(const std::string&)>;
 	using getter_t = std::function<std::string(void)>;
-	aura::device dev_uut{device_1};
+	std::string_view device_1_view{device_1};
+	aura::device dev_uut{device_1_view};
 
 	std::vector<std::tuple<const std::string, setter_t, getter_t>> set_get {
 		{ "Lorem ipsum dolor",
@@ -96,7 +104,8 @@ TEST_F(device_ut, simple_set_get_test)
 
 TEST_F(device_ut, set_get_address_test)
 {
-	aura::device dev_uut{device_1};
+	std::string_view device_1_view{device_1};
+	aura::device dev_uut{device_1_view};
 
 	dev_uut.set_address("0xAB56EECD");
 	EXPECT_EQ(0xAB56EECD, dev_uut.get_address());

@@ -6,8 +6,8 @@
 #define DEVICE_HPP_
 
 #include <parameter.hpp>
+#include <string_view>
 #include <cstdint>
-#include <string>
 #include <map>
 
 
@@ -31,7 +31,7 @@ public:
 		 parameter_map()
 	{ }
 
-	explicit device(const std::string& device_str);
+	explicit device(std::string_view& device_str);
 
 	bool operator==(device const& dev) const {
 		return (

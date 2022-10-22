@@ -29,29 +29,39 @@ TEST(aurachip_ut, initialize)
 	const std::string address_cmd {"AT+ADDR?\n"};
 
 	const std::string device_version {
+		"PCODE: 300c\r\n"
+		"FVER: 2.4\r\n"
+		"HVER: 1.0\r\n"
+		"MANCODE: 30\r\n"
+	};
+
+	const std::string device_version_resp {
 		"AT:START\r\n"
 		"SOURCE:COMMAND\r\n"
 		//TODO: remove space after fix
 		"COMMAND: VER?\r\n"
 		"STATUS:OK\r\n"
-		"HVER: 28\r\n"
-		"MANCODE: 2020\r\n"
-		"FVER: 1.5.0\r\n"
-		"PCODE: 23651.23\r\n"
+		+ device_version +
 		"AT:STOP\r\n"
 		};
 
 	const std::string device_address {
+		"ADDRESS: 3054412\r\n"
+	};
+
+	const std::string device_address_resp {
 		"AT:START\r\n"
 		"SOURCE:COMMAND\r\n"
 		//TODO: remove space after fix
 		"COMMAND: ADDR?\r\n"
 		"STATUS:OK\r\n"
-		"ADDRESS: 3054412\r\n"
+		+ device_address +
 		"AT:STOP\r\n"
 		};
 
-	const aura::device model_device {device_version + device_address};
+	const std::string device_string{device_address + device_version};
+	std::string_view device_string_view{device_string};
+	const aura::device model_device{device_string_view};
 
 	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
 		.Times(2);
@@ -67,12 +77,12 @@ TEST(aurachip_ut, initialize)
 
 	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
 		.WillOnce(testing::DoAll(
-				SetArgNPointeeTo<0>(device_version),
-				testing::Return(device_version.length()))
+				SetArgNPointeeTo<0>(device_version_resp),
+				testing::Return(device_version_resp.length()))
 				)
 		.WillOnce(testing::DoAll(
-				SetArgNPointeeTo<0>(device_address),
-				testing::Return(device_address.length()))
+				SetArgNPointeeTo<0>(device_address_resp),
+				testing::Return(device_address_resp.length()))
 				);
 
 	EXPECT_FALSE(aura_chip_uut.is_initialize());
@@ -1756,46 +1766,41 @@ TEST(aurachip_ut, update_device_parameter_to_many_params)
 
 TEST(aurachip_ut, update_device_list_ok)
 {
+	const uint32_t device_1_id{1};
+	const std::string device_1 {
+			"ADDRESS: 90FC4F9B\r\n"
+			"PCODE: 300d\r\n"
+			"FVER: 1.1\r\n"
+			"HVER: 7\r\n"
+			"MANCODE: 40\r\n"
+	};
+
+	const uint32_t device_2_id{20};
+	const std::string device_2 {
+			"ADDRESS: 456223DA\r\n"
+			"PCODE: 3005\r\n"
+			"FVER: 1.5\r\n"
+			"HVER: 1\r\n"
+			"MANCODE: 30\r\n"
+	};
+
 	const std::string correct_answer {
 			"AT:START\r\n"
 			"SOURCE:COMMAND\r\n"
 			"COMMAND: LIST?\r\n"
 			"STATUS:OK\r\n"
-			"ID: 1\r\n"
-			"ADDRESS: 90FC4F9B\r\n"
-			"PCODE: 300d\r\n"
-			"FVER: 1.1\r\n"
-			"HVER: 7\r\n"
-			"MANCODE: 40\r\n"
-			"ID: 20\r\n"
-			"ADDRESS: 456223DA\r\n"
-			"PCODE: 3005\r\n"
-			"FVER: 1.5\r\n"
-			"HVER: 1\r\n"
-			"MANCODE: 30\r\n"
+			"ID: " + std::to_string(device_1_id) + "\r\n"
+			+ device_1 +
+			"ID: " + std::to_string(device_2_id) + "\r\n"
+			+ device_2 +
 			"AT:STOP\r\n"
 	};
 
-	const std::string device_1 {
-			"ID: 1\r\n"
-			"ADDRESS: 90FC4F9B\r\n"
-			"PCODE: 300d\r\n"
-			"FVER: 1.1\r\n"
-			"HVER: 7\r\n"
-			"MANCODE: 40\r\n"
-	};
-	const std::string device_2 {
-			"ID: 20\r\n"
-			"ADDRESS: 456223DA\r\n"
-			"PCODE: 3005\r\n"
-			"FVER: 1.5\r\n"
-			"HVER: 1\r\n"
-			"MANCODE: 30\r\n"
-	};
-
+	std::string_view device_1_view{device_1};
+	std::string_view device_2_view{device_2};
 	const std::map<uint32_t, aura::device> test_devices {
-			{ 1, aura::device{ device_1 } },
-			{ 20, aura::device{ device_2 } }
+			{ device_1_id, aura::device{ device_1_view } },
+			{ device_2_id, aura::device{ device_2_view } }
 	};
 
 	const std::string device_port{"COM6"};
