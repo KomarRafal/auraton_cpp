@@ -31,12 +31,11 @@ bool chip::test() {
 void chip::initialize() {
 	const auto version_str = serial_connection.send_command(command::compose(command::VERSION));
 	std::string_view version_str_view{version_str};
-	const auto is_version = parser::command_parser::parse(version_str_view, command::Get(command::VERSION));
-	if (!is_version) {
+	const auto version = parser::command_parser::parse(version_str_view, command::Get(command::VERSION));
+	if (!version.has_value()) {
 		initialize_flag = false;
 		return;
 	}
-	std::string device_str(static_cast<std::string>(version_str_view));
 
 	const auto address_str = serial_connection.send_command(command::compose(command::ADDRESS));
 	std::string_view address_str_view{address_str};
@@ -45,8 +44,10 @@ void chip::initialize() {
 		initialize_flag = false;
 		return;
 	}
-	device_str.append(address_str_view);
-	device dev(device_str);
+
+	const std::string device_str(static_cast<std::string>(address_str_view) + static_cast<std::string>(version_str_view));
+	std::string_view device_string_view{device_str};
+	device dev(device_string_view);
 	static_cast<device*>(this)->operator=(dev);
 	initialize_flag = true;
 }
@@ -222,7 +223,7 @@ chip::device_id_t chip::get_next_device_parameters(std::string_view& message) {
 			continue;
 		}
 		const auto id = std::stoi(*id_str);
-		const device dev(static_cast<std::string>(device_id_string_view));
+		const device dev(device_id_string_view);
 		return device_id_t{id, dev};
 	}
 	return device_id_t{};
