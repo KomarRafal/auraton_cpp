@@ -129,6 +129,32 @@ target_include_directories(clearparserlib
 		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
 )
 
+add_library(nextdeviceidlib)
+
+target_sources(nextdeviceidlib
+	PRIVATE
+		${AURATON_SRC}/parsers/next_device_id.cpp
+		${AURATON_SRC}/parsers/token_traverse.cpp
+)
+
+target_include_directories(nextdeviceidlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
+add_library(nextparameterlib)
+
+target_sources(nextparameterlib
+	PRIVATE
+		${AURATON_SRC}/parsers/next_parameter.cpp
+		${AURATON_SRC}/parsers/token_traverse.cpp
+)
+
+target_include_directories(nextparameterlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/parsers/>
+)
+
 add_library(parserexecutorlib)
 
 target_sources(parserexecutorlib
@@ -205,7 +231,21 @@ target_link_libraries(clear_parser_ut gtest gtest_main clearparserlib)
 add_test(
     NAME clear_parser_ut
     COMMAND clear_parser_ut
-)	
+)
+
+add_executable(next_device_id_ut next_device_id_ut.cpp)					  
+target_link_libraries(next_device_id_ut gtest gtest_main nextdeviceidlib)
+add_test(
+    NAME next_device_id_ut
+    COMMAND next_device_id_ut
+)
+
+add_executable(next_parameter_ut next_parameter_ut.cpp)					  
+target_link_libraries(next_parameter_ut gtest gtest_main nextparameterlib)
+add_test(
+    NAME next_parameter_ut
+    COMMAND next_parameter_ut
+)
 
 add_executable(parser_executor_ut parser_executor_ut.cpp)					  
 target_link_libraries(parser_executor_ut gtest gtest_main parserexecutorlib)
@@ -230,6 +270,10 @@ set_target_properties(atparserlib
                       token_traverse_ut
                       clearparserlib
                       clear_parser_ut
+                      nextdeviceidlib
+                      next_device_id_ut
+                      nextparameterlib
+                      next_parameter_ut
                       parserexecutorlib
                       parser_executor_ut
                       PROPERTIES
