@@ -12,6 +12,8 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/clear.cpp
 		${CMAKE_CURRENT_LIST_DIR}/command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/command_parser.cpp
+		${CMAKE_CURRENT_LIST_DIR}/next_device_id.cpp
+		${CMAKE_CURRENT_LIST_DIR}/next_parameter.cpp
 		${CMAKE_CURRENT_LIST_DIR}/parser_executor.cpp
 		${CMAKE_CURRENT_LIST_DIR}/simple_token.cpp
 		${CMAKE_CURRENT_LIST_DIR}/simple_numeric.cpp

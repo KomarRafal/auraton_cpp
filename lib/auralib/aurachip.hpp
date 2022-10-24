@@ -67,12 +67,13 @@ private:
 	bool initialize_flag;
 	void initialize_version();
 	void initialize_address();
+
+	// TODO: add UT
 	device* get_local_device(int32_t dev_id, std::string_view& get_dev_response);
 
-	// TODO: should be moved to separate file
 	// TODO: add UT
-	using  device_id_t = std::pair<int32_t, device>;
-	device_id_t get_next_device_parameters(std::string_view& message);
+	using  device_id_t = std::pair<int32_t, std::string>;
+	device_id_t get_next_device(std::string_view& message);
 
 };
 }

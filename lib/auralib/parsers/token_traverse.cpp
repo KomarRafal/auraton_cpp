@@ -22,18 +22,23 @@ parser_if::parsed_value token_traverse::parse(std::string_view& message) {
 		return std::nullopt;
 	}
 	// omit first token and find next or EOF
-	auto next_device = message.find(token, token.size());
+	auto next_token = message.find(token, token.size());
 
-	auto device_str = message.substr(0, next_device);
-	if (next_device == std::string::npos) {
+	auto token_content = message.substr(0, next_token);
+	if (next_token == std::string::npos) {
 		// remove everything
 		message.remove_prefix(message.size());
 	}
 	else {
-		message.remove_prefix(next_device);
+		message.remove_prefix(next_token);
 	}
-	return static_cast<std::string>(device_str);
+	return static_cast<std::string>(token_content);
 }
+
+const std::string& token_traverse::get_token() {
+	return token;
+}
+
 
 }
 
