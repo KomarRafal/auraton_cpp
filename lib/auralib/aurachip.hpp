@@ -73,7 +73,7 @@ private:
 	device_parameters_t get_local_device(int32_t dev_id, std::string_view& get_dev_response);
 
 	// TODO: add UT
-	using  device_id_t = std::pair<int32_t, std::string>;
+	using  device_id_t = std::pair<int32_t, std::string_view>;
 	device_id_t get_next_device(std::string_view& message);
 
 };
