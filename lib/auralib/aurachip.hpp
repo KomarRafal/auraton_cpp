@@ -69,7 +69,7 @@ private:
 	void initialize_address();
 
 	// TODO: add UT
-	using device_parameters_t = std::pair<device*, std::string>;
+	using device_parameters_t = std::pair<device*, std::string_view>;
 	device_parameters_t get_local_device(int32_t dev_id, std::string_view& get_dev_response);
 
 	// TODO: add UT
