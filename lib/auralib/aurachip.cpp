@@ -82,11 +82,12 @@ chip::device_parameters_t chip::get_local_device(int32_t dev_id, std::string_vie
 		device_id = get_next_device(get_dev_response);
 	}
 
-	const bool is_device_on_list = (*my_dev == device{device_id.second});
+	const auto read_device = device{device_id.second};
+	const bool is_device_on_list = (*my_dev == read_device);
 	if (!is_device_on_list) {
 		return device_parameters_t{};
 	}
-	return device_parameters_t{my_dev, static_cast<std::string>(device_id.second)};
+	return device_parameters_t{my_dev, device_id.second};
 }
 
 bool chip::update_device_parameters(int32_t dev_id) {
@@ -106,6 +107,7 @@ bool chip::update_device_parameters(int32_t dev_id) {
 		return false;
 	}
 	parameter read_parameter{0};
+
 	auto parameters = static_cast<std::string>(my_device_parameters.second);
 	while (parser_legacy::get_next_parameter(parameters, read_parameter)) {
 		my_device->add_parameter(read_parameter);
