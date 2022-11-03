@@ -67,17 +67,17 @@ bool chip::link() {
 	return static_cast<bool>(status);
 }
 
-device* chip::get_local_device(int32_t dev_id, std::string_view& get_dev_response) {
+chip::device_parameters_t chip::get_local_device(int32_t dev_id, std::string_view& get_dev_response) {
 	const auto device_element = device_list.find(dev_id);
 	if (device_element == device_list.end()) {
-		return nullptr;
+		return device_parameters_t{};
 	}
 	auto* my_dev = &device_element->second;
 
 	auto device_id = get_next_device(get_dev_response);
 	while (device_id.first != dev_id) {
 		if (device_id.first == 0) {
-			return nullptr;
+			return device_parameters_t{};
 		}
 		device_id = get_next_device(get_dev_response);
 	}
@@ -85,9 +85,9 @@ device* chip::get_local_device(int32_t dev_id, std::string_view& get_dev_respons
 	std::string_view device_str_view{device_id.second};
 	const bool is_device_on_list = (*my_dev == device{device_str_view});
 	if (!is_device_on_list) {
-		return nullptr;
+		return device_parameters_t{};
 	}
-	return my_dev;
+	return device_parameters_t{my_dev, static_cast<std::string>(device_str_view)};
 }
 
 bool chip::update_device_parameters(int32_t dev_id) {
@@ -101,12 +101,14 @@ bool chip::update_device_parameters(int32_t dev_id) {
 		return false;
 	}
 
-	device* my_device = get_local_device(dev_id, get_dev_response_view);
+	auto my_device_parameters = get_local_device(dev_id, get_dev_response_view);
+	auto my_device = my_device_parameters.first;
 	if (my_device == nullptr) {
 		return false;
 	}
 	parameter read_parameter{0};
-	while (parser_legacy::get_next_parameter(get_dev_response, read_parameter)) {
+	auto parameters = static_cast<std::string>(my_device_parameters.second);
+	while (parser_legacy::get_next_parameter(parameters, read_parameter)) {
 		my_device->add_parameter(read_parameter);
 	}
 	return true;
@@ -124,12 +126,14 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 		return false;
 	}
 
-	device* my_device = get_local_device(dev_id, get_dev_response_view);
+	auto my_device_parameters = get_local_device(dev_id, get_dev_response_view);
+	auto my_device = my_device_parameters.first;
 	if (my_device == nullptr) {
 		return false;
 	}
 	parameter read_parameter{0};
-	const bool is_first_paramter = parser_legacy::get_next_parameter(get_dev_response, read_parameter);
+	auto parameters = static_cast<std::string>(my_device_parameters.second);
+	const bool is_first_paramter = parser_legacy::get_next_parameter(parameters, read_parameter);
 	if (!is_first_paramter) {
 		return false;
 	}
@@ -137,7 +141,7 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 	if (!is_parameter) {
 		return false;
 	}
-	const bool is_other_paramter = parser_legacy::get_next_parameter(get_dev_response, read_parameter);
+	const bool is_other_paramter = parser_legacy::get_next_parameter(parameters, read_parameter);
 	if (is_other_paramter) {
 		return false;
 	}
