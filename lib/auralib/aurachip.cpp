@@ -82,12 +82,11 @@ chip::device_parameters_t chip::get_local_device(int32_t dev_id, std::string_vie
 		device_id = get_next_device(get_dev_response);
 	}
 
-	std::string_view device_str_view{device_id.second};
-	const bool is_device_on_list = (*my_dev == device{device_str_view});
+	const bool is_device_on_list = (*my_dev == device{device_id.second});
 	if (!is_device_on_list) {
 		return device_parameters_t{};
 	}
-	return device_parameters_t{my_dev, static_cast<std::string>(device_str_view)};
+	return device_parameters_t{my_dev, static_cast<std::string>(device_id.second)};
 }
 
 bool chip::update_device_parameters(int32_t dev_id) {
@@ -215,17 +214,22 @@ bool chip::factory_reset() {
 // TODO: add UT
 chip::device_id_t chip::get_next_device(std::string_view& message) {
 	parser::next_device_id devices_parser;
+	auto device_message_view = message;
 	auto device_id_str = devices_parser.parse(message);
 	while (device_id_str.has_value()) {
 		std::string_view device_id_string_view{*device_id_str};
 		aura::parser::simple_numeric device_id_parser{devices_parser.get_token()};
 		auto id_str = device_id_parser.parse(device_id_string_view);
 		if (!id_str.has_value()) {
+			device_message_view = message;
 			device_id_str = devices_parser.parse(message);
 			continue;
 		}
 		const auto id = std::stoi(*id_str);
-		return device_id_t{id, static_cast<std::string>(device_id_string_view)};
+		(void)device_id_parser.parse(device_message_view);
+		const auto suffix_size = message.size();
+		device_message_view.remove_suffix(suffix_size);
+		return device_id_t{id, device_message_view};
 	}
 	return device_id_t{};
 }
@@ -240,8 +244,7 @@ int chip::update_device_list() {
 	device_list.clear();
 	auto device_id = get_next_device(device_list_string_view);
 	while (device_id.first != 0) {
-		std::string_view device_str_view{device_id.second};
-		device_list[device_id.first] = device{device_str_view};
+		device_list[device_id.first] = device{device_id.second};
 		device_id = get_next_device(device_list_string_view);
 	}
 	return device_list.size();
