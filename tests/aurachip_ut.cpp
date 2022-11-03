@@ -2109,3 +2109,158 @@ TEST(aurachip_ut, get_xtal_correction_failed_value)
 	const auto read_value = aura_chip_uut.get_xtal_correction();
 	EXPECT_FALSE(read_value);
 }
+
+TEST(aurachip_ut, get_next_device_ok)
+{
+	const std::string id_3 {
+		"ID: 3\r\n"
+	};
+	const std::string id_3_response {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+			"CODE: 32\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 1\r\n"
+			"VALUE: 178\r\n"
+			"CODE: 101\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 0\r\n"
+			"VALUE: 1927\r\n"
+	};
+	const std::string id_1 {
+		"ID: 1\r\n"
+	};
+	const std::string id_1_response {
+			"ADDRESS: 30090010\r\n"
+			"PCODE: 2222\r\n"
+			"FVER: 2.11\r\n"
+			"HVER: 2.1\r\n"
+			"MANCODE: 33\r\n"
+			"CODE: 30\r\n"
+			"CHANNEL: 1\r\n"
+			"FLAG OWN: 1\r\n"
+			"FLAG WRITEABLE: 0\r\n"
+			"VALUE: 123\r\n"
+			"CODE: 33\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 1\r\n"
+			"VALUE: 220\r\n"
+	};
+
+	const std::string devices {
+		id_3 +
+		id_3_response +
+		id_1 +
+		id_1_response
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	std::string_view devices_view{devices};
+	auto device_id = aura_chip_uut.get_next_device(devices_view);
+	ASSERT_EQ(device_id.first, 3);
+	ASSERT_EQ(static_cast<std::string>(device_id.second), id_3_response);
+	ASSERT_EQ(static_cast<std::string>(devices_view), id_1 + id_1_response);
+
+	device_id = aura_chip_uut.get_next_device(devices_view);
+	EXPECT_EQ(device_id.first, 1);
+	EXPECT_EQ(static_cast<std::string>(device_id.second), id_1_response);
+	EXPECT_EQ(devices_view.size(), 0);
+}
+
+TEST(aurachip_ut, get_next_device_wrong_id)
+{
+	const std::string devices {
+			"IX: 3\r\n"
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+			"CODE: 32\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 1\r\n"
+			"VALUE: 178\r\n"
+			"CODE: 101\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 0\r\n"
+			"VALUE: 1927\r\n"
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	std::string_view devices_view{devices};
+	auto device_id = aura_chip_uut.get_next_device(devices_view);
+
+	EXPECT_EQ(device_id.first, 0);
+	EXPECT_EQ(device_id.second.size(), 0);
+	EXPECT_EQ(devices_view.size(), devices.size());
+}
+
+TEST(aurachip_ut, get_next_device_missing_id)
+{
+	const std::string id_3 {
+		"ID: \r\n"
+	};
+	const std::string id_3_response {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+			"CODE: 32\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 1\r\n"
+			"VALUE: 178\r\n"
+			"CODE: 101\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 0\r\n"
+			"VALUE: 1927\r\n"
+	};
+	const std::string id_1 {
+		"ID: 1\r\n"
+	};
+	const std::string id_1_response {
+			"ADDRESS: 30090010\r\n"
+			"PCODE: 2222\r\n"
+			"FVER: 2.11\r\n"
+			"HVER: 2.1\r\n"
+			"MANCODE: 33\r\n"
+			"CODE: 30\r\n"
+			"CHANNEL: 1\r\n"
+			"FLAG OWN: 1\r\n"
+			"FLAG WRITEABLE: 0\r\n"
+			"VALUE: 123\r\n"
+			"CODE: 33\r\n"
+			"CHANNEL: 0\r\n"
+			"FLAG OWN: 0\r\n"
+			"FLAG WRITEABLE: 1\r\n"
+			"VALUE: 220\r\n"
+	};
+
+	const std::string devices {
+		id_3 +
+		id_3_response +
+		id_1 +
+		id_1_response
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	std::string_view devices_view{devices};
+	auto device_id = aura_chip_uut.get_next_device(devices_view);
+
+	EXPECT_EQ(device_id.first, 1);
+	EXPECT_EQ(static_cast<std::string>(device_id.second), id_1_response);
+	EXPECT_EQ(devices_view.size(), 0);
+}
