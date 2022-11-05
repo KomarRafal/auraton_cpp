@@ -213,7 +213,6 @@ bool chip::factory_reset() {
 	return true;
 }
 
-// TODO: add UT
 chip::device_id_t chip::get_next_device(std::string_view& message) {
 	parser::next_device_id devices_parser;
 	auto device_message_view = message;
