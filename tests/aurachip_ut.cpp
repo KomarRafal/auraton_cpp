@@ -3,10 +3,11 @@
  */
 #include <cstring>
 
+#include "gtest/gtest.h"
 #include "parameter.hpp"
 #include "aurachip.hpp"
 #include "timeout.hpp"
-#include "gtest/gtest.h"
+#include "device.hpp"
 
 ACTION_TEMPLATE(SetArgNPointeeTo, HAS_1_TEMPLATE_PARAMS(unsigned, uIndex), AND_1_VALUE_PARAMS(response_string))
 {
@@ -2164,9 +2165,14 @@ TEST(aurachip_ut, get_next_device_ok)
 	aura::chip aura_chip_uut{device_port};
 	std::string_view devices_view{devices};
 	auto device_id = aura_chip_uut.get_next_device(devices_view);
+	const auto& device_id_view = device_id.second;
 	ASSERT_EQ(device_id.first, 3);
-	ASSERT_EQ(static_cast<std::string>(device_id.second), id_3_response);
+	ASSERT_EQ(static_cast<std::string>(device_id_view), id_3_response);
 	ASSERT_EQ(static_cast<std::string>(devices_view), id_1 + id_1_response);
+
+	// make sure both views work on the same string
+	const auto end_of_device_id = &device_id_view.front() + device_id_view.size();
+	ASSERT_EQ(end_of_device_id, &devices_view.front());
 
 	device_id = aura_chip_uut.get_next_device(devices_view);
 	EXPECT_EQ(device_id.first, 1);
@@ -2264,3 +2270,270 @@ TEST(aurachip_ut, get_next_device_missing_id)
 	EXPECT_EQ(static_cast<std::string>(device_id.second), id_1_response);
 	EXPECT_EQ(devices_view.size(), 0);
 }
+
+TEST(aurachip_ut, get_local_device_ok)
+{
+	const std::string device_str {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+	};
+
+	const std::string test_payload {
+		"Lorem ipsum dolor sit amet,\r\n"
+		"consectetur adipiscing elit, sed do eiusmod"
+		"tempor incididunt ut labore et dolore magna aliqua.\r\n"
+	};
+
+	const int32_t id = 3;
+	const std::string device_id_str {
+		"ID: 3\r\n" +
+		device_str +
+		test_payload
+	};
+
+	const std::string response_str {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LIST?\r\n"
+		"STATUS:OK\r\n" +
+		device_id_str +
+		"AT:STOP\r\n"
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(response_str),
+				testing::Return(response_str.length()))
+				);
+
+	aura_chip_uut.update_device_list();
+	std::string_view device_view{device_str};
+	const aura::device my_device{device_view};
+	std::string_view device_id_view{device_id_str};
+	auto const local_device_id = aura_chip_uut.get_local_device(id, device_id_view);
+	ASSERT_EQ(my_device, *local_device_id.first);
+	ASSERT_EQ(static_cast<std::string>(local_device_id.second), test_payload);
+}
+
+TEST(aurachip_ut, get_local_device_missing_device_id)
+{
+	const std::string device_str {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+	};
+
+	const std::string test_payload {
+		"Lorem ipsum dolor sit amet,\r\n"
+		"consectetur adipiscing elit, sed do eiusmod"
+		"tempor incididunt ut labore et dolore magna aliqua.\r\n"
+	};
+
+	const int32_t id = 4;
+	const std::string device_id_str {
+		"ID: 3\r\n" +
+		device_str +
+		test_payload
+	};
+
+	const std::string response_str {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LIST?\r\n"
+		"STATUS:OK\r\n" +
+		device_id_str +
+		"AT:STOP\r\n"
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(response_str),
+				testing::Return(response_str.length()))
+				);
+
+	aura_chip_uut.update_device_list();
+	std::string_view device_view{device_str};
+	const aura::device my_device{device_view};
+	std::string_view device_id_view{device_id_str};
+	auto const local_device_id = aura_chip_uut.get_local_device(id, device_id_view);
+	ASSERT_EQ(aura::chip::device_parameters_t{}, local_device_id);
+	ASSERT_EQ(static_cast<std::string>(device_id_view), device_id_str);
+}
+
+TEST(aurachip_ut, get_local_device_missing_device)
+{
+	const std::string device_str {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+	};
+
+	const std::string test_payload {
+		"Lorem ipsum dolor sit amet,\r\n"
+		"consectetur adipiscing elit, sed do eiusmod"
+		"tempor incididunt ut labore et dolore magna aliqua.\r\n"
+	};
+
+	const int32_t id = 3;
+	const std::string device_id_str {
+		"ID: 3\r\n" +
+		device_str +
+		test_payload
+	};
+
+	const std::string other_device_id_str {
+		"ID: 4\r\n" +
+		device_str +
+		test_payload
+	};
+
+	const std::string response_str {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LIST?\r\n"
+		"STATUS:OK\r\n" +
+		device_id_str +
+		"AT:STOP\r\n"
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(response_str),
+				testing::Return(response_str.length()))
+				);
+
+	aura_chip_uut.update_device_list();
+	std::string_view device_view{device_str};
+	const aura::device my_device{device_view};
+	std::string_view device_id_view{other_device_id_str};
+	auto const local_device_id = aura_chip_uut.get_local_device(id, device_id_view);
+	ASSERT_EQ(aura::chip::device_parameters_t{}, local_device_id);
+}
+
+TEST(aurachip_ut, get_local_device_different_device)
+{
+	const std::string other_device_str {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.22\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+	};
+
+	const std::string device_str {
+			"ADDRESS: 30090005\r\n"
+			"PCODE: 3009\r\n"
+			"FVER: 1.11\r\n"
+			"HVER: 28.1\r\n"
+			"MANCODE: 37\r\n"
+	};
+
+	const std::string test_payload {
+		"Lorem ipsum dolor sit amet,\r\n"
+		"consectetur adipiscing elit, sed do eiusmod"
+		"tempor incididunt ut labore et dolore magna aliqua.\r\n"
+	};
+
+	const int32_t id = 3;
+	const std::string device_id_str {
+		"ID: 3\r\n" +
+		device_str +
+		test_payload
+	};
+
+	const std::string other_device_id_str {
+		"ID: 3\r\n" +
+		other_device_str +
+		test_payload
+	};
+
+	const std::string response_str {
+		"AT:START\r\n"
+		"SOURCE:COMMAND\r\n"
+		"COMMAND: LIST?\r\n"
+		"STATUS:OK\r\n" +
+		device_id_str +
+		"AT:STOP\r\n"
+	};
+
+	const std::string device_port{"COM6"};
+	aura::chip aura_chip_uut{device_port};
+	auto& serial_dev = aura_chip_uut.get_connection().get_serial_dev();
+	TimeoutRAII timeout_raii;
+	auto& timeout_instance = timeout_raii.get_instance();
+
+	EXPECT_CALL(timeout_instance, sleep_for_ms(testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, flushReceiver())
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, writeBytes(testing::_, testing::_))
+		.Times(1);
+
+	EXPECT_CALL(serial_dev, readBytes(testing::_, testing::_, testing::_, testing::_))
+		.WillOnce(testing::DoAll(
+				SetArgNPointeeTo<0>(response_str),
+				testing::Return(response_str.length()))
+				);
+
+	aura_chip_uut.update_device_list();
+	std::string_view device_view{other_device_str};
+	const aura::device my_device{device_view};
+	std::string_view device_id_view{other_device_id_str};
+	auto const local_device_id = aura_chip_uut.get_local_device(id, device_id_view);
+	ASSERT_EQ(aura::chip::device_parameters_t{}, local_device_id);
+}
+

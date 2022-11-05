@@ -62,23 +62,18 @@ public:
 
 	std::map<uint32_t, device> device_list;
 
+	using device_parameters_t = std::pair<device*, std::string_view>;
+	device_parameters_t get_local_device(int32_t dev_id, std::string_view& get_dev_response);
+	using  device_id_t = std::pair<int32_t, std::string_view>;
+	device_id_t get_next_device(std::string_view& message);
+
 private:
 	connection serial_connection;
 	bool initialize_flag;
 	void initialize_version();
 	void initialize_address();
-
-// TODO: remove pubic, make friends or separate class with interface
-public:
-	// TODO: add UT
-	using device_parameters_t = std::pair<device*, std::string_view>;
-	device_parameters_t get_local_device(int32_t dev_id, std::string_view& get_dev_response);
-
-	// TODO: add UT
-	using  device_id_t = std::pair<int32_t, std::string_view>;
-	device_id_t get_next_device(std::string_view& message);
-
 };
+
 }
 
 #endif /* AURACHIP_HPP */
