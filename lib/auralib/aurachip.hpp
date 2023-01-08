@@ -13,6 +13,7 @@
 #include <map>
 
 #include "connection.hpp"
+#include "parameter.hpp"
 #include "command.hpp"
 #include "device.hpp"
 

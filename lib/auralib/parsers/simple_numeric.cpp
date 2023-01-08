@@ -27,10 +27,8 @@ bool simple_numeric::is_value_ok(const std::string_view& value) const
 	}
 	char *end;
 	const char *start = (static_cast<std::string>(value)).c_str();
-	if (std::strtoul(start, &end, 10) == 0) 	{
-		return false;
-	}
-	return true;
+	(void)std::strtoul(start, &end, 10);
+	return (start != end);
 }
 
 }

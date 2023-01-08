@@ -14,6 +14,7 @@ target_sources(auralib
 		${CMAKE_CURRENT_LIST_DIR}/connection.cpp
 		${CMAKE_CURRENT_LIST_DIR}/device.cpp
 		${CMAKE_CURRENT_LIST_DIR}/parser.cpp
+		${CMAKE_CURRENT_LIST_DIR}/parameter.cpp
 )
 
 target_include_directories(auralib

@@ -5,6 +5,7 @@
 #ifndef PARAMETER_HPP_
 #define PARAMETER_HPP_
 
+#include <optional>
 #include <cstdint>
 
 namespace aura
@@ -13,71 +14,25 @@ namespace aura
 class parameter {
 public:
 	parameter() = delete;
-	bool operator==(parameter const& param) const {
-		return (
-				(param.code == code) &&
-				(param.channel == channel) &&
-				(param.flag_own == flag_own) &&
-				(param.writable == writable) &&
-				(param.value == value)
-				);
-	}
-
+	bool operator==(parameter const& param) const;
 	explicit parameter(int32_t code,
-			  int32_t channel = 0,
-			  int32_t flag_own = 0,
-			  int32_t flag_writable = 0,
-			  int32_t value = 0) :
-			code(code),
-			channel(channel),
-			flag_own(flag_own),
-			writable(flag_writable),
-			value(value)
-		{ }
+				  	   int32_t channel = 0,
+					   int32_t flag_own = 0,
+					   int32_t flag_writable = 0,
+					   int32_t value = 0);
 
-	int32_t get_code() const {
-		return code;
-	}
+	int32_t get_code() const;
+	int32_t get_channel() const;
+	int32_t get_flag_own() const;
+	int32_t get_flag_writable() const;
+	int32_t get_value() const;
+	void set_channel(int32_t value);
+	void set_flag_own(int32_t value);
+	void set_flag_writable(int32_t value);
+	void set_value(int32_t new_value);
+	void clear();
 
-	int32_t get_channel() const {
-		return channel;
-	}
-
-	int32_t get_flag_own() const {
-		return flag_own;
-	}
-
-	int32_t get_flag_writable() const {
-		return writable;
-	}
-
-	int32_t get_value() const {
-		return value;
-	}
-
-	void set_channel(int32_t value) {
-		channel = value;
-	}
-
-	void set_flag_own(int32_t value) {
-		flag_own = value;
-	}
-
-	void set_flag_writable(int32_t value) {
-		writable = value;
-	}
-
-	void set_value(int32_t new_value) {
-		value = new_value;
-	}
-	void clear() {
-		code = 0;
-		channel = 0;
-		flag_own = 0;
-		writable = 0;
-		value = 0;
-	}
-
+	static std::optional<parameter> get_next_parameter(std::string_view& message);
 	static const uint16_t MAX_PARAM_LENGTH = 80;
 private:
 	int32_t code;
@@ -90,4 +45,4 @@ private:
 
 }
 
-#endif /* PARAMETER_HPP_ */
+#endif
