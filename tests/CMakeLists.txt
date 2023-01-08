@@ -4,7 +4,7 @@ include(FetchContent)
 
 add_subdirectory(parsers)
 
-set(GTEST_VERSION 1.11.0 CACHE STRING "Google test version")
+set(GTEST_VERSION 1.12.1 CACHE STRING "Google test version")
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 FetchContent_Declare(googletest
