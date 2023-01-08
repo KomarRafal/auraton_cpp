@@ -7,6 +7,7 @@
 
 #include <string_view>
 #include <optional>
+#include <string>
 #include <memory>
 #include <vector>
 
