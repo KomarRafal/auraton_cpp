@@ -57,3 +57,16 @@ TEST(simple_numeric_ut, simple_numeric_empty)
 	const auto parse_result = parser_ut.parse(test_string_view);
 	EXPECT_FALSE(parse_result);
 }
+
+TEST(simple_numeric_ut, simple_numeric_zero)
+{
+	const std::string test_token = "ID: ";
+	const std::string test_string {
+		"ID: 0\r\n"
+	};
+	std::string_view test_string_view(test_string);
+	aura::parser::simple_numeric parser_ut(test_token);
+	const auto parse_result = parser_ut.parse(test_string_view);
+	ASSERT_TRUE(parse_result);
+	EXPECT_EQ("0", *parse_result);
+}

@@ -106,11 +106,11 @@ bool chip::update_device_parameters(int32_t dev_id) {
 	if (my_device == nullptr) {
 		return false;
 	}
-	parameter read_parameter{0};
-
-	auto parameters = static_cast<std::string>(my_device_parameters.second);
-	while (parser_legacy::get_next_parameter(parameters, read_parameter)) {
-		my_device->add_parameter(read_parameter);
+	auto& device_parameters = my_device_parameters.second;
+	for (auto read_parameter = parameter::get_next_parameter(device_parameters);
+			read_parameter.has_value();
+			read_parameter = parameter::get_next_parameter(device_parameters)) {
+		my_device->add_parameter(*read_parameter);
 	}
 	return true;
 }
@@ -132,21 +132,20 @@ bool chip::update_device_parameter(int32_t dev_id, int32_t code) {
 	if (my_device == nullptr) {
 		return false;
 	}
-	parameter read_parameter{0};
-	auto parameters = static_cast<std::string>(my_device_parameters.second);
-	const bool is_first_paramter = parser_legacy::get_next_parameter(parameters, read_parameter);
-	if (!is_first_paramter) {
+	auto& parameters = my_device_parameters.second;
+	const auto first_paramter = parameter::get_next_parameter(parameters);
+	if (!first_paramter.has_value()) {
 		return false;
 	}
-	const bool is_parameter = (code == read_parameter.get_code());
+	const bool is_parameter = (code == first_paramter.value().get_code());
 	if (!is_parameter) {
 		return false;
 	}
-	const bool is_other_paramter = parser_legacy::get_next_parameter(parameters, read_parameter);
-	if (is_other_paramter) {
+	const auto other_paramter = parameter::get_next_parameter(parameters);
+	if (other_paramter.has_value()) {
 		return false;
 	}
-	my_device->add_parameter(read_parameter);
+	my_device->add_parameter(*first_paramter);
 	return true;
 }
 

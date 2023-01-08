@@ -22,6 +22,20 @@ FetchContent_MakeAvailable(googletest)
 set(AURATON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../lib/auralib)
 set(STUBS ${CMAKE_CURRENT_SOURCE_DIR}/stubs)
 
+add_library(parameterlib)
+
+target_sources(parameterlib
+	PRIVATE
+		${AURATON_SRC}/parameter.cpp
+)
+
+target_include_directories(parameterlib
+	PUBLIC
+		$<BUILD_INTERFACE:${AURATON_SRC}/>
+)
+
+target_link_libraries(parameterlib attraverselib nextparameterlib simplenumericlib)
+
 add_library(parserlegacylib)
 
 target_sources(parserlegacylib
@@ -92,8 +106,15 @@ target_link_libraries(aurachiplib gmock connectionlib commandlib devicelib parse
 
 enable_testing()
 
+add_executable(parameter_ut parameter_ut.cpp)					  
+target_link_libraries(parameter_ut gtest gtest_main parameterlib parserlib)
+add_test(
+    NAME parameter_ut
+    COMMAND parameter_ut
+)
+
 add_executable(parser_ut parser_ut.cpp)					  
-target_link_libraries(parser_ut gtest gtest_main parserlegacylib)
+target_link_libraries(parser_ut gtest gtest_main parserlegacylib parameterlib)
 add_test(
     NAME parser_ut
     COMMAND parser_ut
@@ -122,7 +143,7 @@ add_test(
 )
 
 add_executable(aurachip_ut aurachip_ut.cpp)					  
-target_link_libraries(aurachip_ut gtest gtest_main aurachiplib)
+target_link_libraries(aurachip_ut gtest gtest_main aurachiplib parameterlib)
 add_test(
     NAME aurachip_ut
     COMMAND aurachip_ut
@@ -131,9 +152,13 @@ add_test(
 set_target_properties(device_ut 
                       connectionlib 
                       connection_ut 
-                      aurachip_ut 
+                      aurachip_ut
+                      parameter_ut
+                      parser_ut
                       aurachiplib
                       devicelib
+                      parameterlib
+                      parserlegacylib
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF
