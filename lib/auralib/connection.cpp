@@ -3,7 +3,6 @@
  */
 #include <timeout.hpp>
 #include "connection.hpp"
-#include "parser.hpp"
 
 namespace aura
 

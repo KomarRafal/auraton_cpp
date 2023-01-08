@@ -36,24 +36,11 @@ target_include_directories(parameterlib
 
 target_link_libraries(parameterlib attraverselib nextparameterlib simplenumericlib)
 
-add_library(parserlegacylib)
-
-target_sources(parserlegacylib
-	PRIVATE
-		${AURATON_SRC}/parser.cpp
-)
-
-target_include_directories(parserlegacylib
-	PUBLIC
-		$<BUILD_INTERFACE:${AURATON_SRC}/>
-)
-
 add_library(devicelib)
 
 target_sources(devicelib
 	PRIVATE
 		${AURATON_SRC}/device.cpp
-		${AURATON_SRC}/parser.cpp
 )
 
 target_include_directories(devicelib
@@ -75,7 +62,7 @@ target_include_directories(connectionlib
 		${STUBS}/
 		$<BUILD_INTERFACE:${AURATON_SRC}/>
 )
-target_link_libraries(connectionlib gmock parserlegacylib)
+target_link_libraries(connectionlib gmock)
 
 add_library(commandlib)
 
@@ -113,13 +100,6 @@ add_test(
     COMMAND parameter_ut
 )
 
-add_executable(parser_ut parser_ut.cpp)					  
-target_link_libraries(parser_ut gtest gtest_main parserlegacylib parameterlib)
-add_test(
-    NAME parser_ut
-    COMMAND parser_ut
-)
-
 add_executable(device_ut device_ut.cpp)
 target_link_libraries(device_ut gtest gtest_main devicelib)
            
@@ -154,11 +134,9 @@ set_target_properties(device_ut
                       connection_ut 
                       aurachip_ut
                       parameter_ut
-                      parser_ut
                       aurachiplib
                       devicelib
                       parameterlib
-                      parserlegacylib
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF
