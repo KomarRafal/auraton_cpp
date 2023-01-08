@@ -14,7 +14,6 @@
 #include "parsers/clear.hpp"
 #include "events/link.hpp"
 #include "aurachip.hpp"
-#include "parser.hpp"
 
 namespace aura
 {
