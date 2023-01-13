@@ -3,7 +3,7 @@ name: Auraton-Tests
 on:
   push:
     branches:
-      - new_parsers
+      - master
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   TESTS_SOURCE_FOLDER: ${{github.workspace}}/tests
