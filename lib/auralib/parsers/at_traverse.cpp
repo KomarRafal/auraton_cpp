@@ -10,7 +10,7 @@ namespace aura
 namespace parser
 {
 
-parser_if::parsed_value at_traverse::get_next_block()
+parser_if::parsed_value_t at_traverse::get_next_block()
 {
 	while (true) {
 		const auto end = message.find(END_TOKEN);

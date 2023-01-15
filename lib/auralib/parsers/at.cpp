@@ -10,7 +10,7 @@ namespace aura
 namespace parser
 {
 
-parser_if::parsed_value at::parse(std::string_view& message) {
+parser_if::parsed_value_t at::parse(std::string_view& message) {
 	const auto end = message.find(END_TOKEN);
 	if (end == std::string_view::npos) 	{
 		return std::nullopt;

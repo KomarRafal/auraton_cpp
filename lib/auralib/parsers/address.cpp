@@ -11,9 +11,6 @@ namespace aura
 namespace parser
 {
 
-namespace commands
-{
-
 const std::string& address::get_token() const
 {
 	return ADDRESS_TOKEN;
@@ -34,8 +31,6 @@ bool address::is_value_ok(const std::string_view& value) const
 		return false;
 	}
 	return true;
-}
-
 }
 
 }

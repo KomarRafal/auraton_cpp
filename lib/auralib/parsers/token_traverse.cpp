@@ -15,7 +15,7 @@ token_traverse::token_traverse(const std::string& specific_token) :
 
 }
 
-parser_if::parsed_value token_traverse::parse(std::string_view& message) {
+parser_if::parsed_value_t token_traverse::parse(std::string_view& message) {
 	const auto first_token = message.substr(0, token.size());
 	const auto is_token_ok = (token == first_token);
 	if (!is_token_ok) {

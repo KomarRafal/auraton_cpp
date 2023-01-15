@@ -10,9 +10,6 @@ namespace aura
 namespace parser
 {
 
-namespace commands
-{
-
 const std::string& version_pcode::get_token() const
 {
 	return PCODE_TOKEN;
@@ -51,8 +48,6 @@ const std::string& version_man_code::get_token() const
 bool version_man_code::is_value_ok(const std::string_view& value) const
 {
 	return (value.size() != 0);
-}
-
 }
 
 }

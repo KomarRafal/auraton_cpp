@@ -14,10 +14,10 @@ class parser_executor_ut : public ::testing::Test
 {
 protected:
 	virtual void SetUp() override {
-		aura::parser::parser_if::parser_ptr at_parser = std::make_unique<aura::parser::at>();
-		aura::parser::parser_if::parser_ptr source_parser = std::make_unique<aura::parser::specific_source>("TEST_SOURCE");
-		aura::parser::parser_if::parser_ptr command_parser = std::make_unique<aura::parser::commands::specific_command>("TEST_COMMAND");
-		aura::parser::parser_if::parser_ptr status_parser = std::make_unique<aura::parser::status>();
+		aura::parser::parser_if::parser_ptr_t at_parser = std::make_unique<aura::parser::at>();
+		aura::parser::parser_if::parser_ptr_t source_parser = std::make_unique<aura::parser::specific_source>("TEST_SOURCE");
+		aura::parser::parser_if::parser_ptr_t command_parser = std::make_unique<aura::parser::commands::specific_command>("TEST_COMMAND");
+		aura::parser::parser_if::parser_ptr_t status_parser = std::make_unique<aura::parser::status>();
 
 		parse_algorithm.push_back(std::move(at_parser));
 		parse_algorithm.push_back(std::move(source_parser));

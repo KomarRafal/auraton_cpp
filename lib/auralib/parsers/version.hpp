@@ -20,9 +20,6 @@ namespace aura
 namespace parser
 {
 
-namespace commands
-{
-
 class version_pcode : public simple_token
 {
 public:
@@ -62,8 +59,6 @@ public:
 private:
 	const std::string MAN_CODE_TOKEN = "MANCODE: ";
 };
-
-}
 
 }
 

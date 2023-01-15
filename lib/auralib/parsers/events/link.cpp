@@ -19,9 +19,9 @@ namespace parser
 namespace events
 {
 
-parser_if::parsed_value link::parse(std::string_view& message) {
+parser_if::parsed_value_t link::parse(std::string_view& message) {
 	// TODO: const everywhere
-	parser_if::parser_ptr direction_parser = std::make_unique<direction::receive>();
+	parser_if::parser_ptr_t direction_parser = std::make_unique<direction::receive>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(direction_parser));
@@ -39,11 +39,11 @@ const std::string link::get_event_token() {
 }
 
 parser_if::parser_algorithm_t link_builder::build() {
-	parser_if::parser_ptr at_parser = std::make_unique<at>();
-	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(event::SOURCE_TOKEN);
-	parser_if::parser_ptr link_event_parser = std::make_unique<specific_event>(link::get_event_token());
-	parser_if::parser_ptr status_parser = std::make_unique<status>();
-	parser_if::parser_ptr link_parser = std::make_unique<link>();
+	parser_if::parser_ptr_t at_parser = std::make_unique<at>();
+	parser_if::parser_ptr_t source_commnand_parser = std::make_unique<specific_source>(event::SOURCE_TOKEN);
+	parser_if::parser_ptr_t link_event_parser = std::make_unique<specific_event>(link::get_event_token());
+	parser_if::parser_ptr_t status_parser = std::make_unique<status>();
+	parser_if::parser_ptr_t link_parser = std::make_unique<link>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));

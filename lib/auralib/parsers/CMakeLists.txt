@@ -7,6 +7,7 @@ add_library(parserlib)
 
 target_sources(parserlib
 	PRIVATE
+		${CMAKE_CURRENT_LIST_DIR}/address.cpp
 		${CMAKE_CURRENT_LIST_DIR}/at.cpp
 		${CMAKE_CURRENT_LIST_DIR}/at_traverse.cpp
 		${CMAKE_CURRENT_LIST_DIR}/clear.cpp
@@ -21,11 +22,10 @@ target_sources(parserlib
 		${CMAKE_CURRENT_LIST_DIR}/specific_source.cpp
 		${CMAKE_CURRENT_LIST_DIR}/status.cpp
 		${CMAKE_CURRENT_LIST_DIR}/token_traverse.cpp
-		${CMAKE_CURRENT_LIST_DIR}/commands/address.cpp
+		${CMAKE_CURRENT_LIST_DIR}/version.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/specific_command.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/xtal_correction.cpp
 		${CMAKE_CURRENT_LIST_DIR}/commands/test.cpp
-		${CMAKE_CURRENT_LIST_DIR}/commands/version.cpp
 		${CMAKE_CURRENT_LIST_DIR}/events/direction.cpp
 		${CMAKE_CURRENT_LIST_DIR}/events/event.cpp
 		${CMAKE_CURRENT_LIST_DIR}/events/link.cpp

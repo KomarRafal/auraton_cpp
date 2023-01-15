@@ -13,20 +13,6 @@ add_test(
     COMMAND cmd_test_ut
 )
 
-add_executable(cmd_version_ut cmd_version_ut.cpp)					  
-target_link_libraries(cmd_version_ut gtest gtest_main parserlib)
-add_test(
-    NAME cmd_version_ut
-    COMMAND cmd_version_ut
-)
-
-add_executable(cmd_address_ut cmd_address_ut.cpp)					  
-target_link_libraries(cmd_address_ut gtest gtest_main parserlib)
-add_test(
-    NAME cmd_address_ut
-    COMMAND cmd_address_ut
-)
-
 add_executable(cmd_xtal_correction_ut cmd_xtal_correction_ut.cpp)					  
 target_link_libraries(cmd_xtal_correction_ut gtest gtest_main parserlib)
 add_test(
@@ -42,8 +28,6 @@ add_test(
 )
 
 set_target_properties(cmd_test_ut
-                      cmd_version_ut
-                      cmd_address_ut
                       cmd_xtal_correction_ut
                       specific_command_parser_ut
                       PROPERTIES

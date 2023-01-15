@@ -17,7 +17,7 @@ namespace parser
 class clear : public simple_token
 {
 public:
-	static const std::string SOURCE_CLEAR_TOKEN;
+	static const std::string SOURCE_TOKEN;
 
 	virtual const std::string& get_token() const;
 	virtual bool is_value_ok(const std::string_view& value) const;

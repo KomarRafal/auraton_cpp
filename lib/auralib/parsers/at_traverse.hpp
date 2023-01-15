@@ -20,7 +20,7 @@ public:
 		message(message) {
 
 	}
-	parser_if::parsed_value get_next_block();
+	parser_if::parsed_value_t get_next_block();
 private:
 	std::string_view &message;
 	const std::string BEGIN_TOKEN = "AT:START\r\n";

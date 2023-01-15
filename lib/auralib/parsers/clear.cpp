@@ -13,7 +13,7 @@ namespace aura
 namespace parser
 {
 
-const std::string clear::SOURCE_CLEAR_TOKEN = "CLEAR";
+const std::string clear::SOURCE_TOKEN = "CLEAR";
 
 const std::string& clear::get_token() const
 {
@@ -46,10 +46,10 @@ AT:STOP
 */
 parser_if::parser_algorithm_t clear_builder::build()
 {
-	parser_if::parser_ptr at_parser = std::make_unique<at>();
-	parser_if::parser_ptr source_parser = std::make_unique<specific_source>(clear::SOURCE_CLEAR_TOKEN);
-	parser_if::parser_ptr status_parser = std::make_unique<status>();
-	parser_if::parser_ptr clear_parser = std::make_unique<clear>();
+	parser_if::parser_ptr_t at_parser = std::make_unique<at>();
+	parser_if::parser_ptr_t source_parser = std::make_unique<specific_source>(clear::SOURCE_TOKEN);
+	parser_if::parser_ptr_t status_parser = std::make_unique<status>();
+	parser_if::parser_ptr_t clear_parser = std::make_unique<clear>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));

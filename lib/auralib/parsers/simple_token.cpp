@@ -15,7 +15,7 @@ bool simple_token::is_value_ok(const std::string_view& value) const
 	return value == "OK";
 }
 
-parser_if::parsed_value simple_token::parse(std::string_view& message) {
+parser_if::parsed_value_t simple_token::parse(std::string_view& message) {
 	const auto token = message.substr(0, get_token().size());
 	const auto is_token_ok = (token == get_token());
 	if (!is_token_ok) {

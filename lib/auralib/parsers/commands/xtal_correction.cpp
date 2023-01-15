@@ -59,11 +59,11 @@ AT:STOP
 */
 parser_if::parser_algorithm_t get_xtal_correction_builder::build()
 {
-	parser_if::parser_ptr at_parser = std::make_unique<at>();
-	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
-	parser_if::parser_ptr test_command_parser = std::make_unique<specific_command>(xtal_correction::get_command_token());
-	parser_if::parser_ptr status_parser = std::make_unique<status>();
-	parser_if::parser_ptr xtal_correction_parser = std::make_unique<xtal_correction>();
+	parser_if::parser_ptr_t at_parser = std::make_unique<at>();
+	parser_if::parser_ptr_t source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
+	parser_if::parser_ptr_t test_command_parser = std::make_unique<specific_command>(xtal_correction::get_command_token());
+	parser_if::parser_ptr_t status_parser = std::make_unique<status>();
+	parser_if::parser_ptr_t xtal_correction_parser = std::make_unique<xtal_correction>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));
@@ -84,10 +84,10 @@ AT:STOP
 */
 parser_if::parser_algorithm_t set_xtal_correction_builder::build()
 {
-	parser_if::parser_ptr at_parser = std::make_unique<at>();
-	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
-	parser_if::parser_ptr test_command_parser = std::make_unique<specific_command>(xtal_correction::get_set_command_token());
-	parser_if::parser_ptr status_parser = std::make_unique<status>();
+	parser_if::parser_ptr_t at_parser = std::make_unique<at>();
+	parser_if::parser_ptr_t source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
+	parser_if::parser_ptr_t test_command_parser = std::make_unique<specific_command>(xtal_correction::get_set_command_token());
+	parser_if::parser_ptr_t status_parser = std::make_unique<status>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));

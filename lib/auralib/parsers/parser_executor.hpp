@@ -16,7 +16,7 @@ namespace parser
 
 class parser_executor  {
 public:
-	static parser_if::parsed_value execute(std::string_view& message, const parser_if::parser_algorithm_t& parser_algorithm);
+	static parser_if::parsed_value_t execute(std::string_view& message, const parser_if::parser_algorithm_t& parser_algorithm);
 };
 
 }

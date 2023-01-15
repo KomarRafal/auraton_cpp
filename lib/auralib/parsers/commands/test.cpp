@@ -33,12 +33,12 @@ const std::string& test_backup::get_token() const
 	return BACKUP_TOKEN;
 }
 
-parser_if::parsed_value test::parse(std::string_view& message)
+parser_if::parsed_value_t test::parse(std::string_view& message)
 {
 	// TODO: const everywhere
-	parser_if::parser_ptr radio_parser = std::make_unique<test_radio>();
-	parser_if::parser_ptr flash_parser = std::make_unique<test_flash>();
-	parser_if::parser_ptr backup_parser = std::make_unique<test_backup>();
+	parser_if::parser_ptr_t radio_parser = std::make_unique<test_radio>();
+	parser_if::parser_ptr_t flash_parser = std::make_unique<test_flash>();
+	parser_if::parser_ptr_t backup_parser = std::make_unique<test_backup>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(radio_parser));
@@ -60,11 +60,11 @@ const std::string test::get_command_token()
 
 parser_if::parser_algorithm_t test_builder::build()
 {
-	parser_if::parser_ptr at_parser = std::make_unique<at>();
-	parser_if::parser_ptr source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
-	parser_if::parser_ptr test_command_parser = std::make_unique<specific_command>(test::get_command_token());
-	parser_if::parser_ptr status_parser = std::make_unique<status>();
-	parser_if::parser_ptr test_parser = std::make_unique<test>();
+	parser_if::parser_ptr_t at_parser = std::make_unique<at>();
+	parser_if::parser_ptr_t source_commnand_parser = std::make_unique<specific_source>(command::SOURCE_TOKEN);
+	parser_if::parser_ptr_t test_command_parser = std::make_unique<specific_command>(test::get_command_token());
+	parser_if::parser_ptr_t status_parser = std::make_unique<status>();
+	parser_if::parser_ptr_t test_parser = std::make_unique<test>();
 
 	parser_if::parser_algorithm_t parse_algorithm;
 	parse_algorithm.push_back(std::move(at_parser));

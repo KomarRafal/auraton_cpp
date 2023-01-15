@@ -236,7 +236,22 @@ add_test(
     COMMAND parser_executor_ut
 )
 
+add_executable(version_ut version_ut.cpp)					  
+target_link_libraries(version_ut gtest gtest_main parserlib)
+add_test(
+    NAME version_ut
+    COMMAND version_ut
+)
+
+add_executable(address_ut address_ut.cpp)					  
+target_link_libraries(address_ut gtest gtest_main parserlib)
+add_test(
+    NAME address_ut
+    COMMAND address_ut
+)
+
 set_target_properties(atparserlib
+                      address_ut
                       at_parser_ut
                       attraverselib
                       at_traverse_ut
@@ -258,6 +273,7 @@ set_target_properties(atparserlib
                       next_parameter_ut
                       parserexecutorlib
                       parser_executor_ut
+                      version_ut
                       PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF

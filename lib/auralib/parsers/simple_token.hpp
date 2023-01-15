@@ -17,7 +17,7 @@ namespace parser
 
 class simple_token : public parser_if {
 public:
-	virtual parsed_value parse(std::string_view& message);
+	virtual parsed_value_t parse(std::string_view& message);
 	virtual const std::string& get_token() const = 0;
 	virtual bool is_value_ok(const std::string_view& value) const;
 };

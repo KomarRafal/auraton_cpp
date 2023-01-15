@@ -15,7 +15,7 @@ namespace parser
 
 class at : public parser_if {
 public:
-	virtual parsed_value parse(std::string_view& message);
+	virtual parsed_value_t parse(std::string_view& message);
 private:
 	const std::string BEGIN_TOKEN = "AT:START" + EOL;
 	const std::string END_TOKEN = "AT:STOP" + EOL;

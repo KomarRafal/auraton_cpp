@@ -13,10 +13,6 @@ namespace aura
 namespace parser
 {
 
-namespace commands
-{
-
-
 class address : public simple_token
 {
 public:
@@ -27,8 +23,6 @@ private:
 	const std::string ADDRESS_TOKEN = "ADDRESS: "; //TODO: remove additional space
 	const uint8_t ADDRESS_SIZE = 8;
 };
-
-}
 
 }
 

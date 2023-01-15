@@ -19,7 +19,7 @@ class token_traverse : public parser_if
 {
 public:
 	explicit token_traverse(const std::string& specific_token);
-	virtual parsed_value parse(std::string_view& message);
+	virtual parsed_value_t parse(std::string_view& message);
 	const std::string& get_token();
 
 private:

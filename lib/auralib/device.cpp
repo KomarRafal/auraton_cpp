@@ -6,9 +6,9 @@
 #include <utility>
 #include <vector>
 
-#include "parsers/commands/version.hpp"
-#include "parsers/commands/address.hpp"
 #include "parsers/simple_token.hpp"
+#include "parsers/version.hpp"
+#include "parsers/address.hpp"
 #include "device.hpp"
 
 namespace aura
@@ -24,11 +24,11 @@ MANCODE: 30
 
 device::device(std::string_view& device_str_view) :
 		product_code(), fw_version(), hw_version(), manufacture_code(), address(0), parameter_map() {
-	parser::commands::address address_parser;
-	parser::commands::version_pcode pcode_parser;
-	parser::commands::version_fw_version fw_version_parser;
-	parser::commands::version_hw_version hw_version_parser;
-	parser::commands::version_man_code man_code_parser;
+	parser::address address_parser;
+	parser::version_pcode pcode_parser;
+	parser::version_fw_version fw_version_parser;
+	parser::version_hw_version hw_version_parser;
+	parser::version_man_code man_code_parser;
 
 	std::vector<std::pair<parser::parser_if*, std::function<void(std::string)>>> device_info_reader = {
 			{ &address_parser, [this](auto value) { set_address(value); } },
